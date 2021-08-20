@@ -1,0 +1,212 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Keyboard, Image } from 'react-native';
+import { API, graphqlOperation } from 'aws-amplify';
+import SafeScreen from '../components/SafeScreen'
+import UserInput from '../components/UserInput'
+import InputPicker from '../components/InputPicker'
+import RoundedButton from '../components/RoundedButton'
+import { FontAwesome5, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import colors from '../constants/colors'
+import { createCheckIn } from '../../src/graphql/mutations'
+// import * as Permissions from 'expo-permissions';
+// import * as ImagePicker from 'expo-image-picker'
+
+
+
+function CheckIn({ activeUser, closeModalAndSave }) {
+    const [checkIn, setCheckIn] = useState({
+        title: null,
+        sport: '',
+        location: '',
+        image: null
+    });
+
+    const sportSelected = (sport) => {
+        setCheckIn({ ...checkIn, sport: sport.label })
+        Keyboard.dismiss()
+    }
+
+    async function submit() {
+        if (checkIn.sport != '') {
+            const newCheckIn = {
+                title: checkIn.title ? checkIn.title : "Checked in " + (checkIn.sport == "skateboard" ? "skateboarding" : checkIn.sport),
+                location: checkIn.location ? checkIn.location : "Uknown location",
+                sport: checkIn.sport,
+                image: checkIn.image,
+                likes: 0,
+                userID: activeUser.id,
+                userName: activeUser.username,
+                type: "CheckIn"
+            }
+            try {
+                await API.graphql(graphqlOperation(createCheckIn, { input: newCheckIn }));
+                console.log("Check-in created")
+            } catch (error) {
+                console.log("Error getting user from db")
+            }
+            closeModalAndSave()
+        }
+    }
+
+    // const addPhoto = async () => {
+    //     try {
+    //         const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
+    //         if (granted) {
+    //             const result = await ImagePicker.launchImageLibraryAsync();
+    //             if (!result.cancelled) {
+    //                 setCheckIn({ ...checkIn, image: result.uri })
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.log("Error changing profile picture")
+    //     }
+    // }
+
+    const sports = [
+        { label: "skiing", value: 1 },
+        { label: "snowboarding", value: 2 },
+        { label: "skateboard", value: 3 },
+
+    ]
+    const locations = [
+        { label: "Bogus Basin, ID", value: 1 },
+        { label: "Big Sky, MT", value: 2 },
+        { label: "Sugar Bowl, CA", value: 2 }
+    ]
+    return (
+        <SafeScreen style={styles.screen}>
+            <View style={styles.headerRow}>
+                <Text style={styles.pageTitle}>Check-in</Text>
+            </View>
+            <View style={styles.titleLine} />
+            <View style={styles.titleContainer}>
+                <UserInput
+                    placeholder="Title your check-in"
+                    onChangeText={title => setCheckIn({ ...checkIn, title: title })}
+                    placeholderTextColor="grey"
+                />
+            </View>
+            <View style={styles.activityContainer}>
+                <Text style={styles.activityTitle}>Select your sport</Text>
+                <View style={styles.activityRow}>
+                    {/* This needs a rework */}
+                    <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[0].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[0])}>
+                        <FontAwesome5 name="skiing" size={24} color={checkIn.sport === sports[0].label ? "white" : "black"} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[1].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[1])}>
+                        <FontAwesome5 name="snowboarding" size={24} color={checkIn.sport === sports[1].label ? "white" : "black"} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[2].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[2])}>
+                        <MaterialCommunityIcons name="skateboard" size={30} color={checkIn.sport === sports[2].label ? "white" : "black"} />
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            <View style={styles.locationContainer}>
+                <InputPicker
+                    selectedItem={checkIn.location}
+                    onSelectedItem={location => setCheckIn({ ...checkIn, location: location.label })}
+                    iconName="location-outline"
+                    placeholder="Add location"
+                    items={locations}
+                    textStyle={styles.inputTitle}
+                />
+            </View>
+            {/* <View style={styles.addPhotoContainer}>
+                {!checkIn.image ?
+                    <TouchableOpacity style={styles.addPhotoIcon} onPress={() => addPhoto()}>
+                        <MaterialIcons name="add-photo-alternate" size={60} color="white" />
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity onPress={() => addPhoto()}>
+                        <Image style={styles.image} source={{ uri: checkIn.image }} />
+                    </TouchableOpacity>
+                }
+            </View> */}
+            <View style={styles.postContainer}>
+                <RoundedButton title="CHECK-IN" color={colors.secondary} onPress={submit}></RoundedButton>
+            </View>
+        </SafeScreen>
+    );
+}
+
+const styles = StyleSheet.create({
+    screen: {
+        flex: 1,
+        backgroundColor: colors.primary,
+        padding: 5,
+    },
+    headerRow: {
+        width: "100%",
+        justifyContent: "space-evenly",
+        flexDirection: "row",
+    },
+    pageTitle: {
+        color: "white",
+        fontSize: 35,
+        top: -10,
+        fontStyle: 'italic',
+        fontWeight: "500"
+    },
+    titleLine: {
+        borderWidth: 1,
+        borderColor: "white",
+        width: "100%",
+        marginBottom: 40,
+        borderColor: colors.secondary
+    },
+    titleContainer: {
+        alignItems: "center",
+        alignSelf: "center",
+        width: "75%",
+        marginBottom: 25,
+        flexDirection: 'row',
+    },
+    inputTitle: {
+        color: "white",
+        fontSize: 25,
+        paddingLeft: 5,
+        marginRight: 5
+    },
+    image: {
+        width: 200,
+        height: 200
+    },
+    activityContainer: {
+        alignItems: "center",
+        marginBottom: 25
+    },
+    activityTitle: {
+        color: "white",
+        fontSize: 25,
+        marginBottom: 15
+    },
+    activityRow: {
+        alignItems: "center",
+        flexDirection: "row",
+    },
+    activityStyle: {
+        backgroundColor: "white",
+        marginHorizontal: 30,
+        padding: 10,
+        width: 50,
+        height: 50,
+        borderWidth: 1,
+        borderRadius: 50 / 2
+    },
+    locationContainer: {
+        alignItems: "center"
+    },
+    addPhotoContainer: {
+        alignItems: "center",
+        marginVertical: 10
+    },
+    postContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignSelf: "center",
+        width: "75%",
+    },
+})
+
+export default CheckIn;
