@@ -64,7 +64,7 @@ const HomeScreen = ({ route, navigation }) => {
     return (
         <SafeScreen style={styles.screen}>
             {!loading ?
-                <View style={styles.screen}>
+                <View>
                     <React.Fragment>
                         <TouchableOpacity style={checkInButtonStyle()} onPress={() => setCheckInModalVisible(true)}>
                             <Text style={styles.buttonText}>Check-in

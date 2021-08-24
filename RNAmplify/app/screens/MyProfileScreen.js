@@ -8,17 +8,20 @@ import ProfileIcon from '../components/ProfileIcon'
 import SafeScreen from '../components/SafeScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { getUser, checkInsByDate } from '../../src/graphql/queries'
-// import { updateUser } from '../../src/graphql/mutations'
-// import uuid from 'react-native-uuid';
-// import * as Permissions from 'expo-permissions';
-// import * as ImagePicker from 'expo-image-picker'
+import * as ImagePicker from 'expo-image-picker';
+import { Buffer } from "buffer"; // get this via: npm install buffer
+import uuid from 'react-native-uuid';
+import * as FileSystem from "expo-file-system";
+import { updateUser } from '../../src/graphql/mutations'
 
 const MyProfileScreen = ({ navigation }) => {
     const isFocused = useIsFocused();
     const [activeUser, setActiveUser] = useState({ username: '', description: '', image: null });
     const [userDayCount, setUserDayCount] = useState(0);
     const [userCheckIns, setUserCheckIns] = useState();
-    const [loading, setLoading] = useState(true);
+    const [pageLoading, setPageLoading] = useState(true);
+    const [image, setImage] = useState(null);
+    const [percentage, setPercentage] = useState(0);
 
     useEffect(() => {
         if (isFocused) fetchCurrentUserDataAndGetCheckIns()
@@ -26,7 +29,7 @@ const MyProfileScreen = ({ navigation }) => {
 
     useEffect(() => {
         if (activeUser.image) {
-            updateUsersProfilePicture()
+            // updateUsersProfilePicture()
         }
     }, [activeUser.image])
 
@@ -41,61 +44,136 @@ const MyProfileScreen = ({ navigation }) => {
         try {
             const userData = await API.graphql(graphqlOperation(getUser, { id: userInfo.attributes.sub }))
             const activeUser = userData.data.getUser;
+            if (activeUser.image) {
+                Storage.get(activeUser.image)
+                    .then((result) => {
+                        setActiveUser({ username: activeUser.username, id: activeUser.id, description: activeUser.description, image: result })
+                    })
+                    .catch((err) => console.log(err));
+            }
+            setActiveUser({ username: activeUser.username, id: activeUser.id, description: activeUser.description, image: activeUser.image })
             const queryParams = {
                 type: "CheckIn",
-                sortDirection: "ASC",
+                sortDirection: "DESC",
                 filter: { userID: { eq: activeUser.id } }
             };
-            // const imageKey = await Storage.get(activeUser.image, { level: 'public' })
-            //activeUser.image = imageKey;
-            setActiveUser({ username: activeUser.username, id: activeUser.id, description: activeUser.description, image: activeUser.image })
             const userCheckIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items
             setUserCheckIns(userCheckIns)
             setUserDayCount(userCheckIns.length);
         } catch (error) {
             console.log("Error getting user from db")
         }
-        setLoading(false)
+        setPageLoading(false)
     }
 
-    const changeProfilePicture = async () => {
-        // try {
-        //     const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
-        //     if (granted) {
-        //         const result = await ImagePicker.launchImageLibraryAsync();
-        //         if (!result.cancelled && result.uri) {
-        //             setActiveUser({ ...activeUser, image: result.uri })
-        //             const filename = uuid.v4() + '_profileImage.jpg' //uuid will give us a unique id which makes storage easier
-        //             const photo = await fetch(result.uri);
-        //             const photoBlob = await photo.blob();
-        //             // await Storage.put(filename, photoBlob, {
-        //             //     level: 'public',
-        //             //     contentType: 'image/jpg'
-        //             // })
-        //         }
-        //     }
-        // } catch (error) {
-        //     console.log("Error changing profile picture")
-        // }
-    }
-
-    const updateUsersProfilePicture = async () => {
+    const updateUsersProfilePicture = async (updatedUser) => {
         try {
-            // await API.graphql(graphqlOperation(updateUser, { input: { ...activeUser } }));
+            await API.graphql(graphqlOperation(updateUser, { input: updatedUser }));
         } catch (error) {
             console.log("Error updating users profile picture in db")
         }
     }
+
+
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: 'Images',
+            aspect: [4, 3],
+            quality: 1,
+        });
+        handleImagePicked(result);
+    };
+
+    const handleImagePicked = async (pickerResult) => {
+        try {
+            if (pickerResult.cancelled) {
+                alert('Upload cancelled');
+                return;
+            } else {
+                // setPercentage(0);
+                setActiveUser({ ...activeUser, image: pickerResult.uri })
+                const img = await fetchImageFromUri(pickerResult.uri);
+                const fileName = uuid.v4() + "_" + activeUser.username + "_profilePic.jpg";
+                const uploadUrl = await uploadImage(fileName, img);
+                const updatedUser = { ...activeUser, image: uploadUrl };
+                updateUsersProfilePicture(updatedUser);
+                //downloadImage(uploadUrl);
+            }
+        } catch (e) {
+            console.log(e);
+            alert('Upload failed');
+        }
+    };
+
+    const uploadImage = (filename, img) => {
+        Auth.currentCredentials();
+        return Storage.put(filename, img, {
+            level: 'public',
+            contentType: 'image/jpeg',
+            // progressCallback(progress) {
+            //     setLoading(progress);
+            // },
+        })
+            .then((response) => {
+                return response.key;
+            })
+            .catch((error) => {
+                console.log(error);
+                return error.response;
+            });
+    };
+
+    // const setLoading = (progress) => {
+    //     const calculated = parseInt((progress.loaded / progress.total) * 100);
+    //     updatePercentage(calculated); // due to s3 put function scoped
+    // };
+
+    // const updatePercentage = (number) => {
+    //     setPercentage(number);
+    // };
+
+    const downloadImage = (uri) => {
+        Storage.get(uri)
+            .then((result) => setImage(result))
+            .catch((err) => console.log(err));
+    };
+
+    async function fetchImageFromUri(uri) {
+        // console.log(uri)
+
+        // const response = await fetch(uri);
+        // console.log(response)
+
+        // const blob = await response.blob();
+        // console.log(blob)
+        // return blob;
+        const options = { encoding: FileSystem.EncodingType.Base64 };
+        const base64Response = await FileSystem.readAsStringAsync(
+            uri,
+            options,
+        );
+
+        const blob = Buffer.from(base64Response, "base64");
+        return blob;
+    };
+
+
+
+
 
     return (
         <SafeScreen style={styles.screen}>
             <ScrollView>
                 <View style={styles.profileContainer}>
                     <View style={styles.profilePictureContainer}>
-                        <TouchableOpacity onPress={() => changeProfilePicture()}>
+                        <TouchableOpacity onPress={pickImage}>
                             {
-                                activeUser.image ? <ProfileIcon size={200} image={activeUser.image} /> :
-                                    <MaterialCommunityIcons name="account-outline" size={200} color="grey" />}
+                                activeUser.image ?
+                                    <ProfileIcon size={200} image={activeUser.image} />
+                                    :
+                                    <MaterialCommunityIcons name="account-outline" size={200} color="grey" />
+                            }
                         </TouchableOpacity>
                     </View>
                     <View style={styles.nameContainer}>
@@ -107,7 +185,7 @@ const MyProfileScreen = ({ navigation }) => {
                 </View>
                 <View>
                     <MyStats data={userDayCount} />
-                    {!loading ?
+                    {!pageLoading ?
                         <ProfileCheckIns checkIns={userCheckIns} userDayCount={userDayCount} updateDayCount={updateDayCount} />
                         :
                         <ActivityIndicator size="large" color="white" />

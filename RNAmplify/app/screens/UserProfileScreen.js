@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
 import { View, ScrollView, ActivityIndicator, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import MyStats from '../components/MyStats'
@@ -13,7 +13,7 @@ import { getUser, checkInsByDate } from '../../src/graphql/queries'
 const UserProfileScreen = ({ route, navigation }) => {
     const { viewedUserId } = route.params;
     const isFocused = useIsFocused();
-    const [activeUser, setActiveUser] = useState({ username: '', description: '', image: null });
+    const [viewedUser, setViewedUser] = useState({ username: '', description: '', image: null });
     const [userDayCount, setUserDayCount] = useState(0);
     const [userCheckIns, setUserCheckIns] = useState();
     const [loading, setLoading] = useState(true);
@@ -22,61 +22,69 @@ const UserProfileScreen = ({ route, navigation }) => {
         if (isFocused) fetchCurrentUserDataAndGetCheckIns()
     }, [isFocused]);
 
-    useEffect(() => {
-        if (activeUser.image) {
-            updateUsersProfilePicture()
-        }
-    }, [activeUser.image])
-
 
     async function fetchCurrentUserDataAndGetCheckIns() {
         try {
             const userData = await API.graphql(graphqlOperation(getUser, { id: viewedUserId }))
-            const activeUser = userData.data.getUser;
+            const viewedUser = userData.data.getUser;
+            if (viewedUser.image) {
+                Storage.get(viewedUser.image)
+                    .then((result) => {
+                        setLoading(false)
+                        setViewedUser({ ...viewedUser, image: result })
+                    })
+                    .catch((err) => console.log(err));
+            }
+            setViewedUser({ username: viewedUser.username, id: viewedUser.id, description: viewedUser.description, })// image: viewedUser.image })
             const queryParams = {
                 type: "CheckIn",
-                sortDirection: "ASC",
-                filter: { userID: { eq: activeUser.id } }
+                sortDirection: "DESC",
+                filter: { userID: { eq: viewedUser.id } }
             };
-            setActiveUser({ username: activeUser.username, id: activeUser.id, description: activeUser.description, image: activeUser.image })
             const userCheckIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items
             setUserCheckIns(userCheckIns)
             setUserDayCount(userCheckIns.length);
         } catch (error) {
             console.log("Error getting user from db")
         }
-        setLoading(false)
     }
 
     return (
         <SafeScreen style={styles.screen}>
-            <ScrollView>
-                <View style={styles.profileContainer}>
-                    <View style={styles.profilePictureContainer}>
-                        <TouchableOpacity onPress={() => { }}>
-                            {
-                                activeUser.image ? <ProfileIcon size={200} image={{ uri: activeUser.image }} /> :
-                                    <MaterialCommunityIcons name="account-outline" size={200} color="grey" />
-                            }
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.nameContainer}>
-                        <Text style={styles.userName}>{activeUser.username}</Text>
-                        <View style={styles.descriptionContainer}>
-                            <Text style={styles.userDescription}>{activeUser.description ? activeUser.description : ""}</Text>
+            {!loading ?
+                <ScrollView>
+                    <View style={styles.profileContainer}>
+                        <View style={styles.profilePictureContainer}>
+                            <TouchableOpacity onPress={() => { }}>
+                                {
+                                    viewedUser.image ?
+                                        <ProfileIcon size={200} image={viewedUser.image} />
+                                        :
+                                        <MaterialCommunityIcons name="account-outline" size={200} color="grey" />
+                                }
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.nameContainer}>
+                            <Text style={styles.userName}>{viewedUser.username}</Text>
+                            <View style={styles.descriptionContainer}>
+                                <Text style={styles.userDescription}>{viewedUser.description ? viewedUser.description : ""}</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-                <View>
-                    <MyStats data={userDayCount} />
-                    {!loading ?
-                        <ProfileCheckIns checkIns={userCheckIns} userDayCount={userDayCount} />
-                        :
-                        <ActivityIndicator size="large" color="white" />
-                    }
-                </View>
+                    <View>
+                        <MyStats data={userDayCount} />
+                        {!loading ?
+                            <ProfileCheckIns checkIns={userCheckIns} userDayCount={userDayCount} />
+                            :
+                            <ActivityIndicator size="large" color="white" />
+                        }
+                    </View>
 
-            </ScrollView>
+                </ScrollView>
+                :
+                <ActivityIndicator style={styles.loadingSpinner} size="large" color="white" />
+
+            }
         </SafeScreen>
     );
 }
@@ -117,6 +125,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center'
     },
+    loadingSpinner: {
+        marginVertical: '50%'
+    }
 })
 
 export default UserProfileScreen;

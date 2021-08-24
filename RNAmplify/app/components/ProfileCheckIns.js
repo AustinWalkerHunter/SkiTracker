@@ -42,7 +42,7 @@ function ProfileCheckIns({ checkIns, userDayCount, updateDayCount }) {
                 userDayCount > 0 ?
                     <FlatList
                         data={checkIns}
-                        inverted={true}
+                        inverted={false}
                         keyExtractor={checkIns => checkIns.id.toString()}
                         refreshControl={<RefreshControl
                             tintColor={"white"}
