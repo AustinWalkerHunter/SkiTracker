@@ -1,5 +1,6 @@
 // import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
+import GLOBAL from './app/global';
 
 import Tabs from './app/navigation/Tabs'
 import { StatusBar } from 'expo-status-bar';
@@ -9,7 +10,7 @@ import colors from "./app/constants/colors"
 import { getUser } from './src/graphql/queries'
 import { createUser } from './src/graphql/mutations'
 
-import Amplify, { Auth, API, graphqlOperation } from 'aws-amplify';
+import Amplify, { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 import { withAuthenticator } from 'aws-amplify-react-native'
@@ -33,8 +34,18 @@ function App() {
     const userInfo = await Auth.currentAuthenticatedUser();
 
     if (userInfo) {
-      const userData = await API.graphql(graphqlOperation(getUser, { id: userInfo.attributes.sub }))
-      if (userData.data.getUser) {
+      const userData = (await API.graphql(graphqlOperation(getUser, { id: userInfo.attributes.sub }))).data.getUser;
+      if (userData) {
+        if (userData.image) {
+          Storage.get(userData.image)
+            .then((result) => {
+              GLOBAL.activeUser = { ...userData, image: result }
+            })
+            .catch((err) => console.log(err));
+        }
+        else {
+          GLOBAL.activeUser = userData;
+        }
         console.log("User found in db")
         return;
       }

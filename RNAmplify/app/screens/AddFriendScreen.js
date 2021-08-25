@@ -27,8 +27,8 @@ const AddFriend = ({ navigation }) => {
 
     async function fetchAllUsers() {
         try {
-            const userData = await API.graphql(graphqlOperation(listUsers))
-            setUsers(userData.data.listUsers.items)
+            const userData = (await API.graphql(graphqlOperation(listUsers))).data.listUsers.items
+            setUsers(userData)
         } catch (error) {
             console.log("Error getting user from db")
         }

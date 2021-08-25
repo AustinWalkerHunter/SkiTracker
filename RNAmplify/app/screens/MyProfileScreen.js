@@ -13,6 +13,8 @@ import { Buffer } from "buffer"; // get this via: npm install buffer
 import uuid from 'react-native-uuid';
 import * as FileSystem from "expo-file-system";
 import { updateUser } from '../../src/graphql/mutations'
+import GLOBAL from '../global';
+
 
 const MyProfileScreen = ({ navigation }) => {
     const isFocused = useIsFocused();
@@ -24,7 +26,9 @@ const MyProfileScreen = ({ navigation }) => {
     const [percentage, setPercentage] = useState(0);
 
     useEffect(() => {
-        if (isFocused) fetchCurrentUserDataAndGetCheckIns()
+        if (isFocused) {
+            fetchCurrentUserDataAndGetCheckIns()
+        }
     }, [isFocused]);
 
     useEffect(() => {
@@ -40,22 +44,13 @@ const MyProfileScreen = ({ navigation }) => {
         }
     }
     async function fetchCurrentUserDataAndGetCheckIns() {
-        const userInfo = await Auth.currentAuthenticatedUser();
         try {
-            const userData = await API.graphql(graphqlOperation(getUser, { id: userInfo.attributes.sub }))
-            const activeUser = userData.data.getUser;
-            if (activeUser.image) {
-                Storage.get(activeUser.image)
-                    .then((result) => {
-                        setActiveUser({ username: activeUser.username, id: activeUser.id, description: activeUser.description, image: result })
-                    })
-                    .catch((err) => console.log(err));
-            }
-            setActiveUser({ username: activeUser.username, id: activeUser.id, description: activeUser.description, image: activeUser.image })
+            const userData = GLOBAL.activeUser;
+            setActiveUser({ username: userData.username, id: userData.id, description: userData.description, image: userData.image })
             const queryParams = {
                 type: "CheckIn",
                 sortDirection: "DESC",
-                filter: { userID: { eq: activeUser.id } }
+                filter: { userID: { eq: userData.id } }
             };
             const userCheckIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items
             setUserCheckIns(userCheckIns)
