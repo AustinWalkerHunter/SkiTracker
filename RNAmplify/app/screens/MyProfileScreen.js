@@ -16,6 +16,7 @@ import { updateUser } from '../../src/graphql/mutations'
 import GLOBAL from '../global';
 
 
+
 const MyProfileScreen = ({ navigation }) => {
     const isFocused = useIsFocused();
     const [activeUser, setActiveUser] = useState({ username: '', description: '', image: null });
@@ -74,6 +75,7 @@ const MyProfileScreen = ({ navigation }) => {
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: 'Images',
+            allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         });

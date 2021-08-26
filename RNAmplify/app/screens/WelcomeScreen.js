@@ -41,7 +41,7 @@ const WelcomeScreen = ({ navigation }) => {
 
 
     return (
-        <ImageBackground blurRadius={10} style={styles.background} source={require("../assets/trees.png")}>
+        <ImageBackground blurRadius={10} style={styles.background} source={require("../../assets/trees.png")}>
             {activeUser ?
                 <Animated.View style={[{
                     justifyContent: 'flex-end',
