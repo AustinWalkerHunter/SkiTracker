@@ -23,20 +23,14 @@ const MyProfileScreen = ({ navigation }) => {
     const [userDayCount, setUserDayCount] = useState(0);
     const [userCheckIns, setUserCheckIns] = useState();
     const [pageLoading, setPageLoading] = useState(true);
-    const [image, setImage] = useState(null);
     const [percentage, setPercentage] = useState(0);
 
     useEffect(() => {
         if (isFocused) {
-            fetchCurrentUserDataAndGetCheckIns()
+            setActiveUser({ username: GLOBAL.activeUser.username, id: GLOBAL.activeUser.id, description: GLOBAL.activeUser.description, image: GLOBAL.activeUser.image })
+            fetchActiveUserCheckIns()
         }
     }, [isFocused]);
-
-    useEffect(() => {
-        if (activeUser.image) {
-            // updateUsersProfilePicture()
-        }
-    }, [activeUser.image])
 
 
     const updateDayCount = () => {
@@ -44,14 +38,12 @@ const MyProfileScreen = ({ navigation }) => {
             setUserDayCount(userDayCount - 1);
         }
     }
-    async function fetchCurrentUserDataAndGetCheckIns() {
+    async function fetchActiveUserCheckIns() {
         try {
-            const userData = GLOBAL.activeUser;
-            setActiveUser({ username: userData.username, id: userData.id, description: userData.description, image: userData.image })
             const queryParams = {
                 type: "CheckIn",
                 sortDirection: "DESC",
-                filter: { userID: { eq: userData.id } }
+                filter: { userID: { eq: GLOBAL.activeUser.id } }
             };
             const userCheckIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items
             setUserCheckIns(userCheckIns)
@@ -69,8 +61,6 @@ const MyProfileScreen = ({ navigation }) => {
             console.log("Error updating users profile picture in db")
         }
     }
-
-
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -90,12 +80,12 @@ const MyProfileScreen = ({ navigation }) => {
             } else {
                 // setPercentage(0);
                 setActiveUser({ ...activeUser, image: pickerResult.uri })
+                GLOBAL.activeUser = { ...activeUser, image: pickerResult.uri };
                 const img = await fetchImageFromUri(pickerResult.uri);
                 const fileName = uuid.v4() + "_" + activeUser.username + "_profilePic.jpg";
                 const uploadUrl = await uploadImage(fileName, img);
                 const updatedUser = { ...activeUser, image: uploadUrl };
                 updateUsersProfilePicture(updatedUser);
-                //downloadImage(uploadUrl);
             }
         } catch (e) {
             console.log(e);
@@ -130,21 +120,7 @@ const MyProfileScreen = ({ navigation }) => {
     //     setPercentage(number);
     // };
 
-    const downloadImage = (uri) => {
-        Storage.get(uri)
-            .then((result) => setImage(result))
-            .catch((err) => console.log(err));
-    };
-
     async function fetchImageFromUri(uri) {
-        // console.log(uri)
-
-        // const response = await fetch(uri);
-        // console.log(response)
-
-        // const blob = await response.blob();
-        // console.log(blob)
-        // return blob;
         const options = { encoding: FileSystem.EncodingType.Base64 };
         const base64Response = await FileSystem.readAsStringAsync(
             uri,
@@ -154,9 +130,6 @@ const MyProfileScreen = ({ navigation }) => {
         const blob = Buffer.from(base64Response, "base64");
         return blob;
     };
-
-
-
 
 
     return (
