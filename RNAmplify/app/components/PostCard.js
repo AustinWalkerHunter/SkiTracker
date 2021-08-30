@@ -9,7 +9,7 @@ import { deleteCheckIn } from '../../src/graphql/mutations'
 import GLOBAL from '../global';
 
 
-function PostCard({ item, title, postImage, username, location, likes, sport, createdAt, activeUserId, getUserProfile }) {
+function PostCard({ item, title, postImage, username, location, likes, sport, createdAt, activeUserId, getUserProfile, displayFullImage }) {
     // const [numberOfLikes, setNumberOfLikes] = useState(likes);
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const profileImage = GLOBAL.userIdAndImages[item.userID]
@@ -63,7 +63,7 @@ function PostCard({ item, title, postImage, username, location, likes, sport, cr
                             <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
                                 <Text style={styles.authorText}>{username}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => console.log("Location Clicked")}>
                                 <Text style={styles.location}>{location}</Text>
                             </TouchableOpacity>
                         </View>
@@ -72,19 +72,11 @@ function PostCard({ item, title, postImage, username, location, likes, sport, cr
                                 <Feather name="x" size={24} color="white" />
                             </TouchableOpacity>
                         }
-                        {/* <View style={styles.sportContainer}>
-                    {sport == "skateboard"
-                        ?
-                        <MaterialCommunityIcons name={sport} style={styles.sportIcon} size={30} color={"white"} />
-                        :
-                        <FontAwesome5 name={sport} style={styles.sportIcon} size={25} color={"white"} />
-                    }
-                </View> */}
                     </View>
                     {postCardImage ?
-                        <View style={styles.imageContainer}>
+                        <TouchableOpacity style={styles.imageContainer} onPress={() => displayFullImage(postCardImage)}>
                             <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
-                        </View> : null}
+                        </TouchableOpacity> : null}
                     <View style={styles.footer}>
                         <View style={styles.titleContainer}>
                             <Text style={styles.titleText}>{title}</Text>

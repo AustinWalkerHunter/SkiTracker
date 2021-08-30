@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
-import { View, ScrollView, ActivityIndicator, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, ActivityIndicator, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import MyStats from '../components/MyStats'
 import ProfileCheckIns from '../components/ProfileCheckIns'
 import ProfileIcon from '../components/ProfileIcon'
@@ -16,6 +16,7 @@ const UserProfileScreen = ({ route, navigation }) => {
     const [viewedUser, setViewedUser] = useState({ username: '', description: '', image: null });
     const [userDayCount, setUserDayCount] = useState(0);
     const [userCheckIns, setUserCheckIns] = useState();
+    const [fullScreenPhoto, setFullScreenPhoto] = useState()
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -43,13 +44,17 @@ const UserProfileScreen = ({ route, navigation }) => {
         setLoading(false)
     }
 
+    const displayFullImage = (checkInPhotoUri) => {
+        setFullScreenPhoto(checkInPhotoUri);
+    }
+
     return (
         <SafeScreen style={styles.screen}>
             {!loading ?
                 <ScrollView>
                     <View style={styles.profileContainer}>
                         <View style={styles.profilePictureContainer}>
-                            <TouchableOpacity onPress={() => { }}>
+                            <TouchableOpacity onPress={() => displayFullImage(viewedUser.image)}>
                                 {
                                     viewedUser.image ?
                                         <ProfileIcon size={200} image={viewedUser.image} />
@@ -78,6 +83,18 @@ const UserProfileScreen = ({ route, navigation }) => {
                 :
                 <ActivityIndicator style={styles.loadingSpinner} size="large" color="white" />
 
+            }
+            {
+                fullScreenPhoto ?
+                    <View style={styles.imageViewerContainer} >
+                        <TouchableOpacity style={styles.closeImageViewer} onPress={() => setFullScreenPhoto('')} >
+                            <Text style={styles.closeButtonText}>Close</Text>
+                        </TouchableOpacity>
+                        <View style={styles.imageDisplay}>
+                            <Image style={styles.image} resizeMode={'contain'} source={{ uri: fullScreenPhoto }} />
+                        </View>
+                    </View>
+                    : null
             }
         </SafeScreen>
     );
@@ -121,7 +138,45 @@ const styles = StyleSheet.create({
     },
     loadingSpinner: {
         marginVertical: '50%'
-    }
+    },
+    imageViewerContainer: {
+        position: 'absolute',
+        backgroundColor: "black",
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999
+    },
+    imageDisplay: {
+        position: 'absolute',
+        bottom: "10%",
+        width: "100%",
+        height: "100%",
+    },
+    image: {
+        alignSelf: 'center',
+        height: '100%',
+        width: '100%'
+    },
+    closeImageViewer: {
+        position: 'absolute',
+        alignSelf: "center",
+        bottom: '20%',
+        //bottom: "36%",
+        borderRadius: 25,
+        borderWidth: 1,
+        borderColor: "white",
+        padding: 5,
+        backgroundColor: 'rgba(224, 224, 224, 0.15)',
+        zIndex: 999
+    },
+    closeButtonText: {
+        color: "white",
+        fontSize: 25,
+        paddingLeft: 5,
+        marginRight: 5
+    },
 })
 
 export default UserProfileScreen;

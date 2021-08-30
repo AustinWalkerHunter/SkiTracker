@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
-import { RefreshControl, View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { RefreshControl, View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-native';
 import PostCard from "../components/PostCard"
 import SafeScreen from '../components/SafeScreen'
 import CheckIn from '../components/CheckIn'
-import { Ionicons, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import { getUser, checkInsByDate } from '../../src/graphql/queries'
 import GLOBAL from '../global';
@@ -19,6 +19,8 @@ const HomeScreen = ({ route, navigation }) => {
     const [checkIns, setCheckIns] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [checkInModalVisible, setCheckInModalVisible] = useState(false)
+    const [fullScreenCheckInPhoto, setFullScreenCheckInPhoto] = useState()
+
 
     const closeModalAndSave = () => {
         setCheckInModalVisible(false);
@@ -57,6 +59,10 @@ const HomeScreen = ({ route, navigation }) => {
                 viewedUserId: userId
             })
         }
+    }
+
+    const displayFullImage = (checkInPhotoUri) => {
+        setFullScreenCheckInPhoto(checkInPhotoUri);
     }
 
     const checkInButtonStyle = () => {
@@ -106,6 +112,7 @@ const HomeScreen = ({ route, navigation }) => {
                                         createdAt={item.createdAt}
                                         activeUserId={activeUser.id}
                                         getUserProfile={getUserProfile}
+                                        displayFullImage={displayFullImage}
                                     />
                                 }
                             >
@@ -117,6 +124,18 @@ const HomeScreen = ({ route, navigation }) => {
                             </View>
                         }
                     </View>
+                    {
+                        fullScreenCheckInPhoto ?
+                            <View style={styles.imageViewerContainer} >
+                                <TouchableOpacity style={styles.closeImageViewer} onPress={() => setFullScreenCheckInPhoto('')} >
+                                    <Text style={styles.closeButtonText}>Close</Text>
+                                </TouchableOpacity>
+                                <View style={styles.imageDisplay}>
+                                    <Image style={styles.image} resizeMode={'contain'} source={{ uri: fullScreenCheckInPhoto }} />
+                                </View>
+                            </View>
+                            : null
+                    }
                 </View>
                 :
                 <ActivityIndicator size="large" color="white" />
@@ -141,6 +160,7 @@ const styles = StyleSheet.create({
         zIndex: 100,
         alignItems: "center",
         flexDirection: 'row',
+        zIndex: 100
     },
     initialCheckInButton: {
         position: 'absolute',
@@ -166,6 +186,44 @@ const styles = StyleSheet.create({
     },
     backButton: {
         left: 15
+    },
+    imageViewerContainer: {
+        position: 'absolute',
+        backgroundColor: "black",
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999
+    },
+    imageDisplay: {
+        position: 'absolute',
+        bottom: "10%",
+        width: "100%",
+        height: "100%",
+    },
+    image: {
+        alignSelf: 'center',
+        height: '100%',
+        width: '100%'
+    },
+    closeImageViewer: {
+        position: 'absolute',
+        alignSelf: "center",
+        bottom: '20%',
+        //bottom: "36%",
+        borderRadius: 25,
+        borderWidth: 1,
+        borderColor: "white",
+        padding: 5,
+        backgroundColor: 'rgba(224, 224, 224, 0.15)',
+        zIndex: 999
+    },
+    closeButtonText: {
+        color: "white",
+        fontSize: 25,
+        paddingLeft: 5,
+        marginRight: 5
     },
     zeroStateContainer: {
         justifyContent: 'center',
