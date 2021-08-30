@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Keyboard, Image } from 'react-native';
-import { API, graphqlOperation } from 'aws-amplify';
+import { Auth, Storage, API, graphqlOperation } from 'aws-amplify';
 import SafeScreen from '../components/SafeScreen'
 import UserInput from '../components/UserInput'
 import InputPicker from '../components/InputPicker'
@@ -8,8 +8,12 @@ import RoundedButton from '../components/RoundedButton'
 import { FontAwesome5, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import { createCheckIn } from '../../src/graphql/mutations'
-// import * as Permissions from 'expo-permissions';
-// import * as ImagePicker from 'expo-image-picker'
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker'
+import { Buffer } from "buffer"; // get this via: npm install buffer
+import uuid from 'react-native-uuid';
+import * as FileSystem from "expo-file-system";
+import GLOBAL from '../global';
 
 
 
@@ -39,8 +43,20 @@ function CheckIn({ activeUser, closeModalAndSave }) {
                 type: "CheckIn"
             }
             try {
-                await API.graphql(graphqlOperation(createCheckIn, { input: newCheckIn }));
-                console.log("Check-in created")
+                if (newCheckIn.image) {
+                    //store in the global state check in with this image
+                    // that way I can diplay it right away for the user without fetching storage until the next time they log in
+                    //after storing in global, handleImagePicked
+                    GLOBAL.allCheckIns = { newCheckIn, ...GLOBAL.allCheckIns }
+                    let imagePath = await handleImagePicked(newCheckIn.image);
+                    const updatedCheckIn = { ...newCheckIn, image: imagePath };
+                    await API.graphql(graphqlOperation(createCheckIn, { input: updatedCheckIn }));
+                    console.log("Check-in created with photo")
+                }
+                else {
+                    await API.graphql(graphqlOperation(createCheckIn, { input: newCheckIn }));
+                    console.log("Check-in created")
+                }
             } catch (error) {
                 console.log("Error getting user from db")
             }
@@ -48,19 +64,65 @@ function CheckIn({ activeUser, closeModalAndSave }) {
         }
     }
 
-    // const addPhoto = async () => {
-    //     try {
-    //         const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
-    //         if (granted) {
-    //             const result = await ImagePicker.launchImageLibraryAsync();
-    //             if (!result.cancelled) {
-    //                 setCheckIn({ ...checkIn, image: result.uri })
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.log("Error changing profile picture")
-    //     }
-    // }
+    const pickImage = async () => {
+        const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
+        if (granted) {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: 'Images',
+                allowsEditing: true,
+                maxWidth: 500,
+                maxHeight: 500,
+                quality: 0.1
+            });
+            if (result.cancelled) {
+                alert('Upload cancelled');
+                return;
+            } else {
+                // setPercentage(0);
+                setCheckIn({ ...checkIn, image: result.uri })
+            }
+        }
+    };
+
+    const handleImagePicked = async (imageUri) => {
+        try {
+            const img = await fetchImageFromUri(imageUri);
+            const fileName = uuid.v4() + "_" + activeUser.username + "_checkInPic.jpg";
+            const uploadUrl = await uploadImage(fileName, img);
+            return uploadUrl;
+        } catch (e) {
+            console.log(e);
+            alert('Upload failed');
+        }
+    };
+
+    async function fetchImageFromUri(uri) {
+        const options = { encoding: FileSystem.EncodingType.Base64 };
+        const base64Response = await FileSystem.readAsStringAsync(
+            uri,
+            options,
+        );
+
+        const blob = Buffer.from(base64Response, "base64");
+        return blob;
+    };
+
+    const uploadImage = (filename, img) => {
+        Auth.currentCredentials();
+        return Storage.put(filename, img, {
+            level: 'public',
+            contentType: 'image/jpeg',
+        })
+            .then((response) => {
+                return response.key;
+            })
+            .catch((error) => {
+                console.log(error);
+                return error.response;
+            });
+    };
+
+
 
     const sports = [
         { label: "skiing", value: 1 },
@@ -112,17 +174,17 @@ function CheckIn({ activeUser, closeModalAndSave }) {
                     textStyle={styles.inputTitle}
                 />
             </View>
-            {/* <View style={styles.addPhotoContainer}>
+            <View style={styles.addPhotoContainer}>
                 {!checkIn.image ?
-                    <TouchableOpacity style={styles.addPhotoIcon} onPress={() => addPhoto()}>
+                    <TouchableOpacity style={styles.addPhotoIcon} onPress={() => pickImage()}>
                         <MaterialIcons name="add-photo-alternate" size={60} color="white" />
                     </TouchableOpacity>
                     :
-                    <TouchableOpacity onPress={() => addPhoto()}>
+                    <TouchableOpacity onPress={() => pickImage()}>
                         <Image style={styles.image} source={{ uri: checkIn.image }} />
                     </TouchableOpacity>
                 }
-            </View> */}
+            </View>
             <View style={styles.postContainer}>
                 <RoundedButton title="CHECK-IN" color={colors.secondary} onPress={submit}></RoundedButton>
             </View>

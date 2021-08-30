@@ -98,11 +98,10 @@ const HomeScreen = ({ route, navigation }) => {
                                     <PostCard
                                         item={item}
                                         username={item.userName}
-                                        //image={item.user.image}
                                         title={item.title}
                                         location={item.location}
                                         likes={item.likes}
-                                        image={item.image}
+                                        postImage={item.image}
                                         sport={item.sport}
                                         createdAt={item.createdAt}
                                         activeUserId={activeUser.id}

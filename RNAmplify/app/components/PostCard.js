@@ -9,15 +9,32 @@ import { deleteCheckIn } from '../../src/graphql/mutations'
 import GLOBAL from '../global';
 
 
-function PostCard({ item, title, postImage, username, location, image, likes, sport, createdAt, activeUserId, getUserProfile }) {
+function PostCard({ item, title, postImage, username, location, likes, sport, createdAt, activeUserId, getUserProfile }) {
     // const [numberOfLikes, setNumberOfLikes] = useState(likes);
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const profileImage = GLOBAL.userIdAndImages[item.userID]
+    const [postCardImage, setPostCardImage] = useState(false);
 
     const getDate = (createdAt) => {
         Moment.locale('en');
         var dt = createdAt;
         return (Moment(dt).format('MMM D, YYYY'))
+    }
+
+    fetchPostCardImage();
+    async function fetchPostCardImage() {
+        if (postImage) {
+            try {
+                await Storage.get(postImage)
+                    .then((result) => {
+                        setPostCardImage(result);
+                    })
+                    .catch((err) => console.log(err));
+            }
+            catch (error) {
+                console.log("Error getting all users")
+            }
+        }
     }
 
     async function deleteCheckin(item) {
@@ -64,9 +81,9 @@ function PostCard({ item, title, postImage, username, location, image, likes, sp
                     }
                 </View> */}
                     </View>
-                    {postImage ?
+                    {postCardImage ?
                         <View style={styles.imageContainer}>
-                            <Image style={styles.image} resizeMode={'cover'} source={{ uri: postImage }} />
+                            <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
                         </View> : null}
                     <View style={styles.footer}>
                         <View style={styles.titleContainer}>

@@ -2,22 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Auth } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
 import { View, Text, ImageBackground, StyleSheet, Animated } from 'react-native';
+import color from '../constants/colors';
 
 const WelcomeScreen = () => {
     const [activeUser, setActiveUser] = useState('');
     const opacity = useState(new Animated.Value(0))[0]
-    // const isFocused = useIsFocused();
-
-    // useEffect(() => {
-    //     if (isFocused) {
-    //         setTimeout(function () {
-    //             //console.log(activeUser)
-    //             navigation.navigate('HomeScreen', {
-    //                 currentUser: activeUser
-    //             })
-    //         }, 6000);
-    //     }
-    // }, [isFocused]);
 
     useEffect(() => {
         let isMounted = true; // note this flag denote mount status
@@ -33,7 +22,7 @@ const WelcomeScreen = () => {
     function fadeInWelcomeContainer() {
         Animated.timing(opacity, {
             toValue: 1,
-            duration: 6000,
+            duration: 5000,
             useNativeDriver: true
         }).start()
     }
@@ -41,7 +30,7 @@ const WelcomeScreen = () => {
 
 
     return (
-        <ImageBackground blurRadius={10} style={styles.background} source={require("../../assets/trees.png")}>
+        <View style={styles.background}>
             {activeUser ?
                 <Animated.View style={[{
                     justifyContent: 'flex-end',
@@ -56,7 +45,7 @@ const WelcomeScreen = () => {
                 </Animated.View>
                 : null
             }
-        </ImageBackground>
+        </View>
     );
 }
 
@@ -65,6 +54,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
+        backgroundColor: color.primary
     },
     welcomeContainer: {
         position: 'absolute',

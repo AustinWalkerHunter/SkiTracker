@@ -9,6 +9,7 @@ import SafeScreen from '../components/SafeScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { getUser, checkInsByDate } from '../../src/graphql/queries'
 import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 import { Buffer } from "buffer"; // get this via: npm install buffer
 import uuid from 'react-native-uuid';
 import * as FileSystem from "expo-file-system";
@@ -27,7 +28,7 @@ const MyProfileScreen = ({ navigation }) => {
 
     useEffect(() => {
         if (isFocused) {
-            setActiveUser(GLOBAL.activeUser)
+            setActiveUser({ username: GLOBAL.activeUser.username, id: GLOBAL.activeUser.id, description: GLOBAL.activeUser.description, image: GLOBAL.activeUser.image })
             fetchActiveUserCheckIns()
         }
     }, [isFocused]);
@@ -63,13 +64,17 @@ const MyProfileScreen = ({ navigation }) => {
     }
 
     const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: 'Images',
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-        handleImagePicked(result);
+        const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
+        if (granted) {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: 'Images',
+                allowsEditing: true,
+                maxWidth: 500,
+                maxHeight: 500,
+                quality: 0.1
+            });
+            handleImagePicked(result);
+        }
     };
 
     const handleImagePicked = async (pickerResult) => {
@@ -81,6 +86,7 @@ const MyProfileScreen = ({ navigation }) => {
                 // setPercentage(0);
                 setActiveUser({ ...activeUser, image: pickerResult.uri })
                 GLOBAL.activeUser = { ...activeUser, image: pickerResult.uri };
+                GLOBAL.userIdAndImages[activeUser.id] = pickerResult.uri;
                 const img = await fetchImageFromUri(pickerResult.uri);
                 const fileName = uuid.v4() + "_" + activeUser.username + "_profilePic.jpg";
                 const uploadUrl = await uploadImage(fileName, img);
