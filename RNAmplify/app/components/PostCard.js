@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Image, Text, StyleSheet } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import ProfileIcon from '../components/ProfileIcon'
 import Moment from 'moment';
-import { API, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { deleteCheckIn } from '../../src/graphql/mutations'
+import GLOBAL from '../global';
 
 
 function PostCard({ item, title, postImage, username, location, image, likes, sport, createdAt, activeUserId, getUserProfile }) {
     // const [numberOfLikes, setNumberOfLikes] = useState(likes);
     const [postCardDeleted, setPostCardDeleted] = useState(false);
+    const profileImage = GLOBAL.userIdAndImages[item.userID]
 
     const getDate = (createdAt) => {
         Moment.locale('en');
@@ -37,8 +39,8 @@ function PostCard({ item, title, postImage, username, location, image, likes, sp
                     <View style={styles.headerContainer}>
                         <TouchableOpacity style={styles.profilePictureContainer} onPress={() => getUserProfile(item.userID)}>
                             {
-                                // image ? <ProfileIcon size={50} image={{ uri: image }} /> : 
-                                <MaterialCommunityIcons name="account-outline" size={40} color="grey" />}
+                                profileImage ? <ProfileIcon size={50} image={profileImage} /> :
+                                    <MaterialCommunityIcons name="account-outline" size={40} color="grey" />}
                         </TouchableOpacity>
                         <View style={styles.headerTextContainer}>
                             <TouchableOpacity onPress={() => getUserProfile(item.userID)}>

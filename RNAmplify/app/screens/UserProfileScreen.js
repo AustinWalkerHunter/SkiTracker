@@ -8,7 +8,7 @@ import ProfileIcon from '../components/ProfileIcon'
 import SafeScreen from '../components/SafeScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { getUser, checkInsByDate } from '../../src/graphql/queries'
-
+import GLOBAL from '../global';
 
 const UserProfileScreen = ({ route, navigation }) => {
     const { viewedUserId } = route.params;
@@ -27,15 +27,8 @@ const UserProfileScreen = ({ route, navigation }) => {
         try {
             const userData = await API.graphql(graphqlOperation(getUser, { id: viewedUserId }))
             const viewedUser = userData.data.getUser;
-            if (viewedUser.image) {
-                Storage.get(viewedUser.image)
-                    .then((result) => {
-                        setLoading(false)
-                        setViewedUser({ ...viewedUser, image: result })
-                    })
-                    .catch((err) => console.log(err));
-            }
-            setViewedUser({ username: viewedUser.username, id: viewedUser.id, description: viewedUser.description, })// image: viewedUser.image })
+            const userImage = GLOBAL.userIdAndImages[viewedUserId];
+            setViewedUser({ username: viewedUser.username, id: viewedUser.id, description: viewedUser.description, image: userImage })
             const queryParams = {
                 type: "CheckIn",
                 sortDirection: "DESC",
@@ -47,6 +40,7 @@ const UserProfileScreen = ({ route, navigation }) => {
         } catch (error) {
             console.log("Error getting user from db")
         }
+        setLoading(false)
     }
 
     return (

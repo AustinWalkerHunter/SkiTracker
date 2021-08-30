@@ -1,5 +1,5 @@
 // import 'react-native-gesture-handler';
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import GLOBAL from './app/global';
 
 import Tabs from './app/navigation/Tabs'
@@ -7,13 +7,15 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import colors from "./app/constants/colors"
-import { getUser } from './src/graphql/queries'
+import { getUser, listUsers, checkInsByDate } from './src/graphql/queries'
 import { createUser } from './src/graphql/mutations'
 
 import Amplify, { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 import { withAuthenticator } from 'aws-amplify-react-native'
+import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
 
 
 import WelcomeScreen from './app/screens/WelcomeScreen';
@@ -25,12 +27,27 @@ const Main = createStackNavigator();
 
 
 function App() {
+  const [appLoading, setAppLoading] = useState(true)
 
   useEffect(() => {
-    fetchUser();
+    fetchActiveUser();
+    fetchAllProfilePictures();
+    fetchCheckIns();
+    setTimeout(function () {
+      setAppLoading(false)
+    }, 6000);
   }, [])
 
-  const fetchUser = async () => {
+  const fetchCheckIns = async () => {
+    const queryParams = {
+      type: "CheckIn",
+      sortDirection: "DESC"
+    };
+    const checkIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items;
+    GLOBAL.allCheckIns = checkIns;
+
+  }
+  const fetchActiveUser = async () => {
     const userInfo = await Auth.currentAuthenticatedUser();
 
     if (userInfo) {
@@ -56,60 +73,87 @@ function App() {
         description: "Hi, I'm " + userInfo.username
       }
       await API.graphql(graphqlOperation(createUser, { input: newUser }));
+      GLOBAL.activeUser = newUser;
     }
   }
 
+  //What I want to do is fetch all posts and stuff here then only display after displaying a splash screen/ apploading is done
+  const fetchAllProfilePictures = async () => {
+    var userIdAndImages = {}
+    try {
+      const users = (await API.graphql(graphqlOperation(listUsers))).data.listUsers.items
+
+      await Promise.all(users.map(async (user) => {
+        var userId = user.id;
+        if (user.image) {
+          await Storage.get(user.image)
+            .then((result) => {
+              userIdAndImages[userId] = result;
+            })
+            .catch((err) => console.log(err));
+        }
+        else {
+          userIdAndImages[userId] = user.image;
+        }
+      }));
+    }
+    catch (error) {
+      console.log("Error getting all users")
+    }
+    GLOBAL.userIdAndImages = userIdAndImages;
+  }
+
+
   return (
-    < NavigationContainer >
-      <Main.Navigator>
-        <Main.Screen
-          name="WelcomeScreen"
-          component={WelcomeScreen}
-          options={{ headerShown: false, title: 'Welcome' }}
-        />
-        <Main.Screen
-          name="HomeScreen"
-          component={Tabs}
-          options={{ headerShown: false, title: 'Home' }}
-        />
-        <Main.Screen
-          name="SettingsScreen"
-          component={SettingsScreen}
-          options={{
-            headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-            headerBackTitle: 'Back',
-            headerBackTitleStyle: { color: colors.navigationText },
-            headerTitleStyle: { color: colors.navigationText },
-            title: 'Settings'
-          }}
-        />
-        <Main.Screen
-          name="AddFriendScreen"
-          component={AddFriendScreen}
-          options={{
-            headerShown: true,
-            headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-            headerBackTitle: 'Back',
-            headerBackTitleStyle: { color: colors.navigationText },
-            headerTitleStyle: { color: colors.navigationText },
-            title: 'Add Friends',
-          }}
-        />
-        <Main.Screen
-          name="UserProfileScreen"
-          component={UserProfileScreen}
-          options={{
-            headerShown: true,
-            headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-            headerBackTitle: 'Back',
-            headerBackTitleStyle: { color: colors.navigationText },
-            headerTitleStyle: { color: colors.navigationText },
-            title: 'User Profile',
-          }}
-        />
-      </Main.Navigator>
-      <StatusBar style="light" />
-    </NavigationContainer >
+    appLoading ?
+      <WelcomeScreen />
+      :
+      < NavigationContainer >
+        <Main.Navigator>
+
+          <Main.Screen
+            name="HomeScreen"
+            component={Tabs}
+            options={{ headerShown: false, title: 'Home' }}
+          />
+          <Main.Screen
+            name="SettingsScreen"
+            component={SettingsScreen}
+            options={{
+              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+              headerBackTitle: 'Back',
+              headerBackTitleStyle: { color: colors.navigationText },
+              headerTitleStyle: { color: colors.navigationText },
+              title: 'Settings'
+            }}
+          />
+          <Main.Screen
+            name="AddFriendScreen"
+            component={AddFriendScreen}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+              headerBackTitle: 'Back',
+              headerBackTitleStyle: { color: colors.navigationText },
+              headerTitleStyle: { color: colors.navigationText },
+              title: 'Add Friends',
+            }}
+          />
+          <Main.Screen
+            name="UserProfileScreen"
+            component={UserProfileScreen}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+              headerBackTitle: 'Back',
+              headerBackTitleStyle: { color: colors.navigationText },
+              headerTitleStyle: { color: colors.navigationText },
+              title: 'User Profile',
+            }}
+          />
+        </Main.Navigator>
+        <StatusBar style="light" />
+      </NavigationContainer >
   )
 }
 

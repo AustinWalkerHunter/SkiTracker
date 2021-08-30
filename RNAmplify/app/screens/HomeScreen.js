@@ -8,6 +8,7 @@ import CheckIn from '../components/CheckIn'
 import { Ionicons, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import { getUser, checkInsByDate } from '../../src/graphql/queries'
+import GLOBAL from '../global';
 
 
 const HomeScreen = ({ route, navigation }) => {
@@ -21,25 +22,26 @@ const HomeScreen = ({ route, navigation }) => {
 
     const closeModalAndSave = () => {
         setCheckInModalVisible(false);
-        fetchCurrentUserDataAndGetCheckIns()
+        fetchCheckIns();
     }
 
     useEffect(() => {
-        if (isFocused) fetchCurrentUserDataAndGetCheckIns()
+        if (isFocused) {
+            setCheckIns(GLOBAL.allCheckIns);
+            setActiveUser(GLOBAL.activeUser);
+            setLoading(false)
+        }
     }, [isFocused]);
 
-    async function fetchCurrentUserDataAndGetCheckIns() {
-        const userInfo = await Auth.currentAuthenticatedUser();
+    async function fetchCheckIns() {
         try {
-            const userData = await API.graphql(graphqlOperation(getUser, { id: userInfo.attributes.sub }))
-            const activeUser = userData.data.getUser;
-            setActiveUser({ username: activeUser.username, id: activeUser.id, description: activeUser.description, image: activeUser.image })
             const queryParams = {
                 type: "CheckIn",
                 sortDirection: "DESC"
             };
             const checkIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items;
             setCheckIns(checkIns)
+            GLOBAL.allCheckIns = checkIns;
         } catch (error) {
             console.log("Error getting user on Home Screen")
         }
@@ -89,7 +91,7 @@ const HomeScreen = ({ route, navigation }) => {
                                 refreshControl={<RefreshControl
                                     tintColor={"white"}
                                     refreshing={refreshing}
-                                    onRefresh={() => fetchCurrentUserDataAndGetCheckIns()}
+                                    onRefresh={() => fetchCheckIns()}
                                 />
                                 }
                                 renderItem={({ item }) =>
@@ -143,7 +145,7 @@ const styles = StyleSheet.create({
     },
     initialCheckInButton: {
         position: 'absolute',
-        bottom: '50%',
+        top: 250,
         alignSelf: 'center',
         backgroundColor: colors.secondary,
         width: 165,

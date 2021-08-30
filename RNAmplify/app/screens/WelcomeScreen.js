@@ -3,21 +3,21 @@ import { Auth } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
 import { View, Text, ImageBackground, StyleSheet, Animated } from 'react-native';
 
-const WelcomeScreen = ({ navigation }) => {
+const WelcomeScreen = () => {
     const [activeUser, setActiveUser] = useState('');
     const opacity = useState(new Animated.Value(0))[0]
-    const isFocused = useIsFocused();
+    // const isFocused = useIsFocused();
 
-    useEffect(() => {
-        if (isFocused) {
-            setTimeout(function () {
-                //console.log(activeUser)
-                navigation.navigate('HomeScreen', {
-                    currentUser: activeUser
-                })
-            }, 6000);
-        }
-    }, [isFocused]);
+    // useEffect(() => {
+    //     if (isFocused) {
+    //         setTimeout(function () {
+    //             //console.log(activeUser)
+    //             navigation.navigate('HomeScreen', {
+    //                 currentUser: activeUser
+    //             })
+    //         }, 6000);
+    //     }
+    // }, [isFocused]);
 
     useEffect(() => {
         let isMounted = true; // note this flag denote mount status

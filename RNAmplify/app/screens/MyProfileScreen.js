@@ -27,7 +27,7 @@ const MyProfileScreen = ({ navigation }) => {
 
     useEffect(() => {
         if (isFocused) {
-            setActiveUser({ username: GLOBAL.activeUser.username, id: GLOBAL.activeUser.id, description: GLOBAL.activeUser.description, image: GLOBAL.activeUser.image })
+            setActiveUser(GLOBAL.activeUser)
             fetchActiveUserCheckIns()
         }
     }, [isFocused]);

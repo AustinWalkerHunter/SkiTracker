@@ -7,27 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import GLOBAL from '../global';
 
 function FriendItem({ user, getUserProfile }) {
-    const [image, setImage] = useState(null);
-
-    useEffect(() => {
-        fetchUserImage();
-    }, [])
-
-    const fetchUserImage = () => {
-        if (user.image) {
-            if (user.id == GLOBAL.activeUser.id) {
-                setImage(GLOBAL.activeUser.image)
-            }
-            else {
-                Storage.get(user.image)
-                    .then((result) => {
-                        setImage(result)
-                    })
-                    .catch((err) => console.log(err));
-            }
-        }
-    }
-
+    const image = GLOBAL.userIdAndImages[user.id]
 
     return (
         <TouchableOpacity style={styles.container} onPress={() => getUserProfile(user.id)}>
