@@ -20,6 +20,7 @@ const HomeScreen = ({ route, navigation }) => {
     const [refreshing, setRefreshing] = useState(false);
     const [checkInModalVisible, setCheckInModalVisible] = useState(false)
     const [fullScreenCheckInPhoto, setFullScreenCheckInPhoto] = useState()
+    const [imageLoading, setImageLoading] = useState(false)
 
 
     const closeModalAndSave = () => {
@@ -63,6 +64,10 @@ const HomeScreen = ({ route, navigation }) => {
 
     const displayFullImage = (checkInPhotoUri) => {
         setFullScreenCheckInPhoto(checkInPhotoUri);
+        setImageLoading(true)
+        setTimeout(function () {
+            setImageLoading(false)
+        }, 250);
     }
 
     const checkInButtonStyle = () => {
@@ -130,8 +135,12 @@ const HomeScreen = ({ route, navigation }) => {
                                 <TouchableOpacity style={styles.closeImageViewer} onPress={() => setFullScreenCheckInPhoto('')} >
                                     <Text style={styles.closeButtonText}>Close</Text>
                                 </TouchableOpacity>
-                                <View style={styles.imageDisplay}>
-                                    <Image style={styles.image} resizeMode={'contain'} source={{ uri: fullScreenCheckInPhoto }} />
+                                <View style={styles.imageDisplay}>{
+                                    imageLoading ?
+                                        <ActivityIndicator style={styles.image} size="large" color="white" />
+                                        :
+                                        <Image style={styles.image} resizeMode={'contain'} source={{ uri: fullScreenCheckInPhoto }} />
+                                }
                                 </View>
                             </View>
                             : null

@@ -17,6 +17,7 @@ const UserProfileScreen = ({ route, navigation }) => {
     const [userDayCount, setUserDayCount] = useState(0);
     const [userCheckIns, setUserCheckIns] = useState();
     const [fullScreenPhoto, setFullScreenPhoto] = useState()
+    const [imageLoading, setImageLoading] = useState(false)
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -46,6 +47,10 @@ const UserProfileScreen = ({ route, navigation }) => {
 
     const displayFullImage = (checkInPhotoUri) => {
         setFullScreenPhoto(checkInPhotoUri);
+        setImageLoading(true)
+        setTimeout(function () {
+            setImageLoading(false)
+        }, 250);
     }
 
     return (
@@ -91,7 +96,12 @@ const UserProfileScreen = ({ route, navigation }) => {
                             <Text style={styles.closeButtonText}>Close</Text>
                         </TouchableOpacity>
                         <View style={styles.imageDisplay}>
-                            <Image style={styles.image} resizeMode={'contain'} source={{ uri: fullScreenPhoto }} />
+                            {
+                                imageLoading ?
+                                    <ActivityIndicator style={styles.image} size="large" color="white" />
+                                    :
+                                    <Image style={styles.image} resizeMode={'contain'} source={{ uri: fullScreenPhoto }} />
+                            }
                         </View>
                     </View>
                     : null

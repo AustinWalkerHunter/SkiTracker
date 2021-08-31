@@ -39,12 +39,31 @@ function App() {
   }, [])
 
   const fetchCheckIns = async () => {
+    var checkInIdsAndImages = {}
     const queryParams = {
       type: "CheckIn",
       sortDirection: "DESC"
     };
-    const checkIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items;
-    GLOBAL.allCheckIns = checkIns;
+
+    try {
+      const checkIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items;
+      GLOBAL.allCheckIns = checkIns;
+
+      await Promise.all(checkIns.map(async (checkIn) => {
+        var checkInId = checkIn.id;
+        if (checkIn.image) {
+          await Storage.get(checkIn.image)
+            .then((result) => {
+              checkInIdsAndImages[checkInId] = result;
+            })
+            .catch((err) => console.log(err));
+        }
+      }));
+      GLOBAL.checkInPhotos = checkInIdsAndImages;
+    }
+    catch (error) {
+      console.log("Error getting checkin data")
+    }
 
   }
   const fetchActiveUser = async () => {

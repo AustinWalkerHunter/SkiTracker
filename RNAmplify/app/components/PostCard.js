@@ -13,7 +13,7 @@ function PostCard({ item, title, postImage, username, location, likes, sport, cr
     // const [numberOfLikes, setNumberOfLikes] = useState(likes);
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const profileImage = GLOBAL.userIdAndImages[item.userID]
-    const [postCardImage, setPostCardImage] = useState(false);
+    const [postCardImage, setPostCardImage] = useState();
 
     const getDate = (createdAt) => {
         Moment.locale('en');
@@ -21,7 +21,19 @@ function PostCard({ item, title, postImage, username, location, likes, sport, cr
         return (Moment(dt).format('MMM D, YYYY'))
     }
 
-    fetchPostCardImage();
+    useEffect(() => {
+        if (postImage) {
+            const cachedImage = GLOBAL.checkInPhotos[item.id];
+            if (cachedImage) {
+                setPostCardImage(cachedImage);
+            }
+            else {
+                fetchPostCardImage();
+            }
+        }
+    }, []);
+
+
     async function fetchPostCardImage() {
         if (postImage) {
             try {
@@ -34,6 +46,7 @@ function PostCard({ item, title, postImage, username, location, likes, sport, cr
             catch (error) {
                 console.log("Error getting all users")
             }
+
         }
     }
 
