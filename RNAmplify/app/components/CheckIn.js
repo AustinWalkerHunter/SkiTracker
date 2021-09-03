@@ -17,7 +17,7 @@ import GLOBAL from '../global';
 
 
 
-function CheckIn({ activeUser, closeModalAndSave }) {
+function CheckIn({ closeModalAndSave }) {
     const [checkIn, setCheckIn] = useState({
         title: null,
         sport: '',
@@ -38,8 +38,8 @@ function CheckIn({ activeUser, closeModalAndSave }) {
                 sport: checkIn.sport,
                 image: checkIn.image,
                 likes: 0,
-                userID: activeUser.id,
-                userName: activeUser.username,
+                userID: GLOBAL.activeUserId,
+                //userName: activeUser.username, //this is going away
                 type: "CheckIn"
             }
             try {

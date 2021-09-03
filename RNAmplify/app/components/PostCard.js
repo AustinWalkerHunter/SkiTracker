@@ -9,10 +9,11 @@ import { deleteCheckIn } from '../../src/graphql/mutations'
 import GLOBAL from '../global';
 
 
-function PostCard({ item, title, postImage, username, location, likes, sport, createdAt, activeUserId, getUserProfile, displayFullImage }) {
+function PostCard({ item, title, postImage, location, likes, sport, createdAt, activeUserId, getUserProfile, displayFullImage }) {
     // const [numberOfLikes, setNumberOfLikes] = useState(likes);
     const [postCardDeleted, setPostCardDeleted] = useState(false);
-    const profileImage = GLOBAL.userIdAndImages[item.userID]
+    const profileImage = GLOBAL.allUsers[item.userID].image;
+    const username = GLOBAL.allUsers[item.userID].username;
     const [postCardImage, setPostCardImage] = useState();
 
     const getDate = (createdAt) => {

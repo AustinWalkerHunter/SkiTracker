@@ -3,8 +3,9 @@ import { useIsFocused } from "@react-navigation/native";
 import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { RefreshControl, View, Text, ActivityIndicator, StyleSheet, FlatList } from 'react-native';
 import SafeScreen from '../components/SafeScreen';
-import { listUsers } from '../../src/graphql/queries'
+import GLOBAL from '../global';
 import FriendItem from '../components/FriendItem';
+import colors from "../constants/colors"
 
 const AddFriend = ({ navigation }) => {
     const [activeId, setActiveUserId] = useState();
@@ -15,7 +16,7 @@ const AddFriend = ({ navigation }) => {
 
     useEffect(() => {
         if (isFocused) {
-            fetchAllUsers()
+            getAllUsers()
             fetchCurrentUserData()
         }
     }, [isFocused]);
@@ -25,13 +26,12 @@ const AddFriend = ({ navigation }) => {
         setActiveUserId(userInfo.sub)
     }
 
-    async function fetchAllUsers() {
-        try {
-            const userData = (await API.graphql(graphqlOperation(listUsers))).data.listUsers.items
-            setUsers(userData)
-        } catch (error) {
-            console.log("Error getting user from db")
+    function getAllUsers() {
+        var allUsers = []
+        for (const key in GLOBAL.allUsers) {
+            allUsers.push(GLOBAL.allUsers[key])
         }
+        setUsers(allUsers)
         setLoading(false)
     }
 
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: "black",
+        backgroundColor: colors.navigation,
     },
     usersContainer: {
 

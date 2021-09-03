@@ -11,11 +11,9 @@ import { getUser, checkInsByDate } from '../../src/graphql/queries'
 import GLOBAL from '../global';
 
 
-const HomeScreen = ({ route, navigation }) => {
-    //const { currentUser } = route.params;
+const HomeScreen = ({ navigation }) => {
     const isFocused = useIsFocused();
     const [loading, setLoading] = useState(true);
-    const [activeUser, setActiveUser] = useState();
     const [checkIns, setCheckIns] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [checkInModalVisible, setCheckInModalVisible] = useState(false)
@@ -31,7 +29,6 @@ const HomeScreen = ({ route, navigation }) => {
     useEffect(() => {
         if (isFocused) {
             setCheckIns(GLOBAL.allCheckIns);
-            setActiveUser(GLOBAL.activeUser);
             setLoading(false)
         }
     }, [isFocused]);
@@ -52,7 +49,7 @@ const HomeScreen = ({ route, navigation }) => {
     }
 
     const getUserProfile = (userId) => {
-        if (activeUser.id == userId) {
+        if (GLOBAL.activeUserId == userId) {
             navigation.navigate('MyProfileScreen')
         }
         else {
@@ -89,7 +86,7 @@ const HomeScreen = ({ route, navigation }) => {
                                     <Ionicons name="arrow-back-outline" size={35} color="white" />
                                 </TouchableOpacity>
                             </SafeScreen>
-                            <CheckIn activeUser={activeUser} closeModalAndSave={closeModalAndSave} />
+                            <CheckIn closeModalAndSave={closeModalAndSave} />
                         </Modal>
                     </React.Fragment>
                     <View style={styles.checkInList}>
@@ -108,14 +105,13 @@ const HomeScreen = ({ route, navigation }) => {
                                 renderItem={({ item }) =>
                                     <PostCard
                                         item={item}
-                                        username={item.userName}
                                         title={item.title}
                                         location={item.location}
                                         likes={item.likes}
                                         postImage={item.image}
                                         sport={item.sport}
                                         createdAt={item.createdAt}
-                                        activeUserId={activeUser.id}
+                                        activeUserId={GLOBAL.activeUserId}
                                         getUserProfile={getUserProfile}
                                         displayFullImage={displayFullImage}
                                     />
@@ -156,7 +152,7 @@ const HomeScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        backgroundColor: "black",
+        backgroundColor: colors.navigation,
     },
     checkInButton: {
         position: 'absolute',
@@ -198,7 +194,7 @@ const styles = StyleSheet.create({
     },
     imageViewerContainer: {
         position: 'absolute',
-        backgroundColor: "black",
+        backgroundColor: colors.navigation,
         width: '100%',
         height: '100%',
         justifyContent: 'center',

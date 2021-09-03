@@ -7,7 +7,7 @@ import ProfileCheckIns from '../components/ProfileCheckIns'
 import ProfileIcon from '../components/ProfileIcon'
 import SafeScreen from '../components/SafeScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { getUser, checkInsByDate } from '../../src/graphql/queries'
+import { checkInsByDate } from '../../src/graphql/queries'
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { Buffer } from "buffer"; // get this via: npm install buffer
@@ -15,20 +15,24 @@ import uuid from 'react-native-uuid';
 import * as FileSystem from "expo-file-system";
 import { updateUser } from '../../src/graphql/mutations'
 import GLOBAL from '../global';
+import colors from '../constants/colors';
 
 
 
-const MyProfileScreen = ({ navigation }) => {
+const MyProfileScreen = () => {
     const isFocused = useIsFocused();
     const [activeUser, setActiveUser] = useState({ username: '', description: '', image: null });
     const [userDayCount, setUserDayCount] = useState(0);
     const [userCheckIns, setUserCheckIns] = useState();
     const [pageLoading, setPageLoading] = useState(true);
     const [percentage, setPercentage] = useState(0);
+    const [userProfileImage, setUserProfileImage] = useState();
+
 
     useEffect(() => {
         if (isFocused) {
             setActiveUser({ username: GLOBAL.activeUser.username, id: GLOBAL.activeUser.id, description: GLOBAL.activeUser.description, image: GLOBAL.activeUser.image })
+            setUserProfileImage(GLOBAL.allUsers[GLOBAL.activeUserId].image)
             fetchActiveUserCheckIns()
         }
     }, [isFocused]);
@@ -58,6 +62,7 @@ const MyProfileScreen = ({ navigation }) => {
     const updateUsersProfilePicture = async (updatedUser) => {
         try {
             await API.graphql(graphqlOperation(updateUser, { input: updatedUser }));
+            console.log("Profile pictured updated")
         } catch (error) {
             console.log("Error updating users profile picture in db")
         }
@@ -80,14 +85,14 @@ const MyProfileScreen = ({ navigation }) => {
     const handleImagePicked = async (pickerResult) => {
         try {
             if (pickerResult.cancelled) {
-                alert('Upload cancelled');
                 return;
             } else {
                 // setPercentage(0);
-                setActiveUser({ ...activeUser, image: pickerResult.uri })
-                GLOBAL.activeUser = { ...activeUser, image: pickerResult.uri };
-                GLOBAL.userIdAndImages[activeUser.id] = pickerResult.uri;
-                const img = await fetchImageFromUri(pickerResult.uri);
+                const imageUri = pickerResult.uri;
+                setUserProfileImage(imageUri);
+                GLOBAL.allUsers[GLOBAL.activeUserId].image = imageUri;
+                GLOBAL.activeUser = { ...activeUser, image: imageUri };
+                const img = await fetchImageFromUri(imageUri);
                 const fileName = uuid.v4() + "_" + activeUser.username + "_profilePic.jpg";
                 const uploadUrl = await uploadImage(fileName, img);
                 const updatedUser = { ...activeUser, image: uploadUrl };
@@ -145,17 +150,17 @@ const MyProfileScreen = ({ navigation }) => {
                     <View style={styles.profilePictureContainer}>
                         <TouchableOpacity onPress={pickImage}>
                             {
-                                activeUser.image ?
-                                    <ProfileIcon size={200} image={activeUser.image} />
+                                userProfileImage ?
+                                    <ProfileIcon size={200} image={userProfileImage} isSettingScreen={false} />
                                     :
                                     <MaterialCommunityIcons name="account-outline" size={200} color="grey" />
                             }
                         </TouchableOpacity>
                     </View>
                     <View style={styles.nameContainer}>
-                        <Text style={styles.userName}>{activeUser.username}</Text>
+                        <Text style={styles.userName}>{GLOBAL.allUsers[GLOBAL.activeUserId].username}</Text>
                         <View style={styles.descriptionContainer}>
-                            <Text style={styles.userDescription}>{activeUser.description ? activeUser.description : "I could be a cool description if I make it!"}</Text>
+                            <Text style={styles.userDescription}>{GLOBAL.allUsers[GLOBAL.activeUserId].description}</Text>
                         </View>
                     </View>
                 </View>
@@ -176,7 +181,7 @@ const MyProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        backgroundColor: "black"
+        backgroundColor: colors.navigation
     },
     profileContainer: {
         bottom: 10

@@ -3,6 +3,7 @@ import { Auth } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
 import { View, Text, ImageBackground, StyleSheet, Animated } from 'react-native';
 import color from '../constants/colors';
+import GLOBAL from '../global';
 
 const WelcomeScreen = () => {
     const [activeUser, setActiveUser] = useState('');
@@ -40,7 +41,7 @@ const WelcomeScreen = () => {
                     opacity
                 }]}>
                     <View style={styles.welcomeContainer}>
-                        <Text style={styles.welcomeText}>Welcome {activeUser.username}!</Text>
+                        <Text style={styles.welcomeText}>Welcome {GLOBAL.activeUser.username}!</Text>
                     </View>
                 </Animated.View>
                 : null

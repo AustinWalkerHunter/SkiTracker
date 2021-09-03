@@ -9,6 +9,7 @@ import SafeScreen from '../components/SafeScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { getUser, checkInsByDate } from '../../src/graphql/queries'
 import GLOBAL from '../global';
+import colors from '../constants/colors';
 
 const UserProfileScreen = ({ route, navigation }) => {
     const { viewedUserId } = route.params;
@@ -29,7 +30,7 @@ const UserProfileScreen = ({ route, navigation }) => {
         try {
             const userData = await API.graphql(graphqlOperation(getUser, { id: viewedUserId }))
             const viewedUser = userData.data.getUser;
-            const userImage = GLOBAL.userIdAndImages[viewedUserId];
+            const userImage = GLOBAL.allUsers[viewedUserId].image;
             setViewedUser({ username: viewedUser.username, id: viewedUser.id, description: viewedUser.description, image: userImage })
             const queryParams = {
                 type: "CheckIn",
@@ -113,7 +114,7 @@ const UserProfileScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        backgroundColor: "black"
+        backgroundColor: colors.navigation
     },
     profileContainer: {
         bottom: 10
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
     },
     imageViewerContainer: {
         position: 'absolute',
-        backgroundColor: "black",
+        backgroundColor: colors.navigation,
         width: '100%',
         height: '100%',
         justifyContent: 'center',

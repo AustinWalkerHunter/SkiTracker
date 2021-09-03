@@ -31,7 +31,7 @@ function App() {
 
   useEffect(() => {
     fetchActiveUser();
-    fetchAllProfilePictures();
+    fetchAllUsers();
     fetchCheckIns();
     setTimeout(function () {
       setAppLoading(false)
@@ -68,20 +68,11 @@ function App() {
   }
   const fetchActiveUser = async () => {
     const userInfo = await Auth.currentAuthenticatedUser();
-
+    GLOBAL.activeUserId = userInfo.attributes.sub;
     if (userInfo) {
       const userData = (await API.graphql(graphqlOperation(getUser, { id: userInfo.attributes.sub }))).data.getUser;
       if (userData) {
-        if (userData.image) {
-          Storage.get(userData.image)
-            .then((result) => {
-              GLOBAL.activeUser = { ...userData, image: result }
-            })
-            .catch((err) => console.log(err));
-        }
-        else {
-          GLOBAL.activeUser = userData;
-        }
+        GLOBAL.activeUser = { username: userData.username, id: userData.id, description: userData.description, image: userData.image };;
         console.log("User found in db")
         return;
       }
@@ -96,30 +87,38 @@ function App() {
     }
   }
 
-  //What I want to do is fetch all posts and stuff here then only display after displaying a splash screen/ apploading is done
-  const fetchAllProfilePictures = async () => {
-    var userIdAndImages = {}
+  const fetchAllUsers = async () => {
+    var usersById = {};
     try {
-      const users = (await API.graphql(graphqlOperation(listUsers))).data.listUsers.items
-
-      await Promise.all(users.map(async (user) => {
+      const allUserData = (await API.graphql(graphqlOperation(listUsers))).data.listUsers.items
+      allUserData.forEach(user => {
         var userId = user.id;
+        usersById[userId] = { username: user.username, id: user.id, description: user.description, image: user.image };
+      });
+      GLOBAL.allUsers = usersById;
+      fetchAllProfilePictures(allUserData)
+    } catch (error) {
+      console.log("Error getting user from db")
+    }
+  }
+
+  const fetchAllProfilePictures = async (allUserData) => {
+    try {
+      await Promise.all(allUserData.map(async (user) => {
+        var userId = user.id;
+        var userData = GLOBAL.allUsers[userId]
         if (user.image) {
           await Storage.get(user.image)
             .then((result) => {
-              userIdAndImages[userId] = result;
+              GLOBAL.allUsers[userId] = { ...userData, image: result };
             })
             .catch((err) => console.log(err));
-        }
-        else {
-          userIdAndImages[userId] = user.image;
         }
       }));
     }
     catch (error) {
-      console.log("Error getting all users")
+      console.log("Error getting users profile pictures")
     }
-    GLOBAL.userIdAndImages = userIdAndImages;
   }
 
 
@@ -143,7 +142,7 @@ function App() {
               headerBackTitle: 'Back',
               headerBackTitleStyle: { color: colors.navigationText },
               headerTitleStyle: { color: colors.navigationText },
-              title: 'Settings'
+              title: 'Account Settings'
             }}
           />
           <Main.Screen

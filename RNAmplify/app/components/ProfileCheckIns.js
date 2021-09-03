@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
         color: "white",
         borderRadius: 10,
         borderWidth: 5,
-        borderColor: "black",
+        borderColor: colors.navigation,
         padding: 5
     },
     filterText: {

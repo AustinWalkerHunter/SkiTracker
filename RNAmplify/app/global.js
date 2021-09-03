@@ -1,6 +1,7 @@
 module.exports = {
     activeUser: null,
-    userIdAndImages: null,
+    activeUserId: null,
+    allUsers: null,
     allCheckIns: null,
     checkInPhotos: null
 };

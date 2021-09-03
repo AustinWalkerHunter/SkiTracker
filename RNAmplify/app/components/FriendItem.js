@@ -4,10 +4,8 @@ import { Storage } from 'aws-amplify';
 
 import ProfileIcon from '../components/ProfileIcon'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import GLOBAL from '../global';
 
 function FriendItem({ user, getUserProfile }) {
-    const image = GLOBAL.userIdAndImages[user.id]
 
     return (
         <TouchableOpacity style={styles.container} onPress={() => getUserProfile(user.id)}>
@@ -15,8 +13,8 @@ function FriendItem({ user, getUserProfile }) {
                 <View style={styles.profilePictureContainer}>
                     <View>
                         {
-                            image ?
-                                <ProfileIcon size={80} image={image} />
+                            user.image ?
+                                <ProfileIcon size={80} image={user.image} />
                                 :
                                 <MaterialCommunityIcons name="account-outline" size={80} color="grey" />
                         }
