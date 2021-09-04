@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
-import { View, ScrollView, ActivityIndicator, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import MyStats from '../components/MyStats'
-import ProfileCheckIns from '../components/ProfileCheckIns'
-import ProfileIcon from '../components/ProfileIcon'
-import SafeScreen from '../components/SafeScreen'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Profile from "../components/Profile"
+import { StyleSheet } from 'react-native';
 import { checkInsByDate } from '../../src/graphql/queries'
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -15,8 +11,6 @@ import uuid from 'react-native-uuid';
 import * as FileSystem from "expo-file-system";
 import { updateUser } from '../../src/graphql/mutations'
 import GLOBAL from '../global';
-import colors from '../constants/colors';
-
 
 
 const MyProfileScreen = () => {
@@ -27,6 +21,7 @@ const MyProfileScreen = () => {
     const [pageLoading, setPageLoading] = useState(true);
     const [percentage, setPercentage] = useState(0);
     const [userProfileImage, setUserProfileImage] = useState();
+    const [userCheckInPhotos, setUserCheckInPhotos] = useState([]);
 
 
     useEffect(() => {
@@ -51,12 +46,25 @@ const MyProfileScreen = () => {
                 filter: { userID: { eq: GLOBAL.activeUser.id } }
             };
             const userCheckIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items
+            getCheckInPhotos(userCheckIns)
             setUserCheckIns(userCheckIns)
             setUserDayCount(userCheckIns.length);
         } catch (error) {
             console.log("Error getting user from db")
         }
         setPageLoading(false)
+    }
+
+    const getCheckInPhotos = async (userCheckIns) => {
+        var userPhotoData = []
+        userCheckIns.forEach(checkIn => {
+            if (checkIn.image) {
+                var checkInPhoto = GLOBAL.checkInPhotos[checkIn.id];
+                var photoData = { id: checkIn.id, photo: checkInPhoto, title: checkIn.title }
+                userPhotoData.push(photoData)
+            }
+        });
+        setUserCheckInPhotos(userPhotoData);
     }
 
     const updateUsersProfilePicture = async (updatedUser) => {
@@ -122,15 +130,6 @@ const MyProfileScreen = () => {
             });
     };
 
-    // const setLoading = (progress) => {
-    //     const calculated = parseInt((progress.loaded / progress.total) * 100);
-    //     updatePercentage(calculated); // due to s3 put function scoped
-    // };
-
-    // const updatePercentage = (number) => {
-    //     setPercentage(number);
-    // };
-
     async function fetchImageFromUri(uri) {
         const options = { encoding: FileSystem.EncodingType.Base64 };
         const base64Response = await FileSystem.readAsStringAsync(
@@ -144,76 +143,8 @@ const MyProfileScreen = () => {
 
 
     return (
-        <SafeScreen style={styles.screen}>
-            <ScrollView>
-                <View style={styles.profileContainer}>
-                    <View style={styles.profilePictureContainer}>
-                        <TouchableOpacity onPress={pickImage}>
-                            {
-                                userProfileImage ?
-                                    <ProfileIcon size={200} image={userProfileImage} isSettingScreen={false} />
-                                    :
-                                    <MaterialCommunityIcons name="account-outline" size={200} color="grey" />
-                            }
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.nameContainer}>
-                        <Text style={styles.userName}>{GLOBAL.allUsers[GLOBAL.activeUserId].username}</Text>
-                        <View style={styles.descriptionContainer}>
-                            <Text style={styles.userDescription}>{GLOBAL.allUsers[GLOBAL.activeUserId].description}</Text>
-                        </View>
-                    </View>
-                </View>
-                <View>
-                    <MyStats data={userDayCount} />
-                    {!pageLoading ?
-                        <ProfileCheckIns checkIns={userCheckIns} userDayCount={userDayCount} updateDayCount={updateDayCount} />
-                        :
-                        <ActivityIndicator size="large" color="white" />
-                    }
-                </View>
-
-            </ScrollView>
-        </SafeScreen>
+        <Profile activeUserProfile={true} userProfileImage={userProfileImage} pickImage={pickImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} userCheckInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} />
     );
 }
-
-const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        backgroundColor: colors.navigation
-    },
-    profileContainer: {
-        bottom: 10
-    },
-    profilePictureContainer: {
-        justifyContent: "center",
-        alignItems: "center",
-        marginVertical: 20,
-        marginBottom: 5
-    },
-    userNameText: {
-        color: "white",
-        fontSize: 30,
-        marginBottom: 10
-    },
-    nameContainer: {
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    userName: {
-        color: "white",
-        fontSize: 30
-
-    },
-    descriptionContainer: {
-        width: "65%",
-    },
-    userDescription: {
-        color: "#a1a1a1",
-        fontSize: 20,
-        textAlign: 'center'
-    },
-})
 
 export default MyProfileScreen;

@@ -1,18 +1,20 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Image, Text, StyleSheet } from 'react-native';
 
-function StatsImage({ title, image }) {
+function StatsImage({ id, title, image }) {
     return (
-        <View style={styles.imageContainer}>
-            <Image style={styles.image} source={image} />
+        <TouchableOpacity style={styles.imageContainer} onPress={() => console.log("Open checkIn")}>
+            <Image style={styles.image} source={{ uri: image }} />
             <Text style={styles.title}>{title}</Text>
-        </View>
+        </TouchableOpacity>
     );
 }
 
 const styles = StyleSheet.create({
     imageContainer: {
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 10
     },
     title: {
         color: 'white',

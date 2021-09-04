@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
-import { View, ScrollView, ActivityIndicator, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
-import MyStats from '../components/MyStats'
-import ProfileCheckIns from '../components/ProfileCheckIns'
-import ProfileIcon from '../components/ProfileIcon'
-import SafeScreen from '../components/SafeScreen'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Profile from "../components/Profile"
 import { getUser, checkInsByDate } from '../../src/graphql/queries'
 import GLOBAL from '../global';
-import colors from '../constants/colors';
 
 const UserProfileScreen = ({ route, navigation }) => {
     const { viewedUserId } = route.params;
@@ -17,14 +11,23 @@ const UserProfileScreen = ({ route, navigation }) => {
     const [viewedUser, setViewedUser] = useState({ username: '', description: '', image: null });
     const [userDayCount, setUserDayCount] = useState(0);
     const [userCheckIns, setUserCheckIns] = useState();
-    const [fullScreenPhoto, setFullScreenPhoto] = useState()
-    const [imageLoading, setImageLoading] = useState(false)
-    const [loading, setLoading] = useState(true);
+    const [userCheckInPhotos, setUserCheckInPhotos] = useState([]);
+    const [pageLoading, setPageLoading] = useState(true);
+    const [userProfileImage, setUserProfileImage] = useState();
 
     useEffect(() => {
-        if (isFocused) fetchCurrentUserDataAndGetCheckIns()
+        if (isFocused) {
+            fetchCurrentUserDataAndGetCheckIns()
+            setUserProfileImage(GLOBAL.allUsers[viewedUserId].image)
+        }
     }, [isFocused]);
 
+
+    const updateDayCount = () => {
+        if (userDayCount > 0) {
+            setUserDayCount(userDayCount - 1);
+        }
+    }
 
     async function fetchCurrentUserDataAndGetCheckIns() {
         try {
@@ -38,156 +41,32 @@ const UserProfileScreen = ({ route, navigation }) => {
                 filter: { userID: { eq: viewedUser.id } }
             };
             const userCheckIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items
+            getCheckInPhotos(userCheckIns)
             setUserCheckIns(userCheckIns)
             setUserDayCount(userCheckIns.length);
         } catch (error) {
             console.log("Error getting user from db")
         }
-        setLoading(false)
+        setPageLoading(false)
     }
 
-    const displayFullImage = (checkInPhotoUri) => {
-        setFullScreenPhoto(checkInPhotoUri);
-        setImageLoading(true)
-        setTimeout(function () {
-            setImageLoading(false)
-        }, 250);
+    const getCheckInPhotos = async (userCheckIns) => {
+        var userPhotoData = []
+        userCheckIns.forEach(checkIn => {
+            if (checkIn.image) {
+                var checkInPhoto = GLOBAL.checkInPhotos[checkIn.id];
+                var photoData = { id: checkIn.id, photo: checkInPhoto, title: checkIn.title }
+                userPhotoData.push(photoData)
+            }
+        });
+        setUserCheckInPhotos(userPhotoData);
     }
+
+
 
     return (
-        <SafeScreen style={styles.screen}>
-            {!loading ?
-                <ScrollView>
-                    <View style={styles.profileContainer}>
-                        <View style={styles.profilePictureContainer}>
-                            <TouchableOpacity onPress={() => displayFullImage(viewedUser.image)}>
-                                {
-                                    viewedUser.image ?
-                                        <ProfileIcon size={200} image={viewedUser.image} />
-                                        :
-                                        <MaterialCommunityIcons name="account-outline" size={200} color="grey" />
-                                }
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.nameContainer}>
-                            <Text style={styles.userName}>{viewedUser.username}</Text>
-                            <View style={styles.descriptionContainer}>
-                                <Text style={styles.userDescription}>{viewedUser.description ? viewedUser.description : ""}</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View>
-                        <MyStats data={userDayCount} />
-                        {!loading ?
-                            <ProfileCheckIns checkIns={userCheckIns} userDayCount={userDayCount} />
-                            :
-                            <ActivityIndicator size="large" color="white" />
-                        }
-                    </View>
-
-                </ScrollView>
-                :
-                <ActivityIndicator style={styles.loadingSpinner} size="large" color="white" />
-
-            }
-            {
-                fullScreenPhoto ?
-                    <View style={styles.imageViewerContainer} >
-                        <TouchableOpacity style={styles.closeImageViewer} onPress={() => setFullScreenPhoto('')} >
-                            <Text style={styles.closeButtonText}>Close</Text>
-                        </TouchableOpacity>
-                        <View style={styles.imageDisplay}>
-                            {
-                                imageLoading ?
-                                    <ActivityIndicator style={styles.image} size="large" color="white" />
-                                    :
-                                    <Image style={styles.image} resizeMode={'contain'} source={{ uri: fullScreenPhoto }} />
-                            }
-                        </View>
-                    </View>
-                    : null
-            }
-        </SafeScreen>
+        <Profile activeUserProfile={false} viewedUser={viewedUser} userProfileImage={userProfileImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} userCheckInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} />
     );
 }
-
-const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        backgroundColor: colors.navigation
-    },
-    profileContainer: {
-        bottom: 10
-    },
-    profilePictureContainer: {
-        justifyContent: "center",
-        alignItems: "center",
-        marginVertical: 20,
-        marginBottom: 5
-    },
-    userNameText: {
-        color: "white",
-        fontSize: 30,
-        marginBottom: 10
-    },
-    nameContainer: {
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    userName: {
-        color: "white",
-        fontSize: 30
-
-    },
-    descriptionContainer: {
-        width: "65%",
-    },
-    userDescription: {
-        color: "#a1a1a1",
-        fontSize: 20,
-        textAlign: 'center'
-    },
-    loadingSpinner: {
-        marginVertical: '50%'
-    },
-    imageViewerContainer: {
-        position: 'absolute',
-        backgroundColor: colors.navigation,
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 999
-    },
-    imageDisplay: {
-        position: 'absolute',
-        bottom: "10%",
-        width: "100%",
-        height: "100%",
-    },
-    image: {
-        alignSelf: 'center',
-        height: '100%',
-        width: '100%'
-    },
-    closeImageViewer: {
-        position: 'absolute',
-        alignSelf: "center",
-        bottom: '20%',
-        //bottom: "36%",
-        borderRadius: 25,
-        borderWidth: 1,
-        borderColor: "white",
-        padding: 5,
-        backgroundColor: 'rgba(224, 224, 224, 0.15)',
-        zIndex: 999
-    },
-    closeButtonText: {
-        color: "white",
-        fontSize: 25,
-        paddingLeft: 5,
-        marginRight: 5
-    },
-})
 
 export default UserProfileScreen;

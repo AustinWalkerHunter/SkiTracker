@@ -6,7 +6,7 @@ import StatsImage from './StatsImage'
 import Moment from 'moment';
 import colors from '../constants/colors'
 
-function ProfileCheckIns({ checkIns, userDayCount, updateDayCount }) {
+function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount }) {
     const [refreshing, setRefreshing] = useState(false);
     const [showPhotos, setShowPhotos] = useState(false);
     const getDate = (date) => {
@@ -29,17 +29,8 @@ function ProfileCheckIns({ checkIns, userDayCount, updateDayCount }) {
                     <Text style={styles.filterText}>Photos</Text>
                 </TouchableOpacity>
             </View>
-            {showPhotos ?
-                <View style={styles.zeroStateContainer}>
-                    <Text style={styles.zeroStateText}>No photos.</Text>
-                </View>
-                // <ScrollView horizontal={true}>
-                //     <StatsImage title="Bogus Basin, ID" image={require("../assets/nightSki.png")} />
-                //     <StatsImage title="Big Sky, MT" image={require("../assets/bros.png")} />
-                //     <StatsImage title="Big Sky, MT" image={require("../assets/bigAir.png")} />
-                // </ScrollView>
-                :
-                userDayCount > 0 ?
+            {!showPhotos ?
+                checkIns.length > 0 ?
                     <FlatList
                         data={checkIns}
                         inverted={false}
@@ -69,6 +60,31 @@ function ProfileCheckIns({ checkIns, userDayCount, updateDayCount }) {
                             <Entypo name="emoji-sad" size={40} color="white" />
                         </View>
                     </View>
+                :
+                <View>
+                    {checkInPhotos.length > 0 ?
+                        <FlatList
+                            data={checkInPhotos}
+                            horizontal={true}
+                            inverted={false}
+                            keyExtractor={checkInPhotos => checkInPhotos.id.toString()}
+                            refreshControl={<RefreshControl
+                                tintColor={"white"}
+                                refreshing={refreshing}
+                                onRefresh={() => console.log("refreshing")}
+                            />
+                            }
+                            renderItem={({ item }) =>
+                                <StatsImage id={item.id} title={item.title} image={item.photo} />
+                            }
+                        >
+                        </FlatList>
+                        :
+                        <View style={styles.zeroStateContainer}>
+                            <Text style={styles.zeroStateText}>No photos</Text>
+                        </View>
+                    }
+                </View>
             }
         </View>
     );
