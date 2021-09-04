@@ -54,6 +54,7 @@ function CheckIn({ closeModalAndSave }) {
                     console.log("Check-in created with photo")
                 }
                 else {
+                    GLOBAL.allCheckIns = { newCheckIn, ...GLOBAL.allCheckIns }
                     await API.graphql(graphqlOperation(createCheckIn, { input: newCheckIn }));
                     console.log("Check-in created")
                 }
@@ -87,7 +88,7 @@ function CheckIn({ closeModalAndSave }) {
     const handleImagePicked = async (imageUri) => {
         try {
             const img = await fetchImageFromUri(imageUri);
-            const fileName = uuid.v4() + "_" + activeUser.username + "_checkInPic.jpg";
+            const fileName = uuid.v4() + "_" + GLOBAL.allUsers[GLOBAL.activeUserId].username + "_checkInPic.jpg";
             const uploadUrl = await uploadImage(fileName, img);
             return uploadUrl;
         } catch (e) {

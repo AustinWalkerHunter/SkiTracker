@@ -40,8 +40,10 @@ const HomeScreen = ({ navigation }) => {
                 sortDirection: "DESC"
             };
             const checkIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items;
-            setCheckIns(checkIns)
-            GLOBAL.allCheckIns = checkIns;
+            if (checkIns) {
+                setCheckIns(checkIns)
+                GLOBAL.allCheckIns = checkIns;
+            }
         } catch (error) {
             console.log("Error getting user on Home Screen")
         }
@@ -68,7 +70,7 @@ const HomeScreen = ({ navigation }) => {
     }
 
     const checkInButtonStyle = () => {
-        return checkIns.length > 0 ? styles.checkInButton : styles.initialCheckInButton;
+        return checkIns && checkIns.length > 0 ? styles.checkInButton : styles.initialCheckInButton;
     }
 
     return (
@@ -90,7 +92,7 @@ const HomeScreen = ({ navigation }) => {
                         </Modal>
                     </React.Fragment>
                     <View style={styles.checkInList}>
-                        {checkIns.length > 0
+                        {checkIns && checkIns.length > 0
                             ?
                             <FlatList
                                 data={checkIns}
@@ -99,7 +101,10 @@ const HomeScreen = ({ navigation }) => {
                                 refreshControl={<RefreshControl
                                     tintColor={"white"}
                                     refreshing={refreshing}
-                                    onRefresh={() => fetchCheckIns()}
+                                    onRefresh={() => {
+                                        console.log("Refreshing checkIns")
+                                        fetchCheckIns()
+                                    }}
                                 />
                                 }
                                 renderItem={({ item }) =>

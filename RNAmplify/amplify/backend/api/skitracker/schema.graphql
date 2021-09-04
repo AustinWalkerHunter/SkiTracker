@@ -14,7 +14,7 @@ type CheckIn @model
   image: String
   likes: Int!
   userID: ID!
-  userName: String!
+  userName: String
   type: String!
   createdAt: String!
   comments: [Comment] @connection(keyName: "byCheckIn", fields: ["id"])
