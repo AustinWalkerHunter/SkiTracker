@@ -3,15 +3,23 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { API, graphqlOperation } from 'aws-amplify';
 import { deleteCheckIn } from '../../src/graphql/mutations'
+import { useToast } from 'react-native-fast-toast'
 
 function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
     const [postCardDeleted, setPostCardDeleted] = useState(false);
+    const toast = useToast()
 
     async function deleteCheckin(item) {
         try {
             await API.graphql(graphqlOperation(deleteCheckIn, { input: { id: item.id } }));
             setPostCardDeleted(true);
             updateDayCount();
+            toast.show("Check-in deleted", {
+                duration: 5000,
+                style: { marginTop: 35, backgroundColor: "red" },
+                textStyle: { fontSize: 20 },
+                placement: "top" // default to bottom
+            });
 
         } catch (error) {
             console.log("Error deleting from db")

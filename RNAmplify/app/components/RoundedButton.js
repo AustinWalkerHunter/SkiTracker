@@ -1,12 +1,16 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import colors from "../constants/colors"
 
-function RoundedButton({ title, onPress, color, style }) {
+function RoundedButton({ title, onPress, color, disabled = false }) {
+    var opacity = disabled ? .2 : 1;
+
     return (
-        <TouchableOpacity style={[styles.button, { backgroundColor: color }, style]} onPress={onPress}>
-            <Text style={styles.text}>{title}</Text>
-        </TouchableOpacity>
+        <View style={{ opacity: opacity }}>
+            <TouchableOpacity style={[styles.button, { backgroundColor: color, }]} onPress={onPress} disabled={disabled}>
+                <Text style={styles.text}>{title}</Text>
+            </TouchableOpacity>
+        </View>
     );
 }
 

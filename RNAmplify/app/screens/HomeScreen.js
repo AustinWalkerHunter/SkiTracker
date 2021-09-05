@@ -20,7 +20,6 @@ const HomeScreen = ({ navigation }) => {
     const [fullScreenCheckInPhoto, setFullScreenCheckInPhoto] = useState()
     const [imageLoading, setImageLoading] = useState(false)
 
-
     const closeModalAndSave = () => {
         setCheckInModalVisible(false);
         fetchCheckIns();

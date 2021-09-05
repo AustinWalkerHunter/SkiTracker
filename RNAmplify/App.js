@@ -16,6 +16,7 @@ Amplify.configure(awsconfig);
 import { withAuthenticator } from 'aws-amplify-react-native'
 import AppLoading from 'expo-app-loading';
 import * as SplashScreen from 'expo-splash-screen';
+import { ToastProvider } from 'react-native-fast-toast'
 
 
 import WelcomeScreen from './app/screens/WelcomeScreen';
@@ -127,52 +128,54 @@ function App() {
     appLoading ?
       <WelcomeScreen />
       :
-      < NavigationContainer >
-        <Main.Navigator>
+      <ToastProvider>
+        < NavigationContainer >
+          <Main.Navigator>
 
-          <Main.Screen
-            name="HomeScreen"
-            component={Tabs}
-            options={{ headerShown: false, title: 'Home' }}
-          />
-          <Main.Screen
-            name="SettingsScreen"
-            component={SettingsScreen}
-            options={{
-              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
-              headerTitleStyle: { color: colors.navigationText },
-              title: 'Account Settings'
-            }}
-          />
-          <Main.Screen
-            name="AddFriendScreen"
-            component={AddFriendScreen}
-            options={{
-              headerShown: true,
-              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
-              headerTitleStyle: { color: colors.navigationText },
-              title: 'Add Friends',
-            }}
-          />
-          <Main.Screen
-            name="UserProfileScreen"
-            component={UserProfileScreen}
-            options={{
-              headerShown: true,
-              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
-              headerTitleStyle: { color: colors.navigationText },
-              title: 'User Profile',
-            }}
-          />
-        </Main.Navigator>
-        <StatusBar style="light" />
-      </NavigationContainer >
+            <Main.Screen
+              name="HomeScreen"
+              component={Tabs}
+              options={{ headerShown: false, title: 'Home' }}
+            />
+            <Main.Screen
+              name="SettingsScreen"
+              component={SettingsScreen}
+              options={{
+                headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+                headerBackTitle: 'Back',
+                headerBackTitleStyle: { color: colors.navigationText },
+                headerTitleStyle: { color: colors.navigationText },
+                title: 'Account Settings'
+              }}
+            />
+            <Main.Screen
+              name="AddFriendScreen"
+              component={AddFriendScreen}
+              options={{
+                headerShown: true,
+                headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+                headerBackTitle: 'Back',
+                headerBackTitleStyle: { color: colors.navigationText },
+                headerTitleStyle: { color: colors.navigationText },
+                title: 'Add Friends',
+              }}
+            />
+            <Main.Screen
+              name="UserProfileScreen"
+              component={UserProfileScreen}
+              options={{
+                headerShown: true,
+                headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+                headerBackTitle: 'Back',
+                headerBackTitleStyle: { color: colors.navigationText },
+                headerTitleStyle: { color: colors.navigationText },
+                title: 'User Profile',
+              }}
+            />
+          </Main.Navigator>
+          <StatusBar style="light" />
+        </NavigationContainer >
+      </ToastProvider>
   )
 }
 

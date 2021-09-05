@@ -14,10 +14,12 @@ import { Buffer } from "buffer"; // get this via: npm install buffer
 import uuid from 'react-native-uuid';
 import * as FileSystem from "expo-file-system";
 import GLOBAL from '../global';
+import { useToast } from 'react-native-fast-toast'
 
 
 
 function CheckIn({ closeModalAndSave }) {
+    const toast = useToast()
     const [checkIn, setCheckIn] = useState({
         title: null,
         sport: '',
@@ -56,6 +58,12 @@ function CheckIn({ closeModalAndSave }) {
                 else {
                     GLOBAL.allCheckIns = { newCheckIn, ...GLOBAL.allCheckIns }
                     await API.graphql(graphqlOperation(createCheckIn, { input: newCheckIn }));
+                    toast.show("Check-in created!", {
+                        duration: 5000,
+                        style: { marginTop: 35, backgroundColor: "green" },
+                        textStyle: { fontSize: 20 },
+                        placement: "top" // default to bottom
+                    });
                     console.log("Check-in created")
                 }
             } catch (error) {

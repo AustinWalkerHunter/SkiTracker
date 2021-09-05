@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Auth } from 'aws-amplify';
-import { useIsFocused } from "@react-navigation/native";
-import { View, Text, ImageBackground, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import color from '../constants/colors';
 import GLOBAL from '../global';
 

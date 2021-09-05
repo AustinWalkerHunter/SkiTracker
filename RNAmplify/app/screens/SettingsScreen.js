@@ -13,20 +13,21 @@ import uuid from 'react-native-uuid';
 import * as FileSystem from "expo-file-system";
 import GLOBAL from '../global';
 import RoundedButton from '../components/RoundedButton';
+import { useToast } from 'react-native-fast-toast'
 
-
-
-const SettingsScreen = ({ navigation }) => {
+const SettingsScreen = () => {
     const isFocused = useIsFocused();
     const [userInfo, setUserInfo] = useState();
     const [pageLoading, setPageLoading] = useState(true);
-    const [activeUser, setActiveUser] = useState();
+    const [activeUser, setActiveUser] = useState({ username: GLOBAL.activeUser.username, id: GLOBAL.activeUser.id, description: GLOBAL.activeUser.description, image: GLOBAL.activeUser.image });
     const [userProfileImage, setUserProfileImage] = useState();
+    const toast = useToast()
+    const [isUserInputDifferent, setUserInputDifferent] = useState(false);
+
 
     useEffect(() => {
         if (isFocused) {
             fetchActiveUserData();
-            setActiveUser({ username: GLOBAL.activeUser.username, id: GLOBAL.activeUser.id, description: GLOBAL.activeUser.description, image: GLOBAL.activeUser.image })
             setUserProfileImage(GLOBAL.allUsers[GLOBAL.activeUserId].image)
         }
     }, [isFocused]);
@@ -37,13 +38,31 @@ const SettingsScreen = ({ navigation }) => {
         setPageLoading(false)
     }
 
+    const checkUserInput = (username, description) => {
+        const usernameChanged = GLOBAL.allUsers[GLOBAL.activeUserId].username != username;
+        const descriptionChanged = GLOBAL.allUsers[GLOBAL.activeUserId].description != description;
+        setUserInputDifferent(usernameChanged || descriptionChanged);
+        console.log(usernameChanged || descriptionChanged)
+
+    }
+
     const updateUserData = async () => {
         try {
-            GLOBAL.allUsers[GLOBAL.activeUserId].username = activeUser.username;
-            GLOBAL.allUsers[GLOBAL.activeUserId].description = activeUser.description;
-            await API.graphql(graphqlOperation(updateUser, { input: activeUser }));
-            navigation.navigate('MyProfileScreen')
-            console.log("User data updated")
+            if (isUserInputDifferent) {
+                GLOBAL.allUsers[GLOBAL.activeUserId].username = activeUser.username;
+                GLOBAL.allUsers[GLOBAL.activeUserId].description = activeUser.description;
+                GLOBAL.activeUser.username = activeUser.username;
+                GLOBAL.activeUser.description = activeUser.description;
+                toast.show("Account updated!", {
+                    duration: 5000,
+                    style: { marginTop: 35, backgroundColor: "green" },
+                    textStyle: { fontSize: 20 },
+                    placement: "top" // default to bottom
+                });
+
+                await API.graphql(graphqlOperation(updateUser, { input: activeUser }));
+                console.log("User data updated")
+            }
         } catch (error) {
             console.log("Error updating user data")
         }
@@ -54,6 +73,12 @@ const SettingsScreen = ({ navigation }) => {
             console.log(updatedUser)
             console.log(GLOBAL.allUsers[GLOBAL.activeUserId])
             //GLOBAL.allUsers[GLOBAL.activeUserId].username = updatedUser.username;
+            toast.show("Profile image updated!", {
+                duration: 5000,
+                style: { marginTop: 50, backgroundColor: "green" },
+                textStyle: { fontSize: 20 },
+                placement: "top" // default to bottom
+            });
             await API.graphql(graphqlOperation(updateUser, { input: updatedUser }));
             console.log("User profile picture updated")
         } catch (error) {
@@ -139,11 +164,19 @@ const SettingsScreen = ({ navigation }) => {
                         {/* user since   "createdAt": "2021-08-20T19:36:48.602Z", off the global user */}
                         <Text style={styles.titleText}>Nickname:</Text>
                         <View style={styles.inputContainer}>
-                            <TextInput style={styles.inputText} onChangeText={username => setActiveUser({ ...activeUser, username: username })}>{GLOBAL.allUsers[GLOBAL.activeUserId].username}</TextInput>
+                            <TextInput style={styles.inputText} onChangeText={username => {
+                                setActiveUser({ ...activeUser, username: username })
+                                checkUserInput(username, activeUser.description);
+                            }}
+                            >{GLOBAL.allUsers[GLOBAL.activeUserId].username}</TextInput>
                         </View>
                         <Text style={styles.titleText}>Profile description:</Text>
                         <View style={styles.inputContainer}>
-                            <TextInput style={styles.inputText} onChangeText={description => setActiveUser({ ...activeUser, description: description })}>{GLOBAL.allUsers[GLOBAL.activeUserId].description}</TextInput>
+                            <TextInput style={styles.inputText} onChangeText={description => {
+                                setActiveUser({ ...activeUser, description: description })
+                                checkUserInput(activeUser.username, description);
+                            }}
+                            >{GLOBAL.allUsers[GLOBAL.activeUserId].description}</TextInput>
                         </View>
                         <View style={styles.validationContainer}>
                             <Text style={styles.footerEmailText}>Email Verified: {userInfo.attributes.email}</Text>
@@ -152,7 +185,7 @@ const SettingsScreen = ({ navigation }) => {
                     </View>
                     <View style={styles.footer}>
                         <View style={styles.saveContainer}>
-                            <RoundedButton title="Save" color={colors.secondary} onPress={() => updateUserData()} />
+                            <RoundedButton title="Save" color={colors.secondary} onPress={() => updateUserData()} disabled={!isUserInputDifferent} />
                         </View>
                     </View>
                 </View>

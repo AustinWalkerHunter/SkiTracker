@@ -7,6 +7,7 @@ import Moment from 'moment';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { deleteCheckIn } from '../../src/graphql/mutations'
 import GLOBAL from '../global';
+import { useToast } from 'react-native-fast-toast'
 
 
 function PostCard({ item, title, postImage, location, likes, sport, createdAt, activeUserId, getUserProfile, displayFullImage }) {
@@ -15,6 +16,7 @@ function PostCard({ item, title, postImage, location, likes, sport, createdAt, a
     const profileImage = GLOBAL.allUsers[item.userID].image;
     const username = GLOBAL.allUsers[item.userID].username;
     const [postCardImage, setPostCardImage] = useState();
+    const toast = useToast()
 
     const getDate = (createdAt) => {
         Moment.locale('en');
@@ -56,6 +58,13 @@ function PostCard({ item, title, postImage, location, likes, sport, createdAt, a
             if (activeUserId == item.userID) {
                 await API.graphql(graphqlOperation(deleteCheckIn, { input: { id: item.id } }));
                 setPostCardDeleted(true);
+                toast.show("Check-in deleted!", {
+                    duration: 5000,
+                    style: { marginTop: 35, backgroundColor: "red" },
+                    textStyle: { fontSize: 20 },
+                    placement: "top" // default to bottom
+
+                });
             }
         } catch (error) {
             console.log("Error deleting from db")
