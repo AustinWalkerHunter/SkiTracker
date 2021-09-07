@@ -59,7 +59,7 @@ function PostCard({ item, title, postImage, location, likes, sport, createdAt, a
                 await API.graphql(graphqlOperation(deleteCheckIn, { input: { id: item.id } }));
                 setPostCardDeleted(true);
                 toast.show("Check-in deleted!", {
-                    duration: 5000,
+                    duration: 2000,
                     style: { marginTop: 35, backgroundColor: "red" },
                     textStyle: { fontSize: 20 },
                     placement: "top" // default to bottom

@@ -42,8 +42,6 @@ const SettingsScreen = () => {
         const usernameChanged = GLOBAL.allUsers[GLOBAL.activeUserId].username != username;
         const descriptionChanged = GLOBAL.allUsers[GLOBAL.activeUserId].description != description;
         setUserInputDifferent(usernameChanged || descriptionChanged);
-        console.log(usernameChanged || descriptionChanged)
-
     }
 
     const updateUserData = async () => {
@@ -54,7 +52,7 @@ const SettingsScreen = () => {
                 GLOBAL.activeUser.username = activeUser.username;
                 GLOBAL.activeUser.description = activeUser.description;
                 toast.show("Account updated!", {
-                    duration: 5000,
+                    duration: 2000,
                     style: { marginTop: 35, backgroundColor: "green" },
                     textStyle: { fontSize: 20 },
                     placement: "top" // default to bottom
@@ -70,11 +68,8 @@ const SettingsScreen = () => {
 
     const updateUserProfilePicture = async (updatedUser) => {
         try {
-            console.log(updatedUser)
-            console.log(GLOBAL.allUsers[GLOBAL.activeUserId])
-            //GLOBAL.allUsers[GLOBAL.activeUserId].username = updatedUser.username;
             toast.show("Profile image updated!", {
-                duration: 5000,
+                duration: 2000,
                 style: { marginTop: 50, backgroundColor: "green" },
                 textStyle: { fontSize: 20 },
                 placement: "top" // default to bottom

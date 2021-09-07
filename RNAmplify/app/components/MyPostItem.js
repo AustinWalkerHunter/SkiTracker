@@ -15,7 +15,7 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
             setPostCardDeleted(true);
             updateDayCount();
             toast.show("Check-in deleted", {
-                duration: 5000,
+                duration: 2000,
                 style: { marginTop: 35, backgroundColor: "red" },
                 textStyle: { fontSize: 20 },
                 placement: "top" // default to bottom
