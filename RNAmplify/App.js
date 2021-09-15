@@ -19,7 +19,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import { ToastProvider } from 'react-native-fast-toast'
 
 
-import WelcomeScreen from './app/screens/WelcomeScreen';
 import SettingsScreen from './app/screens/SettingsScreen';
 import AddFriendScreen from './app/screens/AddFriendScreen'
 import UserProfileScreen from './app/screens/UserProfileScreen'
@@ -28,16 +27,30 @@ const Main = createStackNavigator();
 
 
 function App() {
-  const [appLoading, setAppLoading] = useState(true)
+  const [preparingApp, setPreparingApp] = useState(true)
 
   useEffect(() => {
-    fetchActiveUser();
-    fetchAllUsers();
-    fetchCheckIns();
-    setTimeout(function () {
-      setAppLoading(false)
-    }, 6000);
-  }, [])
+    async function prepare() {
+      try {
+        // Keep the splash screen visible while we fetch resources
+        await SplashScreen.preventAutoHideAsync(); // This doesnt seem to be working :/
+        await fetchAppData(); // the white screen still shows while this is fetching, spash screen prevent hide is not working
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setPreparingApp(false)
+        //await SplashScreen.hideAsync(); // maybe put this on the first screen
+      }
+    }
+    prepare();
+  }, []);
+
+
+  async function fetchAppData() {
+    await fetchActiveUser()
+    await fetchAllUsers();
+    await fetchCheckIns();
+  }
 
   const fetchCheckIns = async () => {
     var checkInIdsAndImages = {}
@@ -123,59 +136,58 @@ function App() {
     }
   }
 
+  if (preparingApp) {
+    return null
+  }
 
   return (
-    appLoading ?
-      <WelcomeScreen />
-      :
-      <ToastProvider>
-        < NavigationContainer >
-          <Main.Navigator>
-
-            <Main.Screen
-              name="HomeScreen"
-              component={Tabs}
-              options={{ headerShown: false, title: 'Home' }}
-            />
-            <Main.Screen
-              name="SettingsScreen"
-              component={SettingsScreen}
-              options={{
-                headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-                headerBackTitle: 'Back',
-                headerBackTitleStyle: { color: colors.navigationText },
-                headerTitleStyle: { color: colors.navigationText },
-                title: 'Account Settings'
-              }}
-            />
-            <Main.Screen
-              name="AddFriendScreen"
-              component={AddFriendScreen}
-              options={{
-                headerShown: true,
-                headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-                headerBackTitle: 'Back',
-                headerBackTitleStyle: { color: colors.navigationText },
-                headerTitleStyle: { color: colors.navigationText },
-                title: 'Add Friends',
-              }}
-            />
-            <Main.Screen
-              name="UserProfileScreen"
-              component={UserProfileScreen}
-              options={{
-                headerShown: true,
-                headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-                headerBackTitle: 'Back',
-                headerBackTitleStyle: { color: colors.navigationText },
-                headerTitleStyle: { color: colors.navigationText },
-                title: 'User Profile',
-              }}
-            />
-          </Main.Navigator>
-          <StatusBar style="light" />
-        </NavigationContainer >
-      </ToastProvider>
+    <ToastProvider>
+      < NavigationContainer >
+        <Main.Navigator>
+          <Main.Screen
+            name="HomeScreen"
+            component={Tabs}
+            options={{ headerShown: false, title: 'Home' }}
+          />
+          <Main.Screen
+            name="SettingsScreen"
+            component={SettingsScreen}
+            options={{
+              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+              headerBackTitle: 'Back',
+              headerBackTitleStyle: { color: colors.navigationText },
+              headerTitleStyle: { color: colors.navigationText },
+              title: 'Account Settings'
+            }}
+          />
+          <Main.Screen
+            name="AddFriendScreen"
+            component={AddFriendScreen}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+              headerBackTitle: 'Back',
+              headerBackTitleStyle: { color: colors.navigationText },
+              headerTitleStyle: { color: colors.navigationText },
+              title: 'Add Friends',
+            }}
+          />
+          <Main.Screen
+            name="UserProfileScreen"
+            component={UserProfileScreen}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+              headerBackTitle: 'Back',
+              headerBackTitleStyle: { color: colors.navigationText },
+              headerTitleStyle: { color: colors.navigationText },
+              title: 'User Profile',
+            }}
+          />
+        </Main.Navigator>
+        <StatusBar style="light" />
+      </NavigationContainer >
+    </ToastProvider>
   )
 }
 
