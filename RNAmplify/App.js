@@ -1,5 +1,5 @@
 // import 'react-native-gesture-handler';
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import GLOBAL from './app/global';
 
 import Tabs from './app/navigation/Tabs'
@@ -11,6 +11,7 @@ import { getUser, listUsers, checkInsByDate } from './src/graphql/queries'
 import { createUser } from './src/graphql/mutations'
 
 import Amplify, { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
+import { View, Text, onLayoutRootView } from 'react-native';
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 import { withAuthenticator } from 'aws-amplify-react-native'
@@ -27,14 +28,18 @@ const Main = createStackNavigator();
 
 
 function App() {
+
+
   const [preparingApp, setPreparingApp] = useState(true)
 
   useEffect(() => {
     async function prepare() {
       try {
         // Keep the splash screen visible while we fetch resources
-        await SplashScreen.preventAutoHideAsync(); // This doesnt seem to be working :/
+        await SplashScreen.preventAutoHideAsync()
+          .catch(() => { /* reloading the app might trigger some race conditions, ignore them */ });
         await fetchAppData(); // the white screen still shows while this is fetching, spash screen prevent hide is not working
+        await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);
       } finally {
@@ -136,8 +141,25 @@ function App() {
     }
   }
 
+  const onLayoutRootView = useCallback(async () => {
+    if (preparingApp) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreen.hideAsync();
+    }
+  }, [preparingApp]);
+
   if (preparingApp) {
-    return null
+    return (
+      <View
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary }}
+        onLayout={onLayoutRootView}>
+        <Text style={{ color: 'white', fontSize: 45 }}>Welcome {GLOBAL.activeUser.username}👋</Text>
+      </View>
+    )
   }
 
   return (
