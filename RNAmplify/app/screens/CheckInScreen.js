@@ -17,8 +17,7 @@ import GLOBAL from '../global';
 import { useToast } from 'react-native-fast-toast'
 
 
-
-function CheckIn({ closeModalAndSave }) {
+const CheckInScreen = ({ navigation }) => {
     const toast = useToast()
     const [checkIn, setCheckIn] = useState({
         title: null,
@@ -32,7 +31,7 @@ function CheckIn({ closeModalAndSave }) {
         Keyboard.dismiss()
     }
 
-    async function submit() {
+    const submit = async () => {
         if (checkIn.sport != '') {
             const newCheckIn = {
                 title: checkIn.title ? checkIn.title : "Checked in " + (checkIn.sport == "skateboard" ? "skateboarding" : checkIn.sport),
@@ -41,7 +40,6 @@ function CheckIn({ closeModalAndSave }) {
                 image: checkIn.image,
                 likes: 0,
                 userID: GLOBAL.activeUserId,
-                //userName: activeUser.username, //this is going away
                 type: "CheckIn"
             }
             try {
@@ -49,14 +47,14 @@ function CheckIn({ closeModalAndSave }) {
                     //store in the global state check in with this image
                     // that way I can diplay it right away for the user without fetching storage until the next time they log in
                     //after storing in global, handleImagePicked
-                    GLOBAL.allCheckIns = { newCheckIn, ...GLOBAL.allCheckIns }
+                    //GLOBAL.allCheckIns = { newCheckIn, ...GLOBAL.allCheckIns }
                     let imagePath = await handleImagePicked(newCheckIn.image);
                     const updatedCheckIn = { ...newCheckIn, image: imagePath };
                     await API.graphql(graphqlOperation(createCheckIn, { input: updatedCheckIn }));
                     console.log("Check-in created with photo")
                 }
                 else {
-                    GLOBAL.allCheckIns = { newCheckIn, ...GLOBAL.allCheckIns }
+                    //GLOBAL.allCheckIns = { newCheckIn, ...GLOBAL.allCheckIns }
                     await API.graphql(graphqlOperation(createCheckIn, { input: newCheckIn }));
                     toast.show("Check-in created!", {
                         duration: 2000,
@@ -64,12 +62,15 @@ function CheckIn({ closeModalAndSave }) {
                         textStyle: { fontSize: 20 },
                         placement: "top" // default to bottom
                     });
-                    console.log("Check-in created")
+                    setCheckIn({ title: null, sport: '', location: '', image: null });
+                    console.log("Check-in created");
                 }
+                navigation.navigate('HomeScreen', {
+                    newCheckInAdded: true
+                });
             } catch (error) {
-                console.log("Error getting user from db")
+                console.log("Error getting user from db"); ß
             }
-            closeModalAndSave()
         }
     }
 
@@ -84,7 +85,6 @@ function CheckIn({ closeModalAndSave }) {
                 quality: 0.1
             });
             if (result.cancelled) {
-                alert('Upload cancelled');
                 return;
             } else {
                 // setPercentage(0);
@@ -195,7 +195,7 @@ function CheckIn({ closeModalAndSave }) {
                 }
             </View>
             <View style={styles.postContainer}>
-                <RoundedButton title="CHECK-IN" color={colors.secondary} onPress={submit}></RoundedButton>
+                <RoundedButton title="CHECK-IN" color={colors.secondary} onPress={() => submit()}></RoundedButton>
             </View>
         </SafeScreen>
     );
@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
         width: "100%",
         justifyContent: "space-evenly",
         flexDirection: "row",
+        marginTop: 15,
     },
     pageTitle: {
         color: "white",
@@ -277,7 +278,8 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignSelf: "center",
         width: "75%",
+        marginBottom: 15
     },
 })
 
-export default CheckIn;
+export default CheckInScreen;

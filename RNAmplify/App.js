@@ -11,7 +11,7 @@ import { getUser, listUsers, checkInsByDate } from './src/graphql/queries'
 import { createUser } from './src/graphql/mutations'
 
 import Amplify, { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
-import { View, Text, onLayoutRootView } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 import { withAuthenticator } from 'aws-amplify-react-native'
@@ -157,7 +157,14 @@ function App() {
       <View
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary }}
         onLayout={onLayoutRootView}>
-        <Text style={{ color: 'white', fontSize: 45 }}>Welcome {GLOBAL.activeUser.username}👋</Text>
+        <Image
+          source={require('./assets/icon.png')}
+          style={{
+            resizeMode: 'contain',
+            width: 120,
+            height: 120
+          }}
+        />
       </View>
     )
   }
@@ -167,7 +174,7 @@ function App() {
       < NavigationContainer >
         <Main.Navigator>
           <Main.Screen
-            name="HomeScreen"
+            name="Tabs"
             component={Tabs}
             options={{ headerShown: false, title: 'Home' }}
           />

@@ -13,8 +13,9 @@ import colors from "../constants/colors"
 
 import HomeScreen from '../screens/HomeScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
+import CheckInScreen from '../screens/CheckInScreen';
 
-const FeedStack = createStackNavigator();
+const HomeStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
@@ -27,7 +28,7 @@ const Tabs = () => (
                 height: 50
             },
             inactiveTintColor: 'grey',
-            activeTintColor: 'white',
+            activeTintColor: colors.secondary,
             showIcon: true,
             showLabel: false,
             style: {
@@ -37,12 +38,16 @@ const Tabs = () => (
             renderIndicator: () => null
         }}
     >
-        <Tab.Screen name="Feed" component={FeedStackScreen} options={{
+        <Tab.Screen name="Home" component={HomeStackScreen} options={{
             tabBarIcon: ({ color }) => (
                 <Ionicons name="ios-home-outline" size={35} color={color} />
             ),
         }} />
-
+        <Tab.Screen name="CheckIn" component={CheckInScreen} options={{
+            tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons name="map-marker-check" size={40} color={color} />
+            ),
+        }} />
         <Tab.Screen name="Profile" component={ProfileStackScreen} options={{
             tabBarIcon: ({ color }) => (
                 <MaterialCommunityIcons name="account-outline" size={40} color={color} />
@@ -51,9 +56,9 @@ const Tabs = () => (
     </Tab.Navigator >
 )
 
-const FeedStackScreen = ({ navigation }) => (
-    < FeedStack.Navigator >
-        <FeedStack.Screen
+const HomeStackScreen = ({ navigation }) => (
+    < HomeStack.Navigator >
+        <HomeStack.Screen
             name="HomeScreen"
             component={HomeScreen}
             options={{
@@ -79,7 +84,7 @@ const FeedStackScreen = ({ navigation }) => (
                 ),
             }}
         />
-    </FeedStack.Navigator >
+    </HomeStack.Navigator >
 )
 
 const ProfileStackScreen = ({ navigation }) => (

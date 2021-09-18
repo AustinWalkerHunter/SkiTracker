@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
 import Profile from "../components/Profile"
-import { StyleSheet } from 'react-native';
 import { checkInsByDate } from '../../src/graphql/queries'
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';

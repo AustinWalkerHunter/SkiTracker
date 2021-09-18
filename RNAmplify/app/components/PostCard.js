@@ -60,7 +60,7 @@ function PostCard({ item, title, postImage, location, likes, sport, createdAt, a
                 setPostCardDeleted(true);
                 toast.show("Check-in deleted!", {
                     duration: 2000,
-                    style: { marginTop: 35, backgroundColor: "red" },
+                    style: { marginTop: 35, backgroundColor: "green" },
                     textStyle: { fontSize: 20 },
                     placement: "top" // default to bottom
 
