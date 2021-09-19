@@ -28,7 +28,7 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
                         <FlatList
                             data={items}
                             keyExtractor={(item, index) => String(index)}
-                            renderItem={({ item }) => <PickerItem label={item.label} onPress={() => {
+                            renderItem={({ item }) => <PickerItem label={item.resort_name} onPress={() => {
                                 onSelectedItem(item)
                                 setModalVisible(false)
                             }}

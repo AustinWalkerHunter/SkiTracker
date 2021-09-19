@@ -25,7 +25,7 @@ const Tabs = () => (
         tabBarOptions={{
             iconStyle: {
                 width: 40,
-                height: 50
+                height: 60
             },
             inactiveTintColor: 'grey',
             activeTintColor: colors.secondary,
@@ -33,7 +33,7 @@ const Tabs = () => (
             showLabel: false,
             style: {
                 backgroundColor: colors.navigation,
-                height: "10%"
+                height: "10%",
             },
             renderIndicator: () => null
         }}
@@ -45,7 +45,7 @@ const Tabs = () => (
         }} />
         <Tab.Screen name="CheckIn" component={CheckInScreen} options={{
             tabBarIcon: ({ color }) => (
-                <MaterialCommunityIcons name="map-marker-check" size={40} color={color} />
+                <MaterialCommunityIcons name="map-marker-check" size={42} color={color} />
             ),
         }} />
         <Tab.Screen name="Profile" component={ProfileStackScreen} options={{

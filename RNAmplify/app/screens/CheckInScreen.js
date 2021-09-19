@@ -15,7 +15,7 @@ import uuid from 'react-native-uuid';
 import * as FileSystem from "expo-file-system";
 import GLOBAL from '../global';
 import { useToast } from 'react-native-fast-toast'
-
+import resortData from '../constants/resortData'
 
 const CheckInScreen = ({ navigation }) => {
     const toast = useToast()
@@ -139,11 +139,8 @@ const CheckInScreen = ({ navigation }) => {
         { label: "skateboard", value: 3 },
 
     ]
-    const locations = [
-        { label: "Bogus Basin, ID", value: 1 },
-        { label: "Big Sky, MT", value: 2 },
-        { label: "Sugar Bowl, CA", value: 2 }
-    ]
+
+
     return (
         <SafeScreen style={styles.screen}>
             <View style={styles.headerRow}>
@@ -176,10 +173,10 @@ const CheckInScreen = ({ navigation }) => {
             <View style={styles.locationContainer}>
                 <InputPicker
                     selectedItem={checkIn.location}
-                    onSelectedItem={location => setCheckIn({ ...checkIn, location: location.label })}
+                    onSelectedItem={resortData => setCheckIn({ ...checkIn, location: resortData.resort_name })}
                     iconName="location-outline"
                     placeholder="Add location"
-                    items={locations}
+                    items={resortData}
                     textStyle={styles.inputTitle}
                 />
             </View>
