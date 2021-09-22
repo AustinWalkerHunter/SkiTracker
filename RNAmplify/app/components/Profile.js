@@ -23,7 +23,7 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
     }
 
     return (
-        <SafeScreen style={styles.screen}>
+        <View style={styles.screen}>
             <ScrollView>
                 <View style={styles.profileContainer}>
                     <View style={styles.profilePictureContainer}>
@@ -46,7 +46,6 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
                                 }
                             </TouchableOpacity>
                         }
-
                     </View>
                     <View style={styles.nameContainer}>
                         <Text style={styles.userName}>
@@ -93,7 +92,7 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
                     </View>
                     : null
             }
-        </SafeScreen>
+        </View>
     );
 }
 
@@ -118,7 +117,6 @@ const styles = StyleSheet.create({
     userName: {
         color: "white",
         fontSize: 30
-
     },
     descriptionContainer: {
         width: "65%",

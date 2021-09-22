@@ -57,19 +57,13 @@ export const createCheckIn = /* GraphQL */ `
       location
       sport
       image
+      date
       likes
       userID
       userName
       type
       createdAt
       comments {
-        items {
-          id
-          checkInID
-          content
-          createdAt
-          updatedAt
-        }
         nextToken
       }
       updatedAt
@@ -87,19 +81,13 @@ export const updateCheckIn = /* GraphQL */ `
       location
       sport
       image
+      date
       likes
       userID
       userName
       type
       createdAt
       comments {
-        items {
-          id
-          checkInID
-          content
-          createdAt
-          updatedAt
-        }
         nextToken
       }
       updatedAt
@@ -117,19 +105,13 @@ export const deleteCheckIn = /* GraphQL */ `
       location
       sport
       image
+      date
       likes
       userID
       userName
       type
       createdAt
       comments {
-        items {
-          id
-          checkInID
-          content
-          createdAt
-          updatedAt
-        }
         nextToken
       }
       updatedAt
@@ -150,14 +132,12 @@ export const createComment = /* GraphQL */ `
         location
         sport
         image
+        date
         likes
         userID
         userName
         type
         createdAt
-        comments {
-          nextToken
-        }
         updatedAt
       }
       content
@@ -180,14 +160,12 @@ export const updateComment = /* GraphQL */ `
         location
         sport
         image
+        date
         likes
         userID
         userName
         type
         createdAt
-        comments {
-          nextToken
-        }
         updatedAt
       }
       content
@@ -210,14 +188,12 @@ export const deleteComment = /* GraphQL */ `
         location
         sport
         image
+        date
         likes
         userID
         userName
         type
         createdAt
-        comments {
-          nextToken
-        }
         updatedAt
       }
       content

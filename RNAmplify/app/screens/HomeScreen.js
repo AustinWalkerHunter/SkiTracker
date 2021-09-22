@@ -90,12 +90,6 @@ const HomeScreen = ({ route, navigation }) => {
                                 renderItem={({ item }) =>
                                     <PostCard
                                         item={item}
-                                        title={item.title}
-                                        location={item.location}
-                                        likes={item.likes}
-                                        postImage={item.image}
-                                        sport={item.sport}
-                                        createdAt={item.createdAt}
                                         activeUserId={GLOBAL.activeUserId}
                                         getUserProfile={getUserProfile}
                                         displayFullImage={displayFullImage}
@@ -140,6 +134,11 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         backgroundColor: colors.navigation,
+    },
+    checkInList: {
+        //alignItems: 'center',
+        marginHorizontal: 5
+        //width: "98%"
     },
     imageViewerContainer: {
         position: 'absolute',

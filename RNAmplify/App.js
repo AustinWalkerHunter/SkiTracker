@@ -161,8 +161,8 @@ function App() {
           source={require('./assets/icon.png')}
           style={{
             resizeMode: 'contain',
-            width: 120,
-            height: 120
+            width: 110,
+            height: 110
           }}
         />
       </View>

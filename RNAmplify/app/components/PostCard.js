@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Image, Text, StyleSheet, ImageBackground } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import ProfileIcon from '../components/ProfileIcon'
@@ -10,22 +10,45 @@ import GLOBAL from '../global';
 import { useToast } from 'react-native-fast-toast'
 
 
-function PostCard({ item, title, postImage, location, likes, sport, createdAt, activeUserId, getUserProfile, displayFullImage }) {
+function PostCard({ item, activeUserId, getUserProfile, displayFullImage }) {
     // const [numberOfLikes, setNumberOfLikes] = useState(likes);
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const profileImage = GLOBAL.allUsers[item.userID].image;
     const username = GLOBAL.allUsers[item.userID].username;
     const [postCardImage, setPostCardImage] = useState();
+    const holidayImages = {
+        thanksGiving: require("../../assets/thanksGiving.jpeg"),
+        christmas: require("../../assets/christmas.jpeg"),
+        carlyBday: require("../../assets/carlyBday.png"),
+    }
+
     const toast = useToast()
 
-    const getDate = (createdAt) => {
+    const getDate = (date) => {
         Moment.locale('en');
-        var dt = createdAt;
+        var dt = date;
         return (Moment(dt).format('MMM D, YYYY'))
     }
 
+    const getHolidayImage = () => {
+        const date = getDate(item.date);
+        const thanksGiving = 'Nov 25, 2021';
+        const christmas = 'Dec 25, 2021';
+        const carlyBday = 'Dec 16, 2021'
+
+        if (date == thanksGiving)
+            return holidayImages.thanksGiving;
+        if (date == christmas)
+            return holidayImages.christmas;
+        if (date == carlyBday)
+            return holidayImages.carlyBday;
+        return null
+    }
+
+
     useEffect(() => {
-        if (postImage) {
+        getHolidayImage();
+        if (item.postImage) {
             const cachedImage = GLOBAL.checkInPhotos[item.id];
             if (cachedImage) {
                 setPostCardImage(cachedImage);
@@ -38,9 +61,9 @@ function PostCard({ item, title, postImage, location, likes, sport, createdAt, a
 
 
     async function fetchPostCardImage() {
-        if (postImage) {
+        if (item.postImage) {
             try {
-                await Storage.get(postImage)
+                await Storage.get(item.postImage)
                     .then((result) => {
                         setPostCardImage(result);
                     })
@@ -75,47 +98,50 @@ function PostCard({ item, title, postImage, location, likes, sport, createdAt, a
     return (
         <View>
             {!postCardDeleted && (
-                <View style={[styles.postBox, postImage ? { height: 350 } : { height: 125 }]}>
-                    <View style={styles.headerContainer}>
-                        <TouchableOpacity style={styles.profilePictureContainer} onPress={() => getUserProfile(item.userID)}>
-                            {
-                                profileImage ? <ProfileIcon size={50} image={profileImage} /> :
-                                    <MaterialCommunityIcons name="account-outline" size={40} color="grey" />}
-                        </TouchableOpacity>
-                        <View style={styles.headerTextContainer}>
-                            <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
-                                <Text style={styles.authorText}>{username}</Text>
+                <View style={[styles.postBox, item.postImage ? { height: 350 } : { height: 125 }]}>
+                    <ImageBackground source={getHolidayImage()} resizeMode='repeat' style={styles.backgroundImage} imageStyle={{ opacity: 0.6 }}>
+                        <View style={styles.headerContainer}>
+                            <TouchableOpacity style={styles.profilePictureContainer} onPress={() => getUserProfile(item.userID)}>
+                                {
+                                    profileImage ? <ProfileIcon size={50} image={profileImage} /> :
+                                        <MaterialCommunityIcons name="account-outline" size={40} color="grey" />}
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => console.log("Location Clicked")}>
-                                <Text style={styles.location}>{location}</Text>
-                            </TouchableOpacity>
+                            <View style={styles.headerTextContainer}>
+                                <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
+                                    <Text style={styles.authorText}>{username}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => console.log("Location Clicked")}>
+                                    <Text style={styles.location}>{item.location}</Text>
+                                </TouchableOpacity>
+                            </View>
+                            {activeUserId == item.userID &&
+                                <TouchableOpacity style={styles.deletionContainer} onPress={() => deleteCheckin(item)}>
+                                    <Feather name="x" size={24} color="white" />
+                                </TouchableOpacity>
+                            }
                         </View>
-                        {activeUserId == item.userID &&
-                            <TouchableOpacity style={styles.deletionContainer} onPress={() => deleteCheckin(item)}>
-                                <Feather name="x" size={24} color="white" />
-                            </TouchableOpacity>
-                        }
-                    </View>
-                    {postCardImage ?
-                        <TouchableOpacity style={styles.imageContainer} onPress={() => displayFullImage(postCardImage)}>
-                            <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
-                        </TouchableOpacity> : null}
-                    <View style={styles.footer}>
-                        <View style={styles.titleContainer}>
-                            <Text style={styles.titleText}>{title}</Text>
-                        </View>
-                        <View style={styles.dateContainer}>
-                            <Text style={styles.dateText}>{getDate(createdAt)}</Text>
-                        </View>
+                        {postCardImage ?
+                            <TouchableOpacity style={styles.imageContainer} onPress={() => displayFullImage(postCardImage)}>
+                                <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
+                            </TouchableOpacity> : null}
+                        <View style={styles.footer}>
+                            <View style={styles.titleContainer}>
+                                <Text style={styles.titleText}>{item.title}</Text>
+                            </View>
+                            <View style={styles.dateContainer}>
+                                <Text style={styles.dateText}>{getDate(item.date)}</Text>
+                            </View>
 
-                        {/* <TouchableOpacity style={styles.reaction} onPress={() => setNumberOfLikes(1)}>
+                            {/* <TouchableOpacity style={styles.reaction} onPress={() => setNumberOfLikes(1)}>
                     <Text style={styles.reactionNumber}>{numberOfLikes}</Text>
                     <AntDesign name="like2" size={24} color="white" />
                 </TouchableOpacity> */}
-                    </View>
+                        </View>
+                    </ImageBackground>
                 </View>
-            )}
-        </View>
+            )
+            }
+        </View >
     );
 }
 
@@ -126,6 +152,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: '100%',
         marginBottom: 10,
+        //marginHorizontal: 2,
         borderRadius: 10,
     },
     headerContainer: {
@@ -138,12 +165,12 @@ const styles = StyleSheet.create({
     },
     authorText: {
         color: colors.primaryText,
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: "bold",
     },
     location: {
         color: colors.primaryText,
-        fontSize: 20,
+        fontSize: 15,
         fontStyle: 'italic',
         fontWeight: "300"
     },
@@ -169,6 +196,12 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%'
     },
+    backgroundImage: {
+        height: '100%',
+        width: '100%',
+        borderRadius: 6,
+        overflow: 'hidden',
+    },
     footer: {
         flexDirection: 'row',
         height: 75,
@@ -185,7 +218,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         color: colors.primaryText,
-        fontSize: 20,
+        fontSize: 15,
         width: "auto",
         marginBottom: 5
     },

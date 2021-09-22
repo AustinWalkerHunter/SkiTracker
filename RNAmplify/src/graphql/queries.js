@@ -40,19 +40,13 @@ export const getCheckIn = /* GraphQL */ `
       location
       sport
       image
+      date
       likes
       userID
       userName
       type
       createdAt
       comments {
-        items {
-          id
-          checkInID
-          content
-          createdAt
-          updatedAt
-        }
         nextToken
       }
       updatedAt
@@ -72,14 +66,12 @@ export const listCheckIns = /* GraphQL */ `
         location
         sport
         image
+        date
         likes
         userID
         userName
         type
         createdAt
-        comments {
-          nextToken
-        }
         updatedAt
       }
       nextToken
@@ -97,14 +89,12 @@ export const getComment = /* GraphQL */ `
         location
         sport
         image
+        date
         likes
         userID
         userName
         type
         createdAt
-        comments {
-          nextToken
-        }
         updatedAt
       }
       content
@@ -123,19 +113,6 @@ export const listComments = /* GraphQL */ `
       items {
         id
         checkInID
-        checkIn {
-          id
-          title
-          location
-          sport
-          image
-          likes
-          userID
-          userName
-          type
-          createdAt
-          updatedAt
-        }
         content
         createdAt
         updatedAt
@@ -167,14 +144,12 @@ export const checkInsByDate = /* GraphQL */ `
         location
         sport
         image
+        date
         likes
         userID
         userName
         type
         createdAt
-        comments {
-          nextToken
-        }
         updatedAt
       }
       nextToken

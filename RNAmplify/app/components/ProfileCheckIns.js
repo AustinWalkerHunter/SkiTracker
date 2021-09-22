@@ -30,7 +30,7 @@ function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount }) {
                 </TouchableOpacity>
             </View>
             {!showPhotos ?
-                checkIns.length > 0 ?
+                checkIns && checkIns.length > 0 ?
                     <FlatList
                         data={checkIns}
                         inverted={false}
@@ -92,7 +92,8 @@ function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount }) {
 
 const styles = StyleSheet.create({
     posts: {
-        marginVertical: 15
+        marginVertical: 15,
+        marginHorizontal: 2
     },
     filter: {
         flexDirection: "row",

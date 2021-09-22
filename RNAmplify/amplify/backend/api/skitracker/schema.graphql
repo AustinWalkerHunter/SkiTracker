@@ -12,6 +12,7 @@ type CheckIn @model
   location: String
   sport: String!
   image: String
+  date: String!
   likes: Int!
   userID: ID!
   userName: String

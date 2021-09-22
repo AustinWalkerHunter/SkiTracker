@@ -4,8 +4,8 @@ import Amplify, { Auth } from 'aws-amplify';
 import awsconfig from '../../src/aws-exports'
 Amplify.configure(awsconfig);
 
-import { FontAwesome, Ionicons, MaterialCommunityIcons, Feather, MaterialIcons } from "@expo/vector-icons";
-import { TouchableOpacity } from 'react-native';
+import { Ionicons, MaterialCommunityIcons, Feather, MaterialIcons } from "@expo/vector-icons";
+import { Text, TouchableOpacity } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import colors from "../constants/colors"
@@ -17,6 +17,7 @@ import CheckInScreen from '../screens/CheckInScreen';
 
 const HomeStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
+const CheckInStack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
 const Tabs = () => (
@@ -27,13 +28,14 @@ const Tabs = () => (
                 width: 40,
                 height: 60
             },
+            tabBarVisible: false,
             inactiveTintColor: 'grey',
             activeTintColor: colors.secondary,
             showIcon: true,
             showLabel: false,
             style: {
                 backgroundColor: colors.navigation,
-                height: "10%",
+                height: "11%",
             },
             renderIndicator: () => null
         }}
@@ -43,9 +45,9 @@ const Tabs = () => (
                 <Ionicons name="ios-home-outline" size={35} color={color} />
             ),
         }} />
-        <Tab.Screen name="CheckIn" component={CheckInScreen} options={{
+        <Tab.Screen name="CheckIn" component={CheckInStackScreen} options={{
             tabBarIcon: ({ color }) => (
-                <MaterialCommunityIcons name="map-marker-check" size={42} color={color} />
+                <MaterialCommunityIcons name="map-marker-check" size={38} color={color} />
             ),
         }} />
         <Tab.Screen name="Profile" component={ProfileStackScreen} options={{
@@ -63,7 +65,7 @@ const HomeStackScreen = ({ navigation }) => (
             component={HomeScreen}
             options={{
                 headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-                headerTitleStyle: { color: colors.navigationText },
+                headerTitleStyle: { fontSize: 18, color: colors.navigationText },
                 title: 'Feed',
                 headerLeft: () => (
                     <TouchableOpacity style={{ marginHorizontal: 25 }}>
@@ -87,6 +89,26 @@ const HomeStackScreen = ({ navigation }) => (
     </HomeStack.Navigator >
 )
 
+const CheckInStackScreen = ({ navigation }) => (
+    <CheckInStack.Navigator>
+        <CheckInStack.Screen
+            name="CheckInScreen"
+            component={CheckInScreen}
+            options={{
+                headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+                headerTitleStyle: { fontSize: 18, color: colors.navigationText },
+                title: 'Check In',
+                // headerLeft: () => (
+                //     <TouchableOpacity style={{ marginHorizontal: 25 }} onPress={() => navigation.navigate('HomeScreen')} >
+                //         <Text style={{ fontSize: 15, color: colors.navigationText }}>Cancel</Text>
+                //     </TouchableOpacity>
+                // )
+            }}
+        />
+    </CheckInStack.Navigator>
+)
+
+
 const ProfileStackScreen = ({ navigation }) => (
     <ProfileStack.Navigator>
         <ProfileStack.Screen
@@ -94,7 +116,7 @@ const ProfileStackScreen = ({ navigation }) => (
             component={MyProfileScreen}
             options={{
                 headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-                headerTitleStyle: { color: colors.navigationText },
+                headerTitleStyle: { fontSize: 18, color: colors.navigationText },
                 title: 'My Profile',
                 headerLeft: () => (
                     <TouchableOpacity style={{ marginHorizontal: 25 }}>

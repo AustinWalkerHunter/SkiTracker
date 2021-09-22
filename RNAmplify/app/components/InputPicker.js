@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Keyboard } from 'react-native';
 import PickerItem from '../components/PickerItem'
 import { Ionicons } from '@expo/vector-icons';
+import colors from '../constants/colors';
 
 function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, onSelectedItem }) {
     const [modalVisible, setModalVisible] = useState(false)
@@ -12,7 +13,7 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
                 setModalVisible(true)
                 Keyboard.dismiss()
             }}>
-                <Ionicons name={iconName} size={35} color="white" />
+                <Ionicons name={iconName} size={30} color="white" />
                 <Text style={textStyle}>{selectedItem ? selectedItem : placeholder}</Text>
             </TouchableOpacity>
             <Modal visible={modalVisible} transparent={true} animationType="slide">
@@ -43,7 +44,8 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
+        width: "50%",
+        padding: 10,
         flexDirection: 'row',
     },
     titleInput: {
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     modalView: {
-        backgroundColor: 'black',
+        backgroundColor: colors.navigation,
         height: "50%"
     },
     closeModalButton: {
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         marginTop: 20,
         //bottom: "36%",
-        borderRadius: 25,
+        borderRadius: 15,
         borderWidth: 1,
         borderColor: "white",
         padding: 5,

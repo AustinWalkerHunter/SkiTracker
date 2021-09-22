@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Keyboard, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Keyboard, Image, Modal } from 'react-native';
 import { Auth, Storage, API, graphqlOperation } from 'aws-amplify';
 import SafeScreen from '../components/SafeScreen'
 import UserInput from '../components/UserInput'
@@ -16,15 +16,33 @@ import * as FileSystem from "expo-file-system";
 import GLOBAL from '../global';
 import { useToast } from 'react-native-fast-toast'
 import resortData from '../constants/resortData'
+import { useIsFocused } from "@react-navigation/native";
+import DatePicker from '../components/DatePicker';
+import Moment from 'moment';
 
 const CheckInScreen = ({ navigation }) => {
     const toast = useToast()
+
     const [checkIn, setCheckIn] = useState({
         title: null,
         sport: '',
         location: '',
-        image: null
+        image: null,
+        date: (Moment(new Date()).format('MMM D, YYYY'))
     });
+    const isFocused = useIsFocused();
+
+    const setSelectedDate = (date) => {
+        Moment.locale('en');
+        const selectedDate = (Moment(date).format('MMM D, YYYY'))
+        setCheckIn({ ...checkIn, date: selectedDate })
+    }
+
+    useEffect(() => {
+        if (!isFocused) {
+            // clearForm()
+        }
+    }, [isFocused]);
 
     const sportSelected = (sport) => {
         setCheckIn({ ...checkIn, sport: sport.label })
@@ -38,6 +56,7 @@ const CheckInScreen = ({ navigation }) => {
                 location: checkIn.location ? checkIn.location : "Uknown location",
                 sport: checkIn.sport,
                 image: checkIn.image,
+                date: checkIn.date || (Moment(new Date()).format('MMM D, YYYY')),
                 likes: 0,
                 userID: GLOBAL.activeUserId,
                 type: "CheckIn"
@@ -62,7 +81,7 @@ const CheckInScreen = ({ navigation }) => {
                         textStyle: { fontSize: 20 },
                         placement: "top" // default to bottom
                     });
-                    setCheckIn({ title: null, sport: '', location: '', image: null });
+                    clearForm();
                     console.log("Check-in created");
                 }
                 navigation.navigate('HomeScreen', {
@@ -72,6 +91,10 @@ const CheckInScreen = ({ navigation }) => {
                 console.log("Error getting user from db"); ß
             }
         }
+    }
+
+    const clearForm = () => {
+        setCheckIn({ title: '', sport: '', location: '', image: null });
     }
 
     const pickImage = async () => {
@@ -143,17 +166,11 @@ const CheckInScreen = ({ navigation }) => {
 
     return (
         <SafeScreen style={styles.screen}>
-            <View style={styles.headerRow}>
+            {/* <View style={styles.headerRow}>
                 <Text style={styles.pageTitle}>Check-in</Text>
             </View>
-            <View style={styles.titleLine} />
-            <View style={styles.titleContainer}>
-                <UserInput
-                    placeholder="Title your check-in"
-                    onChangeText={title => setCheckIn({ ...checkIn, title: title })}
-                    placeholderTextColor="grey"
-                />
-            </View>
+            <View style={styles.titleLine} /> */}
+
             <View style={styles.activityContainer}>
                 <Text style={styles.activityTitle}>Select your sport</Text>
                 <View style={styles.activityRow}>
@@ -169,16 +186,34 @@ const CheckInScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-
-            <View style={styles.locationContainer}>
-                <InputPicker
-                    selectedItem={checkIn.location}
-                    onSelectedItem={resortData => setCheckIn({ ...checkIn, location: resortData.resort_name })}
-                    iconName="location-outline"
-                    placeholder="Add location"
-                    items={resortData}
+            <View style={styles.titleContainer}>
+                <UserInput
+                    placeholder="Title your check-in"
+                    onChangeText={title => setCheckIn({ ...checkIn, title: title })}
+                    placeholderTextColor="grey"
+                />
+            </View>
+            <View style={styles.dateContainer}>
+                {/* <Text style={styles.dateText}>Check-In Date: </Text> */}
+                <DatePicker
+                    selectedItem={checkIn.date}
+                    onSelectedItem={selectedDate => setSelectedDate(selectedDate)}
+                    iconName="calendar"
+                    placeholder="Select Date"
                     textStyle={styles.inputTitle}
                 />
+            </View>
+            <View style={styles.locationContainer}>
+                <View >
+                    <InputPicker
+                        selectedItem={checkIn.location}
+                        onSelectedItem={resortData => setCheckIn({ ...checkIn, location: resortData.resort_name })}
+                        iconName="location-outline"
+                        placeholder="Add location"
+                        items={resortData}
+                        textStyle={styles.inputTitle}
+                    />
+                </View>
             </View>
             <View style={styles.addPhotoContainer}>
                 {!checkIn.image ?
@@ -208,7 +243,7 @@ const styles = StyleSheet.create({
         width: "100%",
         justifyContent: "space-evenly",
         flexDirection: "row",
-        marginTop: 15,
+        marginTop: 10,
     },
     pageTitle: {
         color: "white",
@@ -227,15 +262,35 @@ const styles = StyleSheet.create({
     titleContainer: {
         alignItems: "center",
         alignSelf: "center",
-        width: "75%",
-        marginBottom: 25,
+        width: "95%",
+        marginTop: 10,
+        marginBottom: 15,
         flexDirection: 'row',
     },
     inputTitle: {
         color: "white",
-        fontSize: 25,
+        fontSize: 20,
         paddingLeft: 5,
         marginRight: 5
+    },
+    dateContainer: {
+        alignItems: "center",
+        width: "100%",
+    },
+    dateText: {
+        color: "white",
+        fontSize: 15
+    },
+    locationContainer: {
+        alignItems: "center",
+        width: "100%",
+    },
+    locationBox: {
+        width: "90%",
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "thistle",
+        borderRadius: 10,
     },
     image: {
         width: 200,
@@ -243,12 +298,13 @@ const styles = StyleSheet.create({
     },
     activityContainer: {
         alignItems: "center",
+        marginTop: 15,
         marginBottom: 25
     },
     activityTitle: {
         color: "white",
         fontSize: 25,
-        marginBottom: 15
+        marginBottom: 25
     },
     activityRow: {
         alignItems: "center",
@@ -262,9 +318,6 @@ const styles = StyleSheet.create({
         height: 50,
         borderWidth: 1,
         borderRadius: 50 / 2
-    },
-    locationContainer: {
-        alignItems: "center"
     },
     addPhotoContainer: {
         alignItems: "center",

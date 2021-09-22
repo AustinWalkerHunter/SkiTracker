@@ -12,7 +12,7 @@ function UserInput({ ...props }) {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#dfe2e1",
-        borderRadius: 25,
+        borderRadius: 15,
         width: "100%",
         padding: 15,
         marginVertical: 10,

@@ -45,19 +45,13 @@ export const onCreateCheckIn = /* GraphQL */ `
       location
       sport
       image
+      date
       likes
       userID
       userName
       type
       createdAt
       comments {
-        items {
-          id
-          checkInID
-          content
-          createdAt
-          updatedAt
-        }
         nextToken
       }
       updatedAt
@@ -72,19 +66,13 @@ export const onUpdateCheckIn = /* GraphQL */ `
       location
       sport
       image
+      date
       likes
       userID
       userName
       type
       createdAt
       comments {
-        items {
-          id
-          checkInID
-          content
-          createdAt
-          updatedAt
-        }
         nextToken
       }
       updatedAt
@@ -99,19 +87,13 @@ export const onDeleteCheckIn = /* GraphQL */ `
       location
       sport
       image
+      date
       likes
       userID
       userName
       type
       createdAt
       comments {
-        items {
-          id
-          checkInID
-          content
-          createdAt
-          updatedAt
-        }
         nextToken
       }
       updatedAt
@@ -129,14 +111,12 @@ export const onCreateComment = /* GraphQL */ `
         location
         sport
         image
+        date
         likes
         userID
         userName
         type
         createdAt
-        comments {
-          nextToken
-        }
         updatedAt
       }
       content
@@ -156,14 +136,12 @@ export const onUpdateComment = /* GraphQL */ `
         location
         sport
         image
+        date
         likes
         userID
         userName
         type
         createdAt
-        comments {
-          nextToken
-        }
         updatedAt
       }
       content
@@ -183,14 +161,12 @@ export const onDeleteComment = /* GraphQL */ `
         location
         sport
         image
+        date
         likes
         userID
         userName
         type
         createdAt
-        comments {
-          nextToken
-        }
         updatedAt
       }
       content
