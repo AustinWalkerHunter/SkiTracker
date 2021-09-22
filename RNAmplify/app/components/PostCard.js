@@ -47,8 +47,9 @@ function PostCard({ item, activeUserId, getUserProfile, displayFullImage }) {
 
 
     useEffect(() => {
+        console.log(item)
         getHolidayImage();
-        if (item.postImage) {
+        if (item.image) {
             const cachedImage = GLOBAL.checkInPhotos[item.id];
             if (cachedImage) {
                 setPostCardImage(cachedImage);
@@ -61,9 +62,9 @@ function PostCard({ item, activeUserId, getUserProfile, displayFullImage }) {
 
 
     async function fetchPostCardImage() {
-        if (item.postImage) {
+        if (item.image) {
             try {
-                await Storage.get(item.postImage)
+                await Storage.get(item.image)
                     .then((result) => {
                         setPostCardImage(result);
                     })
@@ -98,7 +99,7 @@ function PostCard({ item, activeUserId, getUserProfile, displayFullImage }) {
     return (
         <View>
             {!postCardDeleted && (
-                <View style={[styles.postBox, item.postImage ? { height: 350 } : { height: 125 }]}>
+                <View style={[styles.postBox, item.image ? { height: 350 } : { height: 125 }]}>
                     <ImageBackground source={getHolidayImage()} resizeMode='repeat' style={styles.backgroundImage} imageStyle={{ opacity: 0.6 }}>
                         <View style={styles.headerContainer}>
                             <TouchableOpacity style={styles.profilePictureContainer} onPress={() => getUserProfile(item.userID)}>

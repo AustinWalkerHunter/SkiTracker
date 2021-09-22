@@ -44,7 +44,8 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
 
 const styles = StyleSheet.create({
     container: {
-        width: "50%",
+        width: "100%",
+        alignItems: "center",
         padding: 10,
         flexDirection: 'row',
     },

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Keyboard } from 'react-native';
-import PickerItem from '../components/PickerItem'
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import colors from '../constants/colors';
@@ -8,7 +7,7 @@ import colors from '../constants/colors';
 function DatePicker({ iconName, placeholder, textStyle, selectedItem, onSelectedItem }) {
     const [modalVisible, setModalVisible] = useState(false)
     const [date, setDate] = useState(new Date());
-    const [previousDate, setPreviousDate] = useState();
+    const [previousDate, setPreviousDate] = useState(new Date());
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setDate(currentDate);
@@ -59,6 +58,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 10,
         flexDirection: 'row',
+        alignItems: "center",
     },
     titleInput: {
         color: "black",

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Keyboard, Image, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Keyboard, Image, ScrollView } from 'react-native';
 import { Auth, Storage, API, graphqlOperation } from 'aws-amplify';
 import SafeScreen from '../components/SafeScreen'
 import UserInput from '../components/UserInput'
@@ -81,12 +81,14 @@ const CheckInScreen = ({ navigation }) => {
                         textStyle: { fontSize: 20 },
                         placement: "top" // default to bottom
                     });
-                    clearForm();
+
                     console.log("Check-in created");
                 }
                 navigation.navigate('HomeScreen', {
                     newCheckInAdded: true
                 });
+
+                clearForm();
             } catch (error) {
                 console.log("Error getting user from db"); ß
             }
@@ -94,7 +96,13 @@ const CheckInScreen = ({ navigation }) => {
     }
 
     const clearForm = () => {
-        setCheckIn({ title: '', sport: '', location: '', image: null });
+        setCheckIn({
+            title: '',
+            sport: '',
+            location: '',
+            image: null,
+            date: (Moment(new Date()).format('MMM D, YYYY'))
+        })
     }
 
     const pickImage = async () => {
@@ -170,41 +178,41 @@ const CheckInScreen = ({ navigation }) => {
                 <Text style={styles.pageTitle}>Check-in</Text>
             </View>
             <View style={styles.titleLine} /> */}
+            <ScrollView>
 
-            <View style={styles.activityContainer}>
-                <Text style={styles.activityTitle}>Select your sport</Text>
-                <View style={styles.activityRow}>
-                    {/* This needs a rework */}
-                    <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[0].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[0])}>
-                        <FontAwesome5 name="skiing" size={24} color={checkIn.sport === sports[0].label ? "white" : "black"} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[1].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[1])}>
-                        <FontAwesome5 name="snowboarding" size={24} color={checkIn.sport === sports[1].label ? "white" : "black"} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[2].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[2])}>
-                        <MaterialCommunityIcons name="skateboard" size={30} color={checkIn.sport === sports[2].label ? "white" : "black"} />
-                    </TouchableOpacity>
+                <View style={styles.activityContainer}>
+                    <Text style={styles.activityTitle}>Select your sport</Text>
+                    <View style={styles.activityRow}>
+                        {/* This needs a rework */}
+                        <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[0].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[0])}>
+                            <FontAwesome5 name="skiing" size={24} color={checkIn.sport === sports[0].label ? "white" : "black"} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[1].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[1])}>
+                            <FontAwesome5 name="snowboarding" size={24} color={checkIn.sport === sports[1].label ? "white" : "black"} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[2].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[2])}>
+                            <MaterialCommunityIcons name="skateboard" size={30} color={checkIn.sport === sports[2].label ? "white" : "black"} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
-            <View style={styles.titleContainer}>
-                <UserInput
-                    placeholder="Title your check-in"
-                    onChangeText={title => setCheckIn({ ...checkIn, title: title })}
-                    placeholderTextColor="grey"
-                />
-            </View>
-            <View style={styles.dateContainer}>
-                {/* <Text style={styles.dateText}>Check-In Date: </Text> */}
-                <DatePicker
-                    selectedItem={checkIn.date}
-                    onSelectedItem={selectedDate => setSelectedDate(selectedDate)}
-                    iconName="calendar"
-                    placeholder="Select Date"
-                    textStyle={styles.inputTitle}
-                />
-            </View>
-            <View style={styles.locationContainer}>
-                <View >
+                <View style={styles.titleContainer}>
+                    <UserInput
+                        placeholder="Title your check-in"
+                        onChangeText={title => setCheckIn({ ...checkIn, title: title })}
+                        placeholderTextColor="grey"
+                    />
+                </View>
+                <View style={styles.dateContainer}>
+                    {/* <Text style={styles.dateText}>Check-In Date: </Text> */}
+                    <DatePicker
+                        selectedItem={checkIn.date}
+                        onSelectedItem={selectedDate => setSelectedDate(selectedDate)}
+                        iconName="calendar"
+                        placeholder="Select Date"
+                        textStyle={styles.inputTitle}
+                    />
+                </View>
+                <View style={styles.locationContainer}>
                     <InputPicker
                         selectedItem={checkIn.location}
                         onSelectedItem={resortData => setCheckIn({ ...checkIn, location: resortData.resort_name })}
@@ -214,18 +222,18 @@ const CheckInScreen = ({ navigation }) => {
                         textStyle={styles.inputTitle}
                     />
                 </View>
-            </View>
-            <View style={styles.addPhotoContainer}>
-                {!checkIn.image ?
-                    <TouchableOpacity style={styles.addPhotoIcon} onPress={() => pickImage()}>
-                        <MaterialIcons name="add-photo-alternate" size={60} color="white" />
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity onPress={() => pickImage()}>
-                        <Image style={styles.image} source={{ uri: checkIn.image }} />
-                    </TouchableOpacity>
-                }
-            </View>
+                <View style={styles.addPhotoContainer}>
+                    {!checkIn.image ?
+                        <TouchableOpacity style={styles.addPhotoIcon} onPress={() => pickImage()}>
+                            <MaterialIcons name="add-photo-alternate" size={60} color="white" />
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity onPress={() => pickImage()}>
+                            <Image style={styles.image} source={{ uri: checkIn.image }} />
+                        </TouchableOpacity>
+                    }
+                </View>
+            </ScrollView>
             <View style={styles.postContainer}>
                 <RoundedButton title="CHECK-IN" color={colors.secondary} onPress={() => submit()}></RoundedButton>
             </View>
@@ -264,10 +272,11 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         width: "95%",
         marginTop: 10,
-        marginBottom: 15,
+        marginBottom: 5,
         flexDirection: 'row',
     },
     inputTitle: {
+        width: 'auto',
         color: "white",
         fontSize: 20,
         paddingLeft: 5,
@@ -283,18 +292,13 @@ const styles = StyleSheet.create({
     },
     locationContainer: {
         alignItems: "center",
-        width: "100%",
-    },
-    locationBox: {
-        width: "90%",
-        alignItems: "center",
-        borderWidth: 1,
-        borderColor: "thistle",
-        borderRadius: 10,
+        alignSelf: "center",
+        width: "auto",
     },
     image: {
-        width: 200,
-        height: 200
+        width: 300,
+        height: 300,
+        marginBottom: 100
     },
     activityContainer: {
         alignItems: "center",
@@ -304,7 +308,7 @@ const styles = StyleSheet.create({
     activityTitle: {
         color: "white",
         fontSize: 25,
-        marginBottom: 25
+        marginBottom: 35
     },
     activityRow: {
         alignItems: "center",
@@ -324,11 +328,10 @@ const styles = StyleSheet.create({
         marginVertical: 10
     },
     postContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
+        position: 'absolute',
         alignSelf: "center",
         width: "75%",
-        marginBottom: 15
+        bottom: 15
     },
 })
 
