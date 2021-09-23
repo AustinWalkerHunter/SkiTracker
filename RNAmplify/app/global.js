@@ -1,4 +1,5 @@
 module.exports = {
+    adminId: "157074da-9d68-4bb7-9bca-b1fd91d914e4",
     activeUser: null,
     activeUserId: null,
     allUsers: null,

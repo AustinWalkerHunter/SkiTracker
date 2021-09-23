@@ -13,7 +13,6 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
     const [fullScreenPhoto, setFullScreenPhoto] = useState()
     const [imageLoading, setImageLoading] = useState(false)
 
-
     const displayFullImage = (checkInPhotoUri) => {
         setFullScreenPhoto(checkInPhotoUri);
         setImageLoading(true)

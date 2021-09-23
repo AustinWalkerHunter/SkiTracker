@@ -10,7 +10,7 @@ import GLOBAL from '../global';
 import { useToast } from 'react-native-fast-toast'
 
 
-function PostCard({ item, activeUserId, getUserProfile, displayFullImage }) {
+function PostCard({ item, getUserProfile, displayFullImage }) {
     // const [numberOfLikes, setNumberOfLikes] = useState(likes);
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const profileImage = GLOBAL.allUsers[item.userID].image;
@@ -47,7 +47,6 @@ function PostCard({ item, activeUserId, getUserProfile, displayFullImage }) {
 
 
     useEffect(() => {
-        console.log(item)
         getHolidayImage();
         if (item.image) {
             const cachedImage = GLOBAL.checkInPhotos[item.id];
@@ -79,7 +78,7 @@ function PostCard({ item, activeUserId, getUserProfile, displayFullImage }) {
 
     async function deleteCheckin(item) {
         try {
-            if (activeUserId == item.userID) {
+            if (GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) {
                 await API.graphql(graphqlOperation(deleteCheckIn, { input: { id: item.id } }));
                 setPostCardDeleted(true);
                 toast.show("Check-in deleted!", {
@@ -115,7 +114,7 @@ function PostCard({ item, activeUserId, getUserProfile, displayFullImage }) {
                                     <Text style={styles.location}>{item.location}</Text>
                                 </TouchableOpacity>
                             </View>
-                            {activeUserId == item.userID &&
+                            {(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
                                 <TouchableOpacity style={styles.deletionContainer} onPress={() => deleteCheckin(item)}>
                                     <Feather name="x" size={24} color="white" />
                                 </TouchableOpacity>

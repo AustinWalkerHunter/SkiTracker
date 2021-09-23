@@ -4,6 +4,7 @@ import { FontAwesome5, MaterialCommunityIcons, Feather } from '@expo/vector-icon
 import { API, graphqlOperation } from 'aws-amplify';
 import { deleteCheckIn } from '../../src/graphql/mutations'
 import { useToast } from 'react-native-fast-toast'
+import GLOBAL from '../global';
 
 function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
     const [postCardDeleted, setPostCardDeleted] = useState(false);
@@ -11,16 +12,17 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
 
     async function deleteCheckin(item) {
         try {
-            await API.graphql(graphqlOperation(deleteCheckIn, { input: { id: item.id } }));
-            setPostCardDeleted(true);
-            updateDayCount();
-            toast.show("Check-in deleted", {
-                duration: 2000,
-                style: { marginTop: 35, backgroundColor: "red" },
-                textStyle: { fontSize: 20 },
-                placement: "top" // default to bottom
-            });
-
+            if (GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) {
+                await API.graphql(graphqlOperation(deleteCheckIn, { input: { id: item.id } }));
+                setPostCardDeleted(true);
+                updateDayCount();
+                toast.show("Check-in deleted", {
+                    duration: 2000,
+                    style: { marginTop: 35, backgroundColor: "red" },
+                    textStyle: { fontSize: 20 },
+                    placement: "top" // default to bottom
+                });
+            }
         } catch (error) {
             console.log("Error deleting from db")
         }
@@ -41,11 +43,10 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
                 <Text style={styles.title}>{title}</Text>
                 <Text style={styles.location}>{location}</Text>
             </View>
-            {updateDayCount &&
+            {(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
                 <TouchableOpacity style={styles.deleteButton} onPress={() => deleteCheckin(item)}>
                     <Feather name="x" size={24} color="white" />
                 </TouchableOpacity>
-
             }
             <Text style={styles.date}>{date}</Text>
         </TouchableOpacity>

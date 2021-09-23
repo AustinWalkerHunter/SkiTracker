@@ -90,7 +90,6 @@ const HomeScreen = ({ route, navigation }) => {
                                 renderItem={({ item }) =>
                                     <PostCard
                                         item={item}
-                                        activeUserId={GLOBAL.activeUserId}
                                         getUserProfile={getUserProfile}
                                         displayFullImage={displayFullImage}
                                     />

@@ -14,7 +14,6 @@ function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount }) {
         var dt = date;
         return (Moment(dt).format('MMM D, YYYY'))
     }
-
     return (
         <View style={styles.posts}>
             <Text style={styles.postsTitle}>Check-ins</Text>
