@@ -4,25 +4,26 @@ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import ProfileIcon from '../components/ProfileIcon'
 import Moment from 'moment';
-import { API, graphqlOperation, Storage } from 'aws-amplify';
-import { deleteCheckIn } from '../../src/graphql/mutations'
+import { Storage } from 'aws-amplify';
 import GLOBAL from '../global';
+import ConfirmationModal from '../components/ConfirmationModal'
 import { useToast } from 'react-native-fast-toast'
 
-
-function PostCard({ item, getUserProfile, displayFullImage }) {
+function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckIn }) {
     // const [numberOfLikes, setNumberOfLikes] = useState(likes);
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const profileImage = GLOBAL.allUsers[item.userID].image;
     const username = GLOBAL.allUsers[item.userID].username;
     const [postCardImage, setPostCardImage] = useState();
+    const [modalVisible, setModalVisible] = useState(false);
+    const toast = useToast()
+
     const holidayImages = {
         thanksGiving: require("../../assets/thanksGiving.jpeg"),
         christmas: require("../../assets/christmas.jpeg"),
         carlyBday: require("../../assets/carlyBday.png"),
     }
 
-    const toast = useToast()
 
     const getDate = (date) => {
         Moment.locale('en');
@@ -76,24 +77,17 @@ function PostCard({ item, getUserProfile, displayFullImage }) {
         }
     }
 
-    async function deleteCheckin(item) {
-        try {
-            if (GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) {
-                await API.graphql(graphqlOperation(deleteCheckIn, { input: { id: item.id } }));
-                setPostCardDeleted(true);
-                toast.show("Check-in deleted!", {
-                    duration: 2000,
-                    style: { marginTop: 35, backgroundColor: "green" },
-                    textStyle: { fontSize: 20 },
-                    placement: "top" // default to bottom
+    const deleteCheckIn = () => {
+        deleteSelectedCheckIn(item)
+        setPostCardDeleted(true)
+        toast.show("Check-in deleted!", {
+            duration: 2000,
+            style: { marginTop: 35, backgroundColor: "green" },
+            textStyle: { fontSize: 20 },
+            placement: "top" // default to bottom
 
-                });
-            }
-        } catch (error) {
-            console.log("Error deleting from db")
-        }
+        });
     }
-
 
     return (
         <View>
@@ -115,7 +109,7 @@ function PostCard({ item, getUserProfile, displayFullImage }) {
                                 </TouchableOpacity>
                             </View>
                             {(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
-                                <TouchableOpacity style={styles.deletionContainer} onPress={() => deleteCheckin(item)}>
+                                <TouchableOpacity style={styles.deletionContainer} onPress={() => setModalVisible(true)}>
                                     <Feather name="x" size={24} color="white" />
                                 </TouchableOpacity>
                             }
@@ -141,6 +135,12 @@ function PostCard({ item, getUserProfile, displayFullImage }) {
                 </View>
             )
             }
+            <ConfirmationModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                title={"Are you sure you want to delete this post?"}
+                confirmAction={() => deleteCheckIn()}
+            />
         </View >
     );
 }

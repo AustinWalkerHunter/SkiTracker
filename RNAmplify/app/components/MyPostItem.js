@@ -1,31 +1,27 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
-import { API, graphqlOperation } from 'aws-amplify';
-import { deleteCheckIn } from '../../src/graphql/mutations'
 import { useToast } from 'react-native-fast-toast'
 import GLOBAL from '../global';
+import ConfirmationModal from '../components/ConfirmationModal'
+import { deleteSelectedCheckIn } from '../actions'
 
 function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
     const [postCardDeleted, setPostCardDeleted] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const toast = useToast()
 
-    async function deleteCheckin(item) {
-        try {
-            if (GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) {
-                await API.graphql(graphqlOperation(deleteCheckIn, { input: { id: item.id } }));
-                setPostCardDeleted(true);
-                updateDayCount();
-                toast.show("Check-in deleted", {
-                    duration: 2000,
-                    style: { marginTop: 35, backgroundColor: "red" },
-                    textStyle: { fontSize: 20 },
-                    placement: "top" // default to bottom
-                });
-            }
-        } catch (error) {
-            console.log("Error deleting from db")
-        }
+    const deleteCheckIn = () => {
+        deleteSelectedCheckIn(item)
+        setPostCardDeleted(true)
+        updateDayCount();
+        toast.show("Check-in deleted!", {
+            duration: 2000,
+            style: { marginTop: 35, backgroundColor: "green" },
+            textStyle: { fontSize: 20 },
+            placement: "top" // default to bottom
+
+        });
     }
 
     return (
@@ -44,11 +40,17 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
                 <Text style={styles.location}>{location}</Text>
             </View>
             {(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
-                <TouchableOpacity style={styles.deleteButton} onPress={() => deleteCheckin(item)}>
+                <TouchableOpacity style={styles.deleteButton} onPress={() => setModalVisible(true)}>
                     <Feather name="x" size={24} color="white" />
                 </TouchableOpacity>
             }
             <Text style={styles.date}>{date}</Text>
+            <ConfirmationModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                title={"Are you sure you want to delete this post?"}
+                confirmAction={() => deleteCheckIn()}
+            />
         </TouchableOpacity>
     );
 }

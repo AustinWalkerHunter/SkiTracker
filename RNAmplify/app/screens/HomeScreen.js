@@ -7,8 +7,8 @@ import SafeScreen from '../components/SafeScreen'
 import colors from '../constants/colors'
 import { checkInsByDate } from '../../src/graphql/queries'
 import GLOBAL from '../global';
-
-
+import { useToast } from 'react-native-fast-toast'
+import { deleteSelectedCheckIn } from "../actions"
 const HomeScreen = ({ route, navigation }) => {
     const isFocused = useIsFocused();
     const [loading, setLoading] = useState(true);
@@ -16,6 +16,8 @@ const HomeScreen = ({ route, navigation }) => {
     const [refreshing, setRefreshing] = useState(false);
     const [fullScreenCheckInPhoto, setFullScreenCheckInPhoto] = useState()
     const [imageLoading, setImageLoading] = useState(false)
+
+    const toast = useToast()
 
     useEffect(() => {
         if (isFocused) {
@@ -67,6 +69,8 @@ const HomeScreen = ({ route, navigation }) => {
         }, 250);
     }
 
+
+
     return (
         <SafeScreen style={styles.screen}>
             {!loading ?
@@ -92,6 +96,7 @@ const HomeScreen = ({ route, navigation }) => {
                                         item={item}
                                         getUserProfile={getUserProfile}
                                         displayFullImage={displayFullImage}
+                                        deleteSelectedCheckIn={deleteSelectedCheckIn}
                                     />
                                 }
                             >
