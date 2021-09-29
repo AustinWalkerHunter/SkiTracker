@@ -14,6 +14,7 @@ import * as FileSystem from "expo-file-system";
 import GLOBAL from '../global';
 import RoundedButton from '../components/RoundedButton';
 import { useToast } from 'react-native-fast-toast'
+import { updateUsersProfilePicture } from '../actions'
 
 const SettingsScreen = () => {
     const isFocused = useIsFocused();
@@ -66,21 +67,6 @@ const SettingsScreen = () => {
         }
     }
 
-    const updateUserProfilePicture = async (updatedUser) => {
-        try {
-            toast.show("Profile image updated!", {
-                duration: 2000,
-                style: { marginTop: 50, backgroundColor: "green" },
-                textStyle: { fontSize: 20 },
-                placement: "top" // default to bottom
-            });
-            await API.graphql(graphqlOperation(updateUser, { input: updatedUser }));
-            console.log("User profile picture updated")
-        } catch (error) {
-            console.log("Error updating users profile picture in db")
-        }
-    }
-
     const pickImage = async () => {
         const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
         if (granted) {
@@ -107,7 +93,13 @@ const SettingsScreen = () => {
                 const fileName = uuid.v4() + "_" + activeUser.username + "_profilePic.jpg";
                 const uploadUrl = await uploadImage(fileName, img);
                 const updatedUser = { ...activeUser, image: uploadUrl };
-                updateUserProfilePicture(updatedUser);
+                updateUsersProfilePicture(updatedUser);
+                toast.show("Profile image updated!", {
+                    duration: 2000,
+                    style: { marginTop: 50, backgroundColor: "green" },
+                    textStyle: { fontSize: 20 },
+                    placement: "top" // default to bottom
+                });
             }
         } catch (e) {
             console.log(e);

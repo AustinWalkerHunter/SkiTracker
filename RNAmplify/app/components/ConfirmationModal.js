@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginTop: 22,
-        backgroundColor: '#11111199'
+        backgroundColor: '#000000cc'
     },
     modalView: {
         margin: 20,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        width: "95%"
+        width: "85%"
     },
     buttonsContainer: {
         flexDirection: "row",

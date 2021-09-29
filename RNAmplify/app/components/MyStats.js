@@ -2,16 +2,16 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import colors from '../constants/colors'
 
-function MyStats({ data, style }) {
+function MyStats({ dayCount, checkInData }) {
     return (
-        <View style={[styles.statsContainer, style]}>
+        <View style={[styles.statsContainer]}>
             <View style={styles.stats}>
                 <View style={styles.statsData}>
                     <View style={styles.titleContainer}>
                         <Text style={styles.dataTitle}>Season Days</Text>
                     </View>
                     <View style={styles.userData}>
-                        <Text style={styles.daysInfo}>{data}</Text>
+                        <Text style={styles.daysInfo}>{dayCount}</Text>
                     </View>
                 </View>
                 <View style={styles.statsData}>
@@ -19,7 +19,7 @@ function MyStats({ data, style }) {
                         <Text style={styles.dataTitle}>Skied Most</Text>
                     </View>
                     <View style={styles.userData}>
-                        <Text style={styles.mountainInfo}>N/A</Text>
+                        <Text style={styles.mountainInfo}>{checkInData ? checkInData.topLocation : "N/A"}</Text>
                     </View>
                 </View>
             </View>
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     },
     mountainInfo: {
         color: 'white',
-        fontSize: 21,
+        fontSize: 18,
         fontWeight: "300",
         textAlign: "center",
     },

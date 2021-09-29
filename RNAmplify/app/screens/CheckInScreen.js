@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Keyboard, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Keyboard, Image, ActivityIndicator, ScrollView } from 'react-native';
 import { Auth, Storage, API, graphqlOperation } from 'aws-amplify';
 import SafeScreen from '../components/SafeScreen'
 import UserInput from '../components/UserInput'
@@ -22,10 +22,12 @@ import Moment from 'moment';
 
 const CheckInScreen = ({ navigation }) => {
     const toast = useToast()
+    const [checkInSubmitted, setCheckInSubmitted] = useState(false)
+    const [loading, setLoading] = useState(false);
 
     const [checkIn, setCheckIn] = useState({
         title: null,
-        sport: '',
+        sport: null,
         location: '',
         image: null,
         date: (Moment(new Date()).format('MMM D, YYYY'))
@@ -40,7 +42,8 @@ const CheckInScreen = ({ navigation }) => {
 
     useEffect(() => {
         if (!isFocused) {
-            // clearForm()
+            setCheckInSubmitted(false)
+            setLoading(false);
         }
     }, [isFocused]);
 
@@ -53,7 +56,7 @@ const CheckInScreen = ({ navigation }) => {
         if (checkIn.sport != '') {
             const newCheckIn = {
                 title: checkIn.title ? checkIn.title : "Checked in " + (checkIn.sport == "skateboard" ? "skateboarding" : checkIn.sport),
-                location: checkIn.location ? checkIn.location : "Uknown location",
+                location: checkIn.location ? checkIn.location : "Unknown location",
                 sport: checkIn.sport,
                 image: checkIn.image,
                 date: checkIn.date || (Moment(new Date()).format('MMM D, YYYY')),
@@ -81,7 +84,7 @@ const CheckInScreen = ({ navigation }) => {
                         textStyle: { fontSize: 20 },
                         placement: "top" // default to bottom
                     });
-
+                    setLoading(false);
                     console.log("Check-in created");
                 }
                 navigation.navigate('HomeScreen', {
@@ -98,7 +101,7 @@ const CheckInScreen = ({ navigation }) => {
     const clearForm = () => {
         setCheckIn({
             title: '',
-            sport: '',
+            sport: null,
             location: '',
             image: null,
             date: (Moment(new Date()).format('MMM D, YYYY'))
@@ -178,65 +181,82 @@ const CheckInScreen = ({ navigation }) => {
                 <Text style={styles.pageTitle}>Check-in</Text>
             </View>
             <View style={styles.titleLine} /> */}
-            <ScrollView>
+            {!loading ?
+                <View>
+                    <ScrollView>
 
-                <View style={styles.activityContainer}>
-                    <Text style={styles.activityTitle}>Select your sport</Text>
-                    <View style={styles.activityRow}>
-                        {/* This needs a rework */}
-                        <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[0].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[0])}>
-                            <FontAwesome5 name="skiing" size={24} color={checkIn.sport === sports[0].label ? "white" : "black"} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[1].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[1])}>
-                            <FontAwesome5 name="snowboarding" size={24} color={checkIn.sport === sports[1].label ? "white" : "black"} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[2].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[2])}>
-                            <MaterialCommunityIcons name="skateboard" size={30} color={checkIn.sport === sports[2].label ? "white" : "black"} />
-                        </TouchableOpacity>
-                    </View>
+                        <View style={styles.activityContainer}>
+                            <Text style={styles.activityTitle}>Select your sport</Text>
+                            <View style={styles.activityRow}>
+                                {/* This needs a rework */}
+                                <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[0].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[0])}>
+                                    <FontAwesome5 name="skiing" size={24} color={checkIn.sport === sports[0].label ? "white" : "black"} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[1].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[1])}>
+                                    <FontAwesome5 name="snowboarding" size={24} color={checkIn.sport === sports[1].label ? "white" : "black"} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[2].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[2])}>
+                                    <MaterialCommunityIcons name="skateboard" size={30} color={checkIn.sport === sports[2].label ? "white" : "black"} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={styles.titleContainer}>
+                            <UserInput
+                                placeholder="Title your check-in"
+                                onChangeText={title => setCheckIn({ ...checkIn, title: title })}
+                                placeholderTextColor="grey"
+                            />
+                        </View>
+                        <View style={styles.dateContainer}>
+                            {/* <Text style={styles.dateText}>Check-In Date: </Text> */}
+                            <DatePicker
+                                selectedItem={checkIn.date}
+                                onSelectedItem={selectedDate => setSelectedDate(selectedDate)}
+                                iconName="calendar"
+                                placeholder="Select Date"
+                                textStyle={styles.inputTitle}
+                            />
+                        </View>
+                        <View style={styles.locationContainer}>
+                            <InputPicker
+                                selectedItem={checkIn.location}
+                                onSelectedItem={resortData => setCheckIn({ ...checkIn, location: resortData.resort_name })}
+                                iconName="location-outline"
+                                placeholder="Add location"
+                                items={resortData}
+                                textStyle={styles.inputTitle}
+                            />
+                        </View>
+                        <View style={styles.addPhotoContainer}>
+                            {!checkIn.image ?
+                                <TouchableOpacity style={styles.addPhotoIcon} onPress={() => pickImage()}>
+                                    <MaterialIcons name="add-photo-alternate" size={60} color="white" />
+                                </TouchableOpacity>
+                                :
+                                <TouchableOpacity onPress={() => pickImage()}>
+                                    <Image style={styles.image} source={{ uri: checkIn.image }} />
+                                </TouchableOpacity>
+                            }
+                        </View>
+                    </ScrollView>
                 </View>
-                <View style={styles.titleContainer}>
-                    <UserInput
-                        placeholder="Title your check-in"
-                        onChangeText={title => setCheckIn({ ...checkIn, title: title })}
-                        placeholderTextColor="grey"
-                    />
+                :
+                <ActivityIndicator style={styles.loadingSpinner} size="large" color="white" />
+            }
+            {!loading ?
+                <View style={styles.postContainer}>
+                    <RoundedButton
+                        title="CHECK-IN"
+                        color={colors.secondary}
+                        onPress={() => {
+                            setLoading(true)
+                            setCheckInSubmitted(true)
+                            submit()
+                        }}
+                        disabled={!checkIn.sport && !checkInSubmitted}
+                    ></RoundedButton>
                 </View>
-                <View style={styles.dateContainer}>
-                    {/* <Text style={styles.dateText}>Check-In Date: </Text> */}
-                    <DatePicker
-                        selectedItem={checkIn.date}
-                        onSelectedItem={selectedDate => setSelectedDate(selectedDate)}
-                        iconName="calendar"
-                        placeholder="Select Date"
-                        textStyle={styles.inputTitle}
-                    />
-                </View>
-                <View style={styles.locationContainer}>
-                    <InputPicker
-                        selectedItem={checkIn.location}
-                        onSelectedItem={resortData => setCheckIn({ ...checkIn, location: resortData.resort_name })}
-                        iconName="location-outline"
-                        placeholder="Add location"
-                        items={resortData}
-                        textStyle={styles.inputTitle}
-                    />
-                </View>
-                <View style={styles.addPhotoContainer}>
-                    {!checkIn.image ?
-                        <TouchableOpacity style={styles.addPhotoIcon} onPress={() => pickImage()}>
-                            <MaterialIcons name="add-photo-alternate" size={60} color="white" />
-                        </TouchableOpacity>
-                        :
-                        <TouchableOpacity onPress={() => pickImage()}>
-                            <Image style={styles.image} source={{ uri: checkIn.image }} />
-                        </TouchableOpacity>
-                    }
-                </View>
-            </ScrollView>
-            <View style={styles.postContainer}>
-                <RoundedButton title="CHECK-IN" color={colors.secondary} onPress={() => submit()}></RoundedButton>
-            </View>
+                : null}
         </SafeScreen>
     );
 }
@@ -246,6 +266,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.primary,
         padding: 5,
+    },
+    loadingSpinner: {
+        top: "50%"
     },
     headerRow: {
         width: "100%",

@@ -8,8 +8,9 @@ import * as Permissions from 'expo-permissions';
 import { Buffer } from "buffer"; // get this via: npm install buffer
 import uuid from 'react-native-uuid';
 import * as FileSystem from "expo-file-system";
-import { updateUser } from '../../src/graphql/mutations'
 import GLOBAL from '../global';
+import { updateUsersProfilePicture } from '../actions'
+import { useToast } from 'react-native-fast-toast'
 
 
 const MyProfileScreen = () => {
@@ -21,6 +22,7 @@ const MyProfileScreen = () => {
     const [percentage, setPercentage] = useState(0);
     const [userProfileImage, setUserProfileImage] = useState();
     const [userCheckInPhotos, setUserCheckInPhotos] = useState([]);
+    const toast = useToast()
 
 
     useEffect(() => {
@@ -37,6 +39,7 @@ const MyProfileScreen = () => {
             setUserDayCount(userDayCount - 1);
         }
     }
+
     async function fetchActiveUserCheckIns() {
         try {
             const queryParams = {
@@ -66,14 +69,6 @@ const MyProfileScreen = () => {
         setUserCheckInPhotos(userPhotoData);
     }
 
-    const updateUsersProfilePicture = async (updatedUser) => {
-        try {
-            await API.graphql(graphqlOperation(updateUser, { input: updatedUser }));
-            console.log("Profile pictured updated")
-        } catch (error) {
-            console.log("Error updating users profile picture in db")
-        }
-    }
 
     const pickImage = async () => {
         const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
@@ -104,6 +99,12 @@ const MyProfileScreen = () => {
                 const uploadUrl = await uploadImage(fileName, img);
                 const updatedUser = { ...activeUser, image: uploadUrl };
                 updateUsersProfilePicture(updatedUser);
+                toast.show("Profile image updated!", {
+                    duration: 2000,
+                    style: { marginTop: 50, backgroundColor: "green" },
+                    textStyle: { fontSize: 20 },
+                    placement: "top" // default to bottom
+                });
             }
         } catch (e) {
             console.log(e);

@@ -7,6 +7,7 @@ import SafeScreen from '../components/SafeScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../constants/colors';
 import GLOBAL from '../global';
+import { getCheckInData } from '../actions'
 
 
 function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, userCheckInPhotos, updateDayCount }) {
@@ -66,7 +67,7 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
                     </View>
                 </View>
                 <View>
-                    <MyStats data={userDayCount} />
+                    <MyStats dayCount={userDayCount} checkInData={getCheckInData(userCheckIns)} />
                     {!pageLoading ?
                         <ProfileCheckIns checkIns={userCheckIns} checkInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} />
                         :
