@@ -15,8 +15,8 @@ function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount }) {
         return (Moment(dt).format('MMM D, YYYY'))
     }
     return (
-        <View style={styles.posts}>
-            <Text style={styles.postsTitle}>Check-ins</Text>
+        <View style={styles.checkInsContainer}>
+            {/* <Text style={styles.postsTitle}>Check-ins</Text> */}
             <View style={styles.filter}>
                 <TouchableOpacity style={styles.filterButton} onPress={() => setShowPhotos(false)}>
                     <Text style={styles.filterText}>All</Text>
@@ -90,14 +90,14 @@ function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount }) {
 }
 
 const styles = StyleSheet.create({
-    posts: {
-        marginVertical: 15,
-        marginHorizontal: 2
+    checkInsContainer: {
+        marginHorizontal: 2,
+        width: "100%"
     },
     filter: {
         flexDirection: "row",
         justifyContent: "space-evenly",
-        marginBottom: 5,
+        marginBottom: 8,
     },
     filterButton: {
         backgroundColor: colors.secondary,
@@ -105,8 +105,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         color: "white",
         borderRadius: 10,
-        borderWidth: 5,
-        borderColor: colors.navigation,
+        marginHorizontal: 3,
         padding: 5
     },
     filterText: {

@@ -13,6 +13,7 @@ import { getCheckInData } from '../actions'
 function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, userCheckInPhotos, updateDayCount }) {
     const [fullScreenPhoto, setFullScreenPhoto] = useState()
     const [imageLoading, setImageLoading] = useState(false)
+    // const [showCheckIns, setShowCheckIns] = useState(false)
 
     const displayFullImage = (checkInPhotoUri) => {
         setFullScreenPhoto(checkInPhotoUri);
@@ -66,8 +67,11 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
                         </View>
                     </View>
                 </View>
-                <View>
-                    <MyStats dayCount={userDayCount} checkInData={getCheckInData(userCheckIns)} />
+                <View style={styles.userStatsContainer}>
+                    <MyStats dayCount={userDayCount} checkInData={userCheckIns && userCheckIns.length > 0 ? getCheckInData(userCheckIns) : null} />
+                    {/* <TouchableOpacity style={styles.showCheckInButton} onPress={() => setShowCheckIns(!showCheckIns)}>
+                        <Text style={styles.showCheckInsText}>{!showCheckIns ? "Show" : "Hide"} Check-ins</Text>
+                    </TouchableOpacity> */}
                     {!pageLoading ?
                         <ProfileCheckIns checkIns={userCheckIns} checkInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} />
                         :
@@ -125,6 +129,24 @@ const styles = StyleSheet.create({
         color: "#a1a1a1",
         fontSize: 20,
         textAlign: 'center'
+    },
+    userStatsContainer: {
+        alignItems: 'center'
+    },
+    showCheckInButton: {
+        backgroundColor: colors.secondary,
+        flex: 1,
+        width: "75%",
+        alignItems: 'center',
+        color: "white",
+        borderRadius: 10,
+        borderWidth: 5,
+        borderColor: colors.navigation,
+        padding: 5
+    },
+    showCheckInsText: {
+        color: "white",
+        fontSize: 20
     },
     imageViewerContainer: {
         position: 'absolute',

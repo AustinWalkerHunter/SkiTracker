@@ -26,10 +26,22 @@ export async function updateUsersProfilePicture(user) {
 
 export const getCheckInData = (checkIns) => {
     if (checkIns) {
-        var data = { topLocation: "N/A", skiing: 0, snowboarding: 0, skateboarding: 0 };
+        var data = { topLocation: "N/A", recentLocation: "N/A", skiing: 0, snowboarding: 0, skateboarding: 0 };
         var locations = {};
+        var foundRecentLocation = false;
         checkIns.forEach(checkIn => {
-            if (checkIn.location != "Unknown location" && checkIn.location != "Uknown location") locations[checkIn.location] ? locations[checkIn.location]++ : locations[checkIn.location] = 1
+            if (checkIn.location != "Unknown location" && checkIn.location != "Uknown location") {
+                if (!foundRecentLocation) {
+                    data.recentLocation = checkIn.location;
+                    foundRecentLocation = true;
+                }
+                if (locations[checkIn.location]) {
+                    locations[checkIn.location]++
+                }
+                else {
+                    locations[checkIn.location] = 1
+                }
+            }
             data[checkIn.sport]++;
         });
         var topLocation = Object.keys(locations).reduce((a, b) => locations[a] > locations[b] ? a : b);

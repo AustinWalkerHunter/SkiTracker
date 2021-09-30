@@ -66,7 +66,7 @@ const HomeStackScreen = ({ navigation }) => (
             options={{
                 headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
                 headerTitleStyle: { fontSize: 18, color: colors.navigationText },
-                title: 'Feed',
+                title: 'SkiTracker',
                 headerLeft: () => (
                     <TouchableOpacity style={{ marginHorizontal: 25 }}>
                         <Ionicons name="person-add-outline"
