@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify from 'aws-amplify';
 import awsconfig from '../../src/aws-exports'
 Amplify.configure(awsconfig);
 
@@ -95,6 +95,7 @@ const CheckInStackScreen = ({ navigation }) => (
             name="CheckInScreen"
             component={CheckInScreen}
             options={{
+                headerShown: false,
                 headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
                 headerTitleStyle: { fontSize: 18, color: colors.navigationText },
                 title: 'Check In',
@@ -118,18 +119,9 @@ const ProfileStackScreen = ({ navigation }) => (
                 headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
                 headerTitleStyle: { fontSize: 18, color: colors.navigationText },
                 title: 'My Profile',
-                headerLeft: () => (
-                    <TouchableOpacity style={{ marginHorizontal: 25 }}>
-                        <MaterialIcons
-                            name="logout"
-                            size={30}
-                            color={colors.secondary}
-                            onPress={() => Auth.signOut()} />
-                    </TouchableOpacity>
-                ),
                 headerRight: () => (
                     <TouchableOpacity style={{ marginHorizontal: 25 }}>
-                        <Feather name="settings" size={30}
+                        <Feather name="settings" size={28}
                             type='font-awesome'
                             color={colors.secondary}
                             onPress={() => navigation.navigate('SettingsScreen')} />

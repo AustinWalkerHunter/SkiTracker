@@ -11,7 +11,7 @@ import { getUser, listUsers, checkInsByDate } from './src/graphql/queries'
 import { createUser } from './src/graphql/mutations'
 
 import Amplify, { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 import { withAuthenticator } from 'aws-amplify-react-native'
@@ -27,7 +27,7 @@ import UserProfileScreen from './app/screens/UserProfileScreen'
 const Main = createStackNavigator();
 
 
-function App() {
+const App = () => {
 
 
   const [preparingApp, setPreparingApp] = useState(true)
@@ -183,10 +183,15 @@ function App() {
             component={SettingsScreen}
             options={{
               headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
+              headerBackTitleVisible: false,
+              headerTintColor: colors.secondary,
               headerTitleStyle: { color: colors.navigationText },
-              title: 'Account Settings'
+              title: 'Account Settings',
+              headerRight: () => (
+                <TouchableOpacity style={{ marginRight: 10 }} onPress={() => Auth.signOut()}>
+                  <Text style={{ fontSize: 15, color: colors.secondary }}>Log Out</Text>
+                </TouchableOpacity>
+              ),
             }}
           />
           <Main.Screen

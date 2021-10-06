@@ -16,7 +16,7 @@ import RoundedButton from '../components/RoundedButton';
 import { useToast } from 'react-native-fast-toast'
 import { updateUsersProfilePicture } from '../actions'
 
-const SettingsScreen = () => {
+const SettingsScreen = ({ navigation }) => {
     const isFocused = useIsFocused();
     const [userInfo, setUserInfo] = useState();
     const [pageLoading, setPageLoading] = useState(true);
@@ -58,6 +58,7 @@ const SettingsScreen = () => {
                     textStyle: { fontSize: 20 },
                     placement: "top" // default to bottom
                 });
+                navigation.navigate('MyProfileScreen')
 
                 await API.graphql(graphqlOperation(updateUser, { input: activeUser }));
                 console.log("User data updated")

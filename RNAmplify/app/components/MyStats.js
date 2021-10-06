@@ -23,7 +23,7 @@ function MyStats({ dayCount, checkInData }) {
                             <Text style={styles.dataTitle}>Skiing</Text>
                         </View>
                         <View style={styles.userData}>
-                            <Text style={styles.mountainInfo}>{checkInData ? checkInData.skiing : "0"}</Text>
+                            <Text style={styles.sportInfo}>{checkInData ? checkInData.skiing : "0"}</Text>
                         </View>
                     </View>
                     <View style={styles.statsData}>
@@ -31,7 +31,7 @@ function MyStats({ dayCount, checkInData }) {
                             <Text style={styles.dataTitle}>Snowboarding</Text>
                         </View>
                         <View style={styles.userData}>
-                            <Text style={styles.mountainInfo}>{checkInData ? checkInData.snowboarding : "0"}</Text>
+                            <Text style={styles.sportInfo}>{checkInData ? checkInData.snowboarding : "0"}</Text>
                         </View>
                     </View>
                 </View>
@@ -127,6 +127,12 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 38,
         fontWeight: "100"
+    },
+    sportInfo: {
+        color: 'white',
+        fontSize: 25,
+        fontWeight: "100",
+        textAlign: "center",
     },
     mountainInfo: {
         color: 'white',
