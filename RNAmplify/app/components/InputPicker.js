@@ -11,6 +11,7 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
     const [modalVisible, setModalVisible] = useState(false)
     const [searchText, setSearchText] = useState('')
     const [searchItems, setSearchItems] = useState(items)
+    const [showRemoveButton, setShowRemoveButton] = useState(false)
 
     const filterLocations = (input) => {
         setSearchText(input);
@@ -23,7 +24,7 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
     }
 
     return (
-        <SafeScreen>
+        <React.Fragment>
             <TouchableOpacity style={styles.container} onPress={() => {
                 setModalVisible(true)
                 Keyboard.dismiss()
@@ -41,10 +42,11 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
                             value={searchText}
                             containerStyle={styles.searchStyles}
                         />
-                        {selectedItem &&
+                        {showRemoveButton &&
                             <TouchableOpacity style={styles.closeModalButton} onPress={() => {
                                 onSelectedItem('')
                                 filterLocations('')
+                                setShowRemoveButton(false);
                             }}>
                                 <Text style={textStyle}>Remove Selected Location</Text>
                             </TouchableOpacity>
@@ -54,6 +56,7 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
                             keyExtractor={(item, index) => String(index)}
                             renderItem={({ item }) => <PickerItem label={item.resort_name} onPress={() => {
                                 onSelectedItem(item)
+                                setShowRemoveButton(true);
                                 setModalVisible(false)
                             }}
                             />}
@@ -61,7 +64,7 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
                     </View>
                 </TouchableOpacity>
             </Modal>
-        </SafeScreen>
+        </React.Fragment>
     );
 }
 

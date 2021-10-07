@@ -6,6 +6,7 @@ import SafeScreen from '../components/SafeScreen';
 import GLOBAL from '../global';
 import FriendItem from '../components/FriendItem';
 import colors from "../constants/colors"
+import { SearchBar } from 'react-native-elements';
 
 const AddFriend = ({ navigation }) => {
     const [activeId, setActiveUserId] = useState();
@@ -13,11 +14,14 @@ const AddFriend = ({ navigation }) => {
     const isFocused = useIsFocused();
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [searchText, setSearchText] = useState('')
+    const [searchItems, setSearchItems] = useState()
 
     useEffect(() => {
         if (isFocused) {
             getAllUsers()
             fetchCurrentUserData()
+            setSearchText('')
         }
     }, [isFocused]);
 
@@ -32,7 +36,18 @@ const AddFriend = ({ navigation }) => {
             allUsers.push(GLOBAL.allUsers[key])
         }
         setUsers(allUsers)
+        setSearchItems(allUsers);
         setLoading(false)
+    }
+
+    const filterUsers = (input) => {
+        setSearchText(input);
+        var results = users.filter(function (obj) {
+            if (obj['username'].toLowerCase().includes(input.toLowerCase())) {
+                return obj;
+            }
+        });
+        setSearchItems(results);
     }
 
     const getUserProfile = (userId) => {
@@ -51,25 +66,35 @@ const AddFriend = ({ navigation }) => {
             {!loading ?
                 <View style={styles.usersContainer}>
                     {users.length > 1 ?
-                        <FlatList
-                            contentContainerStyle={{ alignSelf: 'flex-start' }}
-                            numColumns={3}
-                            showsVerticalScrollIndicator={false}
-                            showsHorizontalScrollIndicator={false}
-                            data={users}
-                            inverted={false}
-                            keyExtractor={users => users.id.toString()}
-                            refreshControl={<RefreshControl
-                                tintColor={"white"}
-                                refreshing={refreshing}
-                                onRefresh={() => console.log("refreshing")}
+                        <View style={styles.usersContainer}>
+                            <SearchBar
+                                placeholder="Start typing a name..."
+                                onChangeText={(input) => filterUsers(input)}
+                                value={searchText}
+                                containerStyle={styles.searchStyles}
                             />
-                            }
-                            renderItem={({ item }) =>
-                                <FriendItem user={item} getUserProfile={getUserProfile} />
-                            }
-                        >
-                        </FlatList>
+                            <FlatList
+                                // contentContainerStyle={{ alignSelf: 'flex-start' }}
+                                numColumns={3}
+                                showsVerticalScrollIndicator={false}
+                                showsHorizontalScrollIndicator={false}
+                                data={searchItems}
+                                inverted={false}
+                                keyExtractor={users => users.id.toString()}
+                                refreshControl={<RefreshControl
+                                    tintColor={"white"}
+                                    refreshing={refreshing}
+                                    onRefresh={() => console.log("refreshing")}
+                                />
+                                }
+                                renderItem={({ item }) =>
+                                    <View style={styles.friendItem}>
+                                        <FriendItem user={item} getUserProfile={getUserProfile} />
+                                    </View>
+                                }
+                            >
+                            </FlatList>
+                        </View>
                         :
                         <View style={styles.zeroStateContainer}>
                             <View style={styles.zeroStateRow}>
@@ -91,8 +116,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: colors.navigation,
     },
+    searchStyles: {
+        backgroundColor: colors.navigation,
+        borderBottomColor: 'transparent',
+        borderTopColor: 'transparent'
+    },
     usersContainer: {
-
+        width: "100%",
+        height: "100%",
+        justifyContent: "space-around"
+    },
+    friendItem: {
+        width: "33%"
     },
     text: {
         fontSize: 30,

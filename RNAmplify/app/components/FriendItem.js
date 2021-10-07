@@ -30,7 +30,6 @@ function FriendItem({ user, getUserProfile }) {
 
 const styles = StyleSheet.create({
     container: {
-        width: "33%",
         padding: 5,
         alignItems: 'center',
         textAlignVertical: 'center'
