@@ -14,6 +14,7 @@ import Amplify, { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
+import { MaterialIcons } from '@expo/vector-icons';
 import { withAuthenticator } from 'aws-amplify-react-native'
 import AppLoading from 'expo-app-loading';
 import * as SplashScreen from 'expo-splash-screen';
@@ -183,13 +184,15 @@ const App = () => {
             component={SettingsScreen}
             options={{
               headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitleVisible: false,
+              headerBackTitle: 'Back',
+              headerBackTitleStyle: { color: colors.navigationText },
               headerTintColor: colors.secondary,
               headerTitleStyle: { color: colors.navigationText },
-              title: 'Account Settings',
+              title: 'Settings',
               headerRight: () => (
-                <TouchableOpacity style={{ marginRight: 10 }} onPress={() => Auth.signOut()}>
-                  <Text style={{ fontSize: 15, color: colors.secondary }}>Log Out</Text>
+                <TouchableOpacity style={{ marginRight: 8, alignItems: 'center', justifyContent: 'center', flexDirection: "row" }} onPress={() => Auth.signOut()}>
+                  <Text style={{ fontSize: 15, color: colors.navigationText, marginRight: 3 }}>Log Out</Text>
+                  <MaterialIcons name="logout" size={24} color={colors.secondary} />
                 </TouchableOpacity>
               ),
             }}
@@ -202,6 +205,7 @@ const App = () => {
               headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
               headerBackTitle: 'Back',
               headerBackTitleStyle: { color: colors.navigationText },
+              headerTintColor: colors.secondary,
               headerTitleStyle: { color: colors.navigationText },
               title: 'Add Friends',
             }}
@@ -214,6 +218,7 @@ const App = () => {
               headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
               headerBackTitle: 'Back',
               headerBackTitleStyle: { color: colors.navigationText },
+              headerTintColor: colors.secondary,
               headerTitleStyle: { color: colors.navigationText },
               title: 'User Profile',
             }}

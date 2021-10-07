@@ -177,14 +177,13 @@ const CheckInScreen = ({ navigation }) => {
 
     return (
         <SafeScreen style={styles.screen}>
-            {/* <View style={styles.headerRow}>
+            <View style={styles.headerRow}>
                 <Text style={styles.pageTitle}>Check-in</Text>
             </View>
-            <View style={styles.titleLine} /> */}
+            <View style={styles.titleLine} />
             {!loading ?
                 <View>
                     <ScrollView>
-
                         <View style={styles.activityContainer}>
                             <Text style={styles.activityTitle}>Select your sport</Text>
                             <View style={styles.activityRow}>
@@ -280,14 +279,13 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 35,
         top: -10,
-        fontStyle: 'italic',
         fontWeight: "500"
     },
     titleLine: {
         borderWidth: 1,
         borderColor: "white",
         width: "100%",
-        marginBottom: 40,
+        marginBottom: 15,
         borderColor: colors.secondary
     },
     titleContainer: {
@@ -321,17 +319,16 @@ const styles = StyleSheet.create({
     image: {
         width: 300,
         height: 300,
-        marginBottom: 100
+        marginBottom: 200
     },
     activityContainer: {
         alignItems: "center",
-        marginTop: 15,
         marginBottom: 25
     },
     activityTitle: {
         color: "white",
         fontSize: 25,
-        marginBottom: 35
+        marginBottom: 25
     },
     activityRow: {
         alignItems: "center",

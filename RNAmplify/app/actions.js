@@ -44,8 +44,10 @@ export const getCheckInData = (checkIns) => {
             }
             data[checkIn.sport]++;
         });
-        var topLocation = Object.keys(locations).reduce((a, b) => locations[a] > locations[b] ? a : b);
-        if (topLocation != "Unknown location") data.topLocation = topLocation;
+        if (Object.keys(locations).length > 0) {
+            var topLocation = Object.keys(locations).reduce((a, b) => locations[a] > locations[b] ? a : b);
+            if (topLocation != "Unknown location") data.topLocation = topLocation;
+        }
         return data;
     }
 }

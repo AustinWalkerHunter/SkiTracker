@@ -3,12 +3,27 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Keyboard } f
 import PickerItem from '../components/PickerItem'
 import { Ionicons } from '@expo/vector-icons';
 import colors from '../constants/colors';
+import { SearchBar } from 'react-native-elements';
+import SafeScreen from '../components/SafeScreen'
+
 
 function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, onSelectedItem }) {
     const [modalVisible, setModalVisible] = useState(false)
+    const [searchText, setSearchText] = useState('')
+    const [searchItems, setSearchItems] = useState(items)
+
+    const filterLocations = (input) => {
+        setSearchText(input);
+        var results = items.filter(function (obj) {
+            if (obj['resort_name'].includes(input)) {
+                return obj;
+            }
+        });
+        setSearchItems(results);
+    }
 
     return (
-        <React.Fragment>
+        <SafeScreen>
             <TouchableOpacity style={styles.container} onPress={() => {
                 setModalVisible(true)
                 Keyboard.dismiss()
@@ -20,14 +35,22 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
                 <TouchableOpacity style={styles.modalScreen} onPress={() => setModalVisible(false)} >
 
                     <View style={styles.modalView}>
-                        <TouchableOpacity style={styles.closeModalButton} onPress={() => {
-                            onSelectedItem('')
-                            setModalVisible(false)
-                        }}>
-                            <Text style={textStyle}>Clear</Text>
-                        </TouchableOpacity>
+                        <SearchBar
+                            placeholder="Where did you go?"
+                            onChangeText={(input) => filterLocations(input)}
+                            value={searchText}
+                            containerStyle={styles.searchStyles}
+                        />
+                        {selectedItem &&
+                            <TouchableOpacity style={styles.closeModalButton} onPress={() => {
+                                onSelectedItem('')
+                                filterLocations('')
+                            }}>
+                                <Text style={textStyle}>Remove Selected Location</Text>
+                            </TouchableOpacity>
+                        }
                         <FlatList
-                            data={items}
+                            data={searchItems}
                             keyExtractor={(item, index) => String(index)}
                             renderItem={({ item }) => <PickerItem label={item.resort_name} onPress={() => {
                                 onSelectedItem(item)
@@ -38,7 +61,7 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
                     </View>
                 </TouchableOpacity>
             </Modal>
-        </React.Fragment>
+        </SafeScreen>
     );
 }
 
@@ -59,16 +82,19 @@ const styles = StyleSheet.create({
     },
     modalView: {
         backgroundColor: colors.navigation,
-        height: "50%"
+        height: "70%"
+    },
+    searchStyles: {
+        backgroundColor: colors.navigation,
+        borderBottomColor: 'transparent',
+        borderTopColor: 'transparent'
     },
     closeModalButton: {
-        // position: 'absolute',
         alignSelf: "center",
         marginTop: 20,
-        //bottom: "36%",
         borderRadius: 15,
         borderWidth: 1,
-        borderColor: "white",
+        borderColor: "red",
         padding: 5,
         backgroundColor: 'rgba(224, 224, 224, 0.15)',
     }

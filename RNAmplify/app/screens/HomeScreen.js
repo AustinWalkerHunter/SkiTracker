@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useScrollToTop } from "@react-navigation/native";
 import { RefreshControl, View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-native';
 import PostCard from "../components/PostCard"
 import SafeScreen from '../components/SafeScreen'
 import colors from '../constants/colors'
 import { checkInsByDate } from '../../src/graphql/queries'
 import GLOBAL from '../global';
-import { useToast } from 'react-native-fast-toast'
 import { deleteSelectedCheckIn } from "../actions"
+
 const HomeScreen = ({ route, navigation }) => {
     const isFocused = useIsFocused();
     const [loading, setLoading] = useState(true);
@@ -17,7 +17,8 @@ const HomeScreen = ({ route, navigation }) => {
     const [fullScreenCheckInPhoto, setFullScreenCheckInPhoto] = useState()
     const [imageLoading, setImageLoading] = useState(false)
 
-    const toast = useToast()
+    const ref = React.useRef(null);
+    useScrollToTop(ref);
 
     useEffect(() => {
         if (isFocused) {
@@ -80,6 +81,7 @@ const HomeScreen = ({ route, navigation }) => {
                             ?
                             <FlatList
                                 data={checkIns}
+                                ref={ref}
                                 keyExtractor={items => items.id.toString()}
                                 contentContainerStyle={{ paddingBottom: 75 }}
                                 refreshControl={<RefreshControl

@@ -14,7 +14,7 @@ function FriendItem({ user, getUserProfile }) {
                     <View>
                         {
                             user.image ?
-                                <ProfileIcon size={80} image={user.image} />
+                                <ProfileIcon size={75} image={user.image} />
                                 :
                                 <MaterialCommunityIcons name="account-outline" size={80} color="grey" />
                         }
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     },
     userName: {
         color: "white",
-        fontSize: 17
+        fontSize: 13
 
     },
 })
