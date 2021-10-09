@@ -13,7 +13,6 @@ import colors from "../constants/colors"
 
 import HomeScreen from '../screens/HomeScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
-import CheckInScreen from '../screens/CheckInScreen';
 
 const HomeStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
@@ -45,11 +44,11 @@ const Tabs = () => (
                 <Ionicons name="ios-home-outline" size={35} color={color} />
             ),
         }} />
-        <Tab.Screen name="CheckIn" component={CheckInStackScreen} options={{
+        {/* <Tab.Screen name="CheckIn" component={CheckInStackScreen} options={{
             tabBarIcon: ({ color }) => (
                 <MaterialCommunityIcons name="map-marker-check" size={38} color={color} />
             ),
-        }} />
+        }} /> */}
         <Tab.Screen name="Profile" component={ProfileStackScreen} options={{
             tabBarIcon: ({ color }) => (
                 <MaterialCommunityIcons name="account-outline" size={40} color={color} />
@@ -89,25 +88,25 @@ const HomeStackScreen = ({ navigation }) => (
     </HomeStack.Navigator >
 )
 
-const CheckInStackScreen = ({ navigation }) => (
-    <CheckInStack.Navigator>
-        <CheckInStack.Screen
-            name="CheckInScreen"
-            component={CheckInScreen}
-            options={{
-                headerShown: false,
-                headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-                headerTitleStyle: { fontSize: 18, color: colors.navigationText },
-                title: 'Check In',
-                // headerLeft: () => (
-                //     <TouchableOpacity style={{ marginHorizontal: 25 }} onPress={() => navigation.navigate('HomeScreen')} >
-                //         <Text style={{ fontSize: 15, color: colors.navigationText }}>Cancel</Text>
-                //     </TouchableOpacity>
-                // )
-            }}
-        />
-    </CheckInStack.Navigator>
-)
+// const CheckInStackScreen = ({ navigation }) => (
+//     <CheckInStack.Navigator>
+//         <CheckInStack.Screen
+//             name="CheckInScreen"
+//             component={CheckInScreen}
+//             options={{
+//                 // headerShown: false,
+//                 headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+//                 headerTitleStyle: { fontSize: 18, color: colors.navigationText },
+//                 title: 'Check In',
+//                 // headerLeft: () => (
+//                 //     <TouchableOpacity style={{ marginHorizontal: 25 }} onPress={() => navigation.navigate('HomeScreen')} >
+//                 //         <Text style={{ fontSize: 15, color: colors.navigationText }}>Cancel</Text>
+//                 //     </TouchableOpacity>
+//                 // )
+//             }}
+//         />
+//     </CheckInStack.Navigator>
+// )
 
 
 const ProfileStackScreen = ({ navigation }) => (

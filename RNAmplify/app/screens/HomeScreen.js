@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import { useIsFocused, useScrollToTop } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RefreshControl, View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-native';
 import PostCard from "../components/PostCard"
 import SafeScreen from '../components/SafeScreen'
@@ -126,6 +127,11 @@ const HomeScreen = ({ route, navigation }) => {
                             </View>
                             : null
                     }
+                    <View style={styles.checkInButtonContainer}>
+                        <TouchableOpacity style={styles.checkInButton} onPress={() => navigation.navigate('CheckInScreen')}>
+                            <MaterialCommunityIcons style={styles.checkInIcon} name="map-marker-check" size={55} color={colors.secondary} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 :
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -142,9 +148,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.navigation,
     },
     checkInList: {
-        //alignItems: 'center',
         marginHorizontal: 5
-        //width: "98%"
     },
     imageViewerContainer: {
         position: 'absolute',
@@ -182,6 +186,32 @@ const styles = StyleSheet.create({
         fontSize: 25,
         paddingLeft: 5,
         marginRight: 5
+    },
+    checkInButtonContainer: {
+        position: "absolute",
+        bottom: 15,
+        right: 60,
+    },
+    checkInButton: {
+        position: 'absolute',
+        alignSelf: "center",
+        bottom: '20%',
+        borderRadius: 50,
+        shadowColor: colors.navigation,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.9,
+        shadowRadius: 3,
+        elevation: 5,
+        padding: 7,
+        backgroundColor: "white",
+        zIndex: 999,
+    },
+    checkInIcon: {
+        shadowColor: colors.navigation,
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.6,
+        shadowRadius: 1,
+        elevation: 5,
     },
     zeroStateContainer: {
         justifyContent: 'center',

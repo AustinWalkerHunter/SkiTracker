@@ -177,12 +177,12 @@ const CheckInScreen = ({ navigation }) => {
 
     return (
         <SafeScreen style={styles.screen}>
-            <View style={styles.headerRow}>
+            {/* <View style={styles.headerRow}>
                 <Text style={styles.pageTitle}>Check-in</Text>
             </View>
-            <View style={styles.titleLine} />
+            <View style={styles.titleLine} /> */}
             {!loading ?
-                <View>
+                <View style={styles.inputContainer}>
                     <ScrollView>
                         <View style={styles.activityContainer}>
                             <Text style={styles.activityTitle}>Select your sport</Text>
@@ -275,6 +275,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         marginTop: 10,
     },
+    inputContainer: {
+        height: "100%"
+    },
     pageTitle: {
         color: "white",
         fontSize: 35,
@@ -322,6 +325,7 @@ const styles = StyleSheet.create({
         marginBottom: 200
     },
     activityContainer: {
+        marginTop: 15,
         alignItems: "center",
         marginBottom: 25
     },
@@ -351,7 +355,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         alignSelf: "center",
         width: "75%",
-        bottom: 15
+        bottom: 50
     },
 })
 

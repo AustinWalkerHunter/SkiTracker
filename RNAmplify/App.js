@@ -24,6 +24,7 @@ import { ToastProvider } from 'react-native-fast-toast'
 import SettingsScreen from './app/screens/SettingsScreen';
 import AddFriendScreen from './app/screens/AddFriendScreen'
 import UserProfileScreen from './app/screens/UserProfileScreen'
+import CheckInScreen from './app/screens/CheckInScreen';
 
 const Main = createStackNavigator();
 
@@ -172,7 +173,7 @@ const App = () => {
 
   return (
     <ToastProvider>
-      < NavigationContainer >
+      < NavigationContainer>
         <Main.Navigator>
           <Main.Screen
             name="Tabs"
@@ -221,6 +222,20 @@ const App = () => {
               headerTintColor: colors.secondary,
               headerTitleStyle: { color: colors.navigationText },
               title: 'User Profile',
+            }}
+          />
+          <Main.Screen
+            name="CheckInScreen"
+            component={CheckInScreen}
+            options={{
+              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+              headerTitleStyle: { fontSize: 18, color: colors.navigationText },
+              title: 'Check In',
+              headerShown: true,
+              headerBackTitle: 'Back',
+              headerBackTitleStyle: { color: colors.navigationText },
+              headerTintColor: colors.secondary,
+              headerTitleStyle: { color: colors.navigationText },
             }}
           />
         </Main.Navigator>
