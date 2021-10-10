@@ -24,7 +24,6 @@ const MyProfileScreen = () => {
     const [userCheckInPhotos, setUserCheckInPhotos] = useState([]);
     const toast = useToast()
 
-
     useEffect(() => {
         if (isFocused) {
             setActiveUser({ username: GLOBAL.activeUser.username, id: GLOBAL.activeUser.id, description: GLOBAL.activeUser.description, image: GLOBAL.activeUser.image })

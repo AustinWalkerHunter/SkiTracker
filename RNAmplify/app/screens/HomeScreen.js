@@ -129,7 +129,7 @@ const HomeScreen = ({ route, navigation }) => {
                     }
                     <View style={styles.checkInButtonContainer}>
                         <TouchableOpacity style={styles.checkInButton} onPress={() => navigation.navigate('CheckInScreen')}>
-                            <MaterialCommunityIcons style={styles.checkInIcon} name="map-marker-check" size={55} color={colors.secondary} />
+                            <MaterialCommunityIcons style={styles.checkInIcon} name="map-marker-check" size={45} color="white" />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -189,8 +189,8 @@ const styles = StyleSheet.create({
     },
     checkInButtonContainer: {
         position: "absolute",
-        bottom: 15,
-        right: 60,
+        bottom: 13,
+        right: 55,
     },
     checkInButton: {
         position: 'absolute',
@@ -198,18 +198,18 @@ const styles = StyleSheet.create({
         bottom: '20%',
         borderRadius: 50,
         shadowColor: colors.navigation,
-        shadowOffset: { width: 0, height: 4 },
+        shadowOffset: { width: -1, height: 3 },
         shadowOpacity: 0.9,
-        shadowRadius: 3,
+        shadowRadius: 2,
         elevation: 5,
-        padding: 7,
-        backgroundColor: "white",
+        padding: 12,
+        backgroundColor: colors.secondary,
         zIndex: 999,
     },
     checkInIcon: {
         shadowColor: colors.navigation,
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.6,
+        shadowOffset: { width: -1, height: 2 },
+        shadowOpacity: 0.7,
         shadowRadius: 1,
         elevation: 5,
     },

@@ -3,7 +3,7 @@ import { View, ScrollView, ActivityIndicator, TouchableOpacity, Text, StyleSheet
 import MyStats from '../components/MyStats'
 import ProfileCheckIns from '../components/ProfileCheckIns'
 import ProfileIcon from '../components/ProfileIcon'
-import SafeScreen from '../components/SafeScreen'
+import { useScrollToTop } from "@react-navigation/native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../constants/colors';
 import GLOBAL from '../global';
@@ -13,6 +13,8 @@ import { getCheckInData } from '../actions'
 function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, userCheckInPhotos, updateDayCount }) {
     const [fullScreenPhoto, setFullScreenPhoto] = useState()
     const [imageLoading, setImageLoading] = useState(false)
+    const ref = React.useRef(null);
+    useScrollToTop(ref);
     // const [showCheckIns, setShowCheckIns] = useState(false)
 
     const displayFullImage = (checkInPhotoUri) => {
@@ -25,7 +27,7 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
 
     return (
         <View style={styles.screen}>
-            <ScrollView>
+            <ScrollView ref={ref}>
                 <View style={styles.profileContainer}>
                     <View style={styles.profilePictureContainer}>
                         {activeUserProfile ?
