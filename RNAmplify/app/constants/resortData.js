@@ -3906,7 +3906,7 @@ export default [
         "lon": -88.49
     },
     {
-        "resort_name": "Northstat, CA",
+        "resort_name": "Northstar, CA",
         "state": "California",
         "summit": 8610,
         "base": 6800,

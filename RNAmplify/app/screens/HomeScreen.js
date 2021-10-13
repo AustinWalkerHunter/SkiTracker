@@ -84,7 +84,7 @@ const HomeScreen = ({ route, navigation }) => {
                                 data={checkIns}
                                 ref={ref}
                                 keyExtractor={items => items.id.toString()}
-                                contentContainerStyle={{ paddingBottom: 75 }}
+                                // contentContainerStyle={{ paddingBottom: 75 }}
                                 refreshControl={<RefreshControl
                                     tintColor={"white"}
                                     refreshing={refreshing}

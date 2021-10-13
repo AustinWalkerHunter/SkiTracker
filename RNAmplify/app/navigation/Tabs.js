@@ -79,7 +79,7 @@ const HomeStackScreen = ({ navigation }) => (
                         <Ionicons name="notifications-outline"
                             size={24}
                             color={colors.secondary}
-                        // onPress={() => navigation.navigate('AddFriendScreen')} 
+                            onPress={() => navigation.navigate('NotificationScreen')}
                         />
                     </TouchableOpacity>
                 ),
@@ -87,27 +87,6 @@ const HomeStackScreen = ({ navigation }) => (
         />
     </HomeStack.Navigator >
 )
-
-// const CheckInStackScreen = ({ navigation }) => (
-//     <CheckInStack.Navigator>
-//         <CheckInStack.Screen
-//             name="CheckInScreen"
-//             component={CheckInScreen}
-//             options={{
-//                 // headerShown: false,
-//                 headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-//                 headerTitleStyle: { fontSize: 18, color: colors.navigationText },
-//                 title: 'Check In',
-//                 // headerLeft: () => (
-//                 //     <TouchableOpacity style={{ marginHorizontal: 25 }} onPress={() => navigation.navigate('HomeScreen')} >
-//                 //         <Text style={{ fontSize: 15, color: colors.navigationText }}>Cancel</Text>
-//                 //     </TouchableOpacity>
-//                 // )
-//             }}
-//         />
-//     </CheckInStack.Navigator>
-// )
-
 
 const ProfileStackScreen = ({ navigation }) => (
     <ProfileStack.Navigator>

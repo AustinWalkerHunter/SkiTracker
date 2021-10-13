@@ -152,18 +152,27 @@ const SettingsScreen = ({ navigation }) => {
                         {/* user since   "createdAt": "2021-08-20T19:36:48.602Z", off the global user */}
                         <Text style={styles.titleText}>Nickname:</Text>
                         <View style={styles.inputContainer}>
-                            <TextInput style={styles.inputText} onChangeText={username => {
-                                setActiveUser({ ...activeUser, username: username })
-                                checkUserInput(username, activeUser.description);
-                            }}
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="Give your profile a nickname"
+                                maxLength={15}
+                                onChangeText={username => {
+                                    setActiveUser({ ...activeUser, username: username })
+                                    checkUserInput(username, activeUser.description);
+                                }}
                             >{GLOBAL.allUsers[GLOBAL.activeUserId].username}</TextInput>
                         </View>
                         <Text style={styles.titleText}>Profile description:</Text>
                         <View style={styles.inputContainer}>
-                            <TextInput style={styles.inputText} onChangeText={description => {
-                                setActiveUser({ ...activeUser, description: description })
-                                checkUserInput(activeUser.username, description);
-                            }}
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="Describe yourself..."
+                                maxLength={70}
+                                multiline={true}
+                                onChangeText={description => {
+                                    setActiveUser({ ...activeUser, description: description })
+                                    checkUserInput(activeUser.username, description);
+                                }}
                             >{GLOBAL.allUsers[GLOBAL.activeUserId].description}</TextInput>
                         </View>
                         <View style={styles.validationContainer}>

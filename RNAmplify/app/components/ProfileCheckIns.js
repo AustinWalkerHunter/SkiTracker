@@ -34,6 +34,7 @@ function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount }) {
                         data={checkIns}
                         inverted={false}
                         keyExtractor={checkIns => checkIns.id.toString()}
+                        contentContainerStyle={{ paddingBottom: 30 }}
                         refreshControl={<RefreshControl
                             tintColor={"white"}
                             refreshing={refreshing}

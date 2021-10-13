@@ -8,7 +8,7 @@ import FriendItem from '../components/FriendItem';
 import colors from "../constants/colors"
 import { SearchBar } from 'react-native-elements';
 
-const AddFriend = ({ navigation }) => {
+const AddFriendScreen = ({ navigation }) => {
     const [activeId, setActiveUserId] = useState();
     const [users, setUsers] = useState([]);
     const isFocused = useIsFocused();
@@ -43,11 +43,15 @@ const AddFriend = ({ navigation }) => {
     const filterUsers = (input) => {
         setSearchText(input);
         var results = users.filter(function (obj) {
-            if (obj['username'].toLowerCase().includes(input.toLowerCase())) {
+            if (formated(obj['username']).includes(formated(input))) {
                 return obj;
             }
         });
         setSearchItems(results);
+    }
+
+    const formated = (input) => {
+        return input.toLowerCase().trim();
     }
 
     const getUserProfile = (userId) => {
@@ -152,4 +156,4 @@ const styles = StyleSheet.create({
         marginVertical: '50%'
     }
 })
-export default AddFriend;
+export default AddFriendScreen;

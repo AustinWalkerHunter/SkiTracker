@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Image, Text, StyleSheet, ImageBackground } from 'react-native';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import ProfileIcon from '../components/ProfileIcon'
 import Moment from 'moment';
@@ -85,14 +85,13 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
             style: { marginTop: 35, backgroundColor: "green" },
             textStyle: { fontSize: 20 },
             placement: "top" // default to bottom
-
         });
     }
 
     return (
         <View>
             {!postCardDeleted && (
-                <View style={[styles.postBox, item.image ? { height: 350 } : { height: 125 }]}>
+                <View style={[styles.postBox]}>
                     <ImageBackground source={getHolidayImage()} resizeMode='repeat' style={styles.backgroundImage} imageStyle={{ opacity: 0.6 }}>
                         <View style={styles.headerContainer}>
                             <TouchableOpacity style={styles.profilePictureContainer} onPress={() => getUserProfile(item.userID)}>
@@ -104,9 +103,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                 <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
                                     <Text style={styles.authorText}>{username}</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => console.log("Location Clicked")}>
-                                    <Text style={styles.location}>{item.location}</Text>
-                                </TouchableOpacity>
+                                <Text style={styles.dateText}>{getDate(item.date)}</Text>
                             </View>
                             {(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
                                 <TouchableOpacity style={styles.deletionContainer} onPress={() => setModalVisible(true)}>
@@ -114,16 +111,29 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                 </TouchableOpacity>
                             }
                         </View>
+                        <View style={styles.headerLocationContainer}>
+                            <TouchableOpacity onPress={() => console.log("Location Clicked")}>
+                                <Text style={styles.location}>{item.location}</Text>
+                            </TouchableOpacity>
+                        </View>
+
                         {postCardImage ?
                             <TouchableOpacity style={styles.imageContainer} onPress={() => displayFullImage(postCardImage)}>
                                 <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
-                            </TouchableOpacity> : null}
+                            </TouchableOpacity>
+                            :
+                            <View style={styles.sportContainer}>
+                                <FontAwesome5 name={item.sport} size={35} color="#ff4d00" />
+                            </View>
+                        }
                         <View style={styles.footer}>
                             <View style={styles.titleContainer}>
-                                <Text style={styles.titleText}>{item.title}</Text>
-                            </View>
-                            <View style={styles.dateContainer}>
-                                <Text style={styles.dateText}>{getDate(item.date)}</Text>
+                                {postCardImage ?
+                                    <View style={styles.sportTitleContainer}>
+                                        <FontAwesome5 name={item.sport} size={25} color="#ff4d00" />
+                                    </View>
+                                    : null}
+                                <Text style={styles.titleText} ellipsizeMode='tail' numberOfLines={2}>{item.title}</Text>
                             </View>
 
                             {/* <TouchableOpacity style={styles.reaction} onPress={() => setNumberOfLikes(1)}>
@@ -157,7 +167,10 @@ const styles = StyleSheet.create({
     headerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        height: 75
+        paddingVertical: 10,
+    },
+    headerLocationContainer: {
+        alignSelf: 'center',
     },
     profilePictureContainer: {
         paddingHorizontal: 10,
@@ -169,9 +182,9 @@ const styles = StyleSheet.create({
     },
     location: {
         color: colors.primaryText,
-        fontSize: 15,
-        fontStyle: 'italic',
-        fontWeight: "300"
+        fontSize: 20,
+        fontWeight: "300",
+        // textDecorationLine: 'underline'
     },
     deletionContainer: {
         position: 'absolute',
@@ -179,15 +192,16 @@ const styles = StyleSheet.create({
         right: 15
     },
     sportContainer: {
-        position: 'absolute',
-        top: 20,
-        right: 15
+        alignSelf: 'center',
+        paddingVertical: 15
     },
-    sportIcon: {
-        color: colors.secondary
+    sportTitleContainer: {
+        alignSelf: 'center',
+        marginRight: 10
     },
     imageContainer: {
-        height: '60%',
+        height: 200,
+        marginTop: 5,
         marginBottom: 15
     },
     image: {
@@ -196,21 +210,21 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     backgroundImage: {
-        height: '100%',
         width: '100%',
         borderRadius: 6,
         overflow: 'hidden',
     },
     footer: {
         flexDirection: 'row',
-        height: 75,
+        paddingVertical: 2,
         paddingHorizontal: 10,
         bottom: 10
     },
     titleContainer: {
         marginTop: 5,
         marginLeft: 5,
-        flexShrink: 1
+        flexShrink: 1,
+        flexDirection: 'row',
     },
     titleText: {
         color: colors.primaryText,
@@ -225,7 +239,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     dateText: {
-        fontSize: 15,
+        fontSize: 13,
         color: "white",
         fontWeight: "300"
     },

@@ -14,11 +14,15 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
     const filterLocations = (input) => {
         setSearchText(input);
         var results = items.filter(function (obj) {
-            if (obj['resort_name'].includes(input) || obj['state'].includes(input)) {
+            if (formated(obj['resort_name']).includes(formated(input)) || formated(obj['state']).includes(formated(input))) {
                 return obj;
             }
         });
         setSearchItems(results);
+    }
+
+    const formated = (input) => {
+        return input.toLowerCase().trim();
     }
 
     return (

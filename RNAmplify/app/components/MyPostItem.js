@@ -19,8 +19,7 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
             duration: 2000,
             style: { marginTop: 35, backgroundColor: "green" },
             textStyle: { fontSize: 20 },
-            placement: "top" // default to bottom
-
+            placement: "top"
         });
     }
 
@@ -28,12 +27,7 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
         !postCardDeleted &&
         <TouchableOpacity style={styles.itemContainer} onPress={() => console.log("post clicked")}>
             <View style={styles.activityIcon}>
-                {sport == "skateboard"
-                    ?
-                    <MaterialCommunityIcons name={sport} style={styles.sportIcon} size={30} color="white" />
-                    :
-                    <FontAwesome5 name={sport} style={styles.sportIcon} size={24} color="white" />
-                }
+                <FontAwesome5 name={sport} style={styles.sportIcon} size={24} color="white" />
             </View>
             <View style={styles.titleContainer}>
                 <Text style={styles.title}>{title}</Text>

@@ -4,7 +4,7 @@ import { Auth, Storage, API, graphqlOperation } from 'aws-amplify';
 import SafeScreen from '../components/SafeScreen'
 import InputPicker from '../components/InputPicker'
 import RoundedButton from '../components/RoundedButton'
-import { FontAwesome5, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import { createCheckIn } from '../../src/graphql/mutations'
 import * as Permissions from 'expo-permissions';
@@ -54,7 +54,7 @@ const CheckInScreen = ({ navigation }) => {
     const submit = async () => {
         if (checkIn.sport != '') {
             const newCheckIn = {
-                title: checkIn.title ? checkIn.title : "Checked in " + (checkIn.sport == "skateboard" ? "skateboarding" : checkIn.sport),
+                title: checkIn.title ? checkIn.title : "Checked in " + checkIn.sport,
                 location: checkIn.location ? checkIn.location : "Unknown location",
                 sport: checkIn.sport,
                 image: checkIn.image,
@@ -178,17 +178,11 @@ const CheckInScreen = ({ navigation }) => {
     const sports = [
         { label: "skiing", value: 1 },
         { label: "snowboarding", value: 2 },
-        { label: "skateboard", value: 3 },
-
     ]
 
 
     return (
         <SafeScreen style={styles.screen}>
-            {/* <View style={styles.headerRow}>
-                <Text style={styles.pageTitle}>Check-in</Text>
-            </View>
-            */}
             <View style={styles.titleLine} />
             {!loading ?
                 <View style={styles.inputContainer}>
@@ -196,16 +190,12 @@ const CheckInScreen = ({ navigation }) => {
                         <View style={styles.activityContainer}>
                             <Text style={styles.activityTitle}>Select your sport</Text>
                             <View style={styles.activityRow}>
-                                {/* This needs a rework */}
                                 <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[0].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[0])}>
                                     <FontAwesome5 name="skiing" size={24} color={checkIn.sport === sports[0].label ? "white" : "black"} />
                                 </TouchableOpacity>
                                 <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[1].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[1])}>
                                     <FontAwesome5 name="snowboarding" size={24} color={checkIn.sport === sports[1].label ? "white" : "black"} />
                                 </TouchableOpacity>
-                                {/* <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[2].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[2])}>
-                                    <MaterialCommunityIcons name="skateboard" size={30} color={checkIn.sport === sports[2].label ? "white" : "black"} />
-                                </TouchableOpacity> */}
                             </View>
                         </View>
                         <View style={styles.titleContainer}>
@@ -213,7 +203,9 @@ const CheckInScreen = ({ navigation }) => {
                                 placeholder="Give your check-in a title"
                                 onChangeText={title => setCheckIn({ ...checkIn, title: title })}
                                 placeholderTextColor="grey"
-                                maxLength={50} />
+                                maxLength={200} //Make this longer and just add... 
+                                multiline={true}
+                            />
                         </View>
                         <View style={styles.buttonContainer}>
                             <InputPicker
@@ -302,7 +294,6 @@ const styles = StyleSheet.create({
         borderWidth: .7,
         borderColor: "white",
         width: "100%",
-        // marginBottom: 10,
         borderColor: colors.secondary
     },
     titleContainer: {
