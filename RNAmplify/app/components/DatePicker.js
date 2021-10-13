@@ -19,7 +19,7 @@ function DatePicker({ iconName, placeholder, textStyle, selectedItem, onSelected
                 setModalVisible(true)
                 Keyboard.dismiss()
             }}>
-                <Ionicons style={{ marginRight: 5 }} name={iconName} size={30} color="white" />
+                <Ionicons style={{ marginHorizontal: 5 }} name={iconName} size={40} color="#888888" />
                 <Text style={textStyle}>{selectedItem ? selectedItem : placeholder}</Text>
             </TouchableOpacity>
             <Modal visible={modalVisible} transparent={true} animationType="slide">
@@ -56,7 +56,7 @@ function DatePicker({ iconName, placeholder, textStyle, selectedItem, onSelected
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10,
+        // padding: 10,
         flexDirection: 'row',
         alignItems: "center",
     },

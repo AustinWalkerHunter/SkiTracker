@@ -211,16 +211,13 @@ const styles = StyleSheet.create({
     titleContainer: {
         marginTop: 5,
         marginLeft: 5,
-        flexDirection: 'column',
-        flex: 1,
-        flexWrap: 'wrap',
         flexShrink: 1
     },
     titleText: {
         color: colors.primaryText,
         fontSize: 15,
-        width: "auto",
-        marginBottom: 5
+        width: "100%",
+        marginBottom: 5,
     },
     dateContainer: {
         position: "absolute",
