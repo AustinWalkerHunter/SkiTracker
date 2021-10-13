@@ -58,7 +58,7 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
 const styles = StyleSheet.create({
     itemContainer: {
         flexDirection: "row",
-        backgroundColor: '#363e45',
+        backgroundColor: '#2d3339',
         paddingHorizontal: 10,
         paddingVertical: 15,
         marginBottom: 10,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         paddingTop: 5,
     },
     title: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: "500",
         color: "white",
     },

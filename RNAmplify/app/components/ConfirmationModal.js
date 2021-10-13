@@ -1,6 +1,6 @@
 import color from "color";
 import React, { useState } from "react";
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
+import { Alert, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import colors from "../constants/colors";
 
 
@@ -19,15 +19,15 @@ function ConfirmationModal({ modalVisible, setModalVisible, title, confirmAction
                 <View style={styles.modalView}>
                     <Text style={styles.modalText}>{title}</Text>
                     <View style={styles.buttonsContainer}>
-                        <Pressable
+                        <TouchableOpacity
                             style={[styles.button, styles.buttonClose]}
                             onPress={() => {
                                 setModalVisible(false)
                             }}
                         >
                             <Text style={styles.textStyle}>Cancel</Text>
-                        </Pressable>
-                        <Pressable
+                        </TouchableOpacity>
+                        <TouchableOpacity
                             style={[styles.button, styles.buttonConfirm]}
                             onPress={() => {
                                 confirmAction()
@@ -35,7 +35,7 @@ function ConfirmationModal({ modalVisible, setModalVisible, title, confirmAction
                             }}
                         >
                             <Text style={styles.textStyle}>Delete</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
@@ -45,15 +45,14 @@ function ConfirmationModal({ modalVisible, setModalVisible, title, confirmAction
 
 const styles = StyleSheet.create({
     centeredView: {
-        flex: 1,
+        top: -25,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 22,
-        backgroundColor: '#000000cc'
+        backgroundColor: '#000000cc',
+        height: "110%"
     },
     modalView: {
-        margin: 20,
-        backgroundColor: colors.primary,
+        backgroundColor: "#22272b",
         borderRadius: 20,
         padding: 35,
         alignItems: "center",
@@ -81,6 +80,7 @@ const styles = StyleSheet.create({
     },
     buttonClose: {
         backgroundColor: colors.grey,
+        paddingHorizontal: 25
     },
     buttonConfirm: {
         backgroundColor: "red",
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         color: "white",
         fontWeight: "bold",
         fontSize: 17,
-        marginBottom: 15,
+        marginBottom: 30,
         textAlign: "center"
     }
 });

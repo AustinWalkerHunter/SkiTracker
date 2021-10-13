@@ -4,8 +4,6 @@ import PickerItem from '../components/PickerItem'
 import { Ionicons } from '@expo/vector-icons';
 import colors from '../constants/colors';
 import { SearchBar } from 'react-native-elements';
-import SafeScreen from '../components/SafeScreen'
-
 
 function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, onSelectedItem }) {
     const [modalVisible, setModalVisible] = useState(false)
@@ -16,7 +14,7 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
     const filterLocations = (input) => {
         setSearchText(input);
         var results = items.filter(function (obj) {
-            if (obj['resort_name'].includes(input)) {
+            if (obj['resort_name'].includes(input) || obj['state'].includes(input)) {
                 return obj;
             }
         });
@@ -29,7 +27,7 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
                 setModalVisible(true)
                 Keyboard.dismiss()
             }}>
-                <Ionicons name={iconName} size={45} color="red" />
+                <Ionicons name={iconName} size={45} color={colors.secondary} />
                 <Text style={textStyle}>{selectedItem ? selectedItem : placeholder}</Text>
             </TouchableOpacity>
             <Modal visible={modalVisible} transparent={true} animationType="slide">
@@ -70,9 +68,7 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
 
 const styles = StyleSheet.create({
     container: {
-        //width: "100%",
         alignItems: "center",
-        // padding: 10,
         flexDirection: 'row',
     },
     titleInput: {
@@ -84,11 +80,11 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     modalView: {
-        backgroundColor: colors.navigation,
+        backgroundColor: "#0d0d0d",
         height: "70%"
     },
     searchStyles: {
-        backgroundColor: colors.navigation,
+        backgroundColor: "#0d0d0d",
         borderBottomColor: 'transparent',
         borderTopColor: 'transparent'
     },

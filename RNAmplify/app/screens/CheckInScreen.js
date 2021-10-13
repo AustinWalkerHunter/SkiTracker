@@ -23,7 +23,7 @@ const CheckInScreen = ({ navigation }) => {
     const toast = useToast()
     const [checkInSubmitted, setCheckInSubmitted] = useState(false)
     const [loading, setLoading] = useState(false);
-
+    const [showAddPhotoButton, setShowAddPhotoButton] = useState(true)
     const [checkIn, setCheckIn] = useState({
         title: null,
         sport: null,
@@ -108,6 +108,7 @@ const CheckInScreen = ({ navigation }) => {
     }
 
     const removePhoto = () => {
+        setShowAddPhotoButton(true)
         setCheckIn({
             ...checkIn,
             image: null,
@@ -128,6 +129,7 @@ const CheckInScreen = ({ navigation }) => {
                 return;
             } else {
                 // setPercentage(0);
+                setShowAddPhotoButton(false)
                 setCheckIn({ ...checkIn, image: result.uri })
             }
         }
@@ -186,7 +188,8 @@ const CheckInScreen = ({ navigation }) => {
             {/* <View style={styles.headerRow}>
                 <Text style={styles.pageTitle}>Check-in</Text>
             </View>
-            <View style={styles.titleLine} /> */}
+            */}
+            <View style={styles.titleLine} />
             {!loading ?
                 <View style={styles.inputContainer}>
                     <ScrollView>
@@ -212,7 +215,7 @@ const CheckInScreen = ({ navigation }) => {
                                 placeholderTextColor="grey"
                                 maxLength={50} />
                         </View>
-                        <View style={[styles.buttonContainer, styles.border]}>
+                        <View style={styles.buttonContainer}>
                             <InputPicker
                                 selectedItem={checkIn.location}
                                 onSelectedItem={resortData => setCheckIn({ ...checkIn, location: resortData.resort_name })}
@@ -222,8 +225,7 @@ const CheckInScreen = ({ navigation }) => {
                                 textStyle={styles.inputTitle}
                             />
                         </View>
-                        <View style={[styles.buttonContainer, styles.border]}>
-                            {/* <Text style={styles.dateText}>Check-In Date: </Text> */}
+                        <View style={styles.buttonContainer}>
                             <DatePicker
                                 selectedItem={checkIn.date}
                                 onSelectedItem={selectedDate => setSelectedDate(selectedDate)}
@@ -232,23 +234,23 @@ const CheckInScreen = ({ navigation }) => {
                                 textStyle={styles.inputTitle}
                             />
                         </View>
-                        <View style={styles.addPhotoContainer}>
-                            {!checkIn.image ?
-                                <TouchableOpacity style={[styles.addPhoto, styles.border]} onPress={() => pickImage()}>
-                                    <MaterialIcons name="add-photo-alternate" size={45} color="#00cc00" />
+                        {showAddPhotoButton ?
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity style={styles.addPhoto} onPress={() => pickImage()}>
+                                    <MaterialIcons style={{ marginLeft: 2 }} name="add-photo-alternate" size={48} color="#00b300" />
                                     <Text style={styles.addPhotoText}>Attach photo</Text>
                                 </TouchableOpacity>
-                                :
-                                <View style={styles.photoContainer}>
-                                    <TouchableOpacity style={styles.removePhotoContainer} onPress={() => removePhoto()}>
-                                        <Text style={styles.removePhotoText}>Remove photo</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => pickImage()}>
-                                        <Image style={styles.image} source={{ uri: checkIn.image }} />
-                                    </TouchableOpacity>
-                                </View>
-                            }
-                        </View>
+                            </View>
+                            :
+                            <View style={styles.photoContainer}>
+                                <TouchableOpacity style={styles.removePhotoContainer} onPress={() => removePhoto()}>
+                                    <Text style={styles.removePhotoText}>Remove photo</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => pickImage()}>
+                                    <Image style={styles.image} source={{ uri: checkIn.image }} />
+                                </TouchableOpacity>
+                            </View>
+                        }
                     </ScrollView>
                 </View>
                 :
@@ -297,16 +299,16 @@ const styles = StyleSheet.create({
         fontWeight: "500"
     },
     titleLine: {
-        borderWidth: 1,
+        borderWidth: .7,
         borderColor: "white",
         width: "100%",
-        marginBottom: 15,
+        // marginBottom: 10,
         borderColor: colors.secondary
     },
     titleContainer: {
         alignItems: "center",
         alignSelf: "center",
-        width: "100%",
+        width: "98%",
         marginTop: 10,
         marginBottom: 5,
         flexDirection: 'row',
@@ -320,18 +322,18 @@ const styles = StyleSheet.create({
         fontSize: 18,
         paddingLeft: 3,
     },
-    border: {
-        backgroundColor: "#303634",
-        borderRadius: 15,
-        padding: 5,
-        marginVertical: 3,
-    },
     dateText: {
         color: "white",
         fontSize: 15
     },
     buttonContainer: {
         marginTop: 15,
+        backgroundColor: "#303634",
+        borderRadius: 15,
+        padding: 5,
+        marginVertical: 3,
+        alignSelf: "center",
+        width: "98%"
     },
     photoContainer: {
         alignItems: "center",
@@ -341,7 +343,6 @@ const styles = StyleSheet.create({
     addPhoto: {
         flexDirection: "row",
         alignItems: "center",
-        alignSelf: "center",
         width: "100%"
     },
     addPhotoText: {
@@ -349,10 +350,12 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     removePhotoContainer: {
-        backgroundColor: "red",
+        marginVertical: 15,
         borderRadius: 15,
+        borderWidth: 1,
+        borderColor: "red",
         padding: 10,
-        marginVertical: 10
+        backgroundColor: 'rgba(224, 224, 224, 0.15)',
     },
     removePhotoText: {
         color: "white",
@@ -361,7 +364,7 @@ const styles = StyleSheet.create({
     image: {
         width: 300,
         height: 300,
-        marginBottom: 200
+        marginBottom: 100
     },
     activityContainer: {
         marginTop: 15,
@@ -387,14 +390,18 @@ const styles = StyleSheet.create({
         borderRadius: 50 / 2
     },
     addPhotoContainer: {
-        alignItems: "center",
         marginVertical: 10
     },
     postContainer: {
         position: 'absolute',
         alignSelf: "center",
         width: "75%",
-        bottom: 50
+        bottom: 50,
+        shadowColor: colors.navigation,
+        shadowOffset: { width: -2, height: 3 },
+        shadowOpacity: 0.8,
+        shadowRadius: 1,
+        elevation: 5,
     },
 })
 

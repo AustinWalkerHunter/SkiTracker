@@ -19,7 +19,7 @@ function DatePicker({ iconName, placeholder, textStyle, selectedItem, onSelected
                 setModalVisible(true)
                 Keyboard.dismiss()
             }}>
-                <Ionicons style={{ marginHorizontal: 5 }} name={iconName} size={40} color="#888888" />
+                <Ionicons style={{ marginHorizontal: 5 }} name={iconName} size={40} color="#0073e6" />
                 <Text style={textStyle}>{selectedItem ? selectedItem : placeholder}</Text>
             </TouchableOpacity>
             <Modal visible={modalVisible} transparent={true} animationType="slide">
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         bottom: 60,
         borderRadius: 15,
         borderWidth: 1,
-        padding: 5,
+        padding: 15,
         backgroundColor: 'rgba(224, 224, 224, 0.15)',
     },
     saveBtn: {
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     },
     cancelBtn: {
         alignSelf: 'flex-start',
+        borderColor: colors.grey,
         left: 15
     }
 })

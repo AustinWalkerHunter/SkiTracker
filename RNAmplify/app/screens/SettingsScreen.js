@@ -230,6 +230,7 @@ const styles = StyleSheet.create({
     saveContainer: {
         position: 'absolute',
         bottom: 20,
+        width: '75%'
     },
     validationContainer: {
         opacity: .8

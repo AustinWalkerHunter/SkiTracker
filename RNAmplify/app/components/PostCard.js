@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: '100%',
         marginBottom: 10,
-        //marginHorizontal: 2,
         borderRadius: 10,
     },
     headerContainer: {
