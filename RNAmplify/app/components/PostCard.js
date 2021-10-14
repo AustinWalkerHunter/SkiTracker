@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, StyleSheet, ImageBackground } from 'react-native';
+import { View, TouchableOpacity, TouchableWithoutFeedback, Image, Text, StyleSheet, ImageBackground } from 'react-native';
 import { Feather, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import ProfileIcon from '../components/ProfileIcon'
@@ -9,7 +9,7 @@ import GLOBAL from '../global';
 import ConfirmationModal from '../components/ConfirmationModal'
 import { useToast } from 'react-native-fast-toast'
 
-function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckIn }) {
+function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckIn, viewCheckIn }) {
     // const [numberOfLikes, setNumberOfLikes] = useState(likes);
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const profileImage = GLOBAL.allUsers[item.userID].image;
@@ -93,54 +93,71 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
             {!postCardDeleted && (
                 <View style={[styles.postBox]}>
                     <ImageBackground source={getHolidayImage()} resizeMode='repeat' style={styles.backgroundImage} imageStyle={{ opacity: 0.6 }}>
-                        <View style={styles.headerContainer}>
-                            <TouchableOpacity style={styles.profilePictureContainer} onPress={() => getUserProfile(item.userID)}>
-                                {
-                                    profileImage ? <ProfileIcon size={50} image={profileImage} /> :
-                                        <MaterialCommunityIcons name="account-outline" size={40} color="grey" />}
-                            </TouchableOpacity>
-                            <View style={styles.headerTextContainer}>
-                                <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
-                                    <Text style={styles.authorText}>{username}</Text>
-                                </TouchableOpacity>
-                                <Text style={styles.dateText}>{getDate(item.date)}</Text>
+                        <TouchableWithoutFeedback onPress={() => viewCheckIn(item.id)}>
+                            <View>
+                                <View style={styles.headerContainer}>
+                                    <TouchableWithoutFeedback onPress={() => getUserProfile(item.userID)}>
+                                        <View style={styles.profilePictureContainer}>
+                                            {
+                                                profileImage ? <ProfileIcon size={50} image={profileImage} /> :
+                                                    <MaterialCommunityIcons name="account-outline" size={40} color="grey" />}
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                    <View style={styles.headerTextContainer}>
+                                        <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
+                                            <Text style={styles.authorText}>{username}</Text>
+                                        </TouchableOpacity>
+                                        <Text style={styles.dateText}>{getDate(item.date)}</Text>
+                                    </View>
+                                    {(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
+                                        <TouchableOpacity style={styles.deletionContainer} onPress={() => setModalVisible(true)}>
+                                            <Feather name="x" size={24} color="white" />
+                                        </TouchableOpacity>
+                                    }
+                                </View>
+                                <View style={styles.headerLocationContainer}>
+                                    <TouchableOpacity onPress={() => console.log("Location Clicked")}>
+                                        <Text style={styles.location}>{item.location}</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                            {(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
-                                <TouchableOpacity style={styles.deletionContainer} onPress={() => setModalVisible(true)}>
-                                    <Feather name="x" size={24} color="white" />
-                                </TouchableOpacity>
-                            }
-                        </View>
-                        <View style={styles.headerLocationContainer}>
-                            <TouchableOpacity onPress={() => console.log("Location Clicked")}>
-                                <Text style={styles.location}>{item.location}</Text>
-                            </TouchableOpacity>
-                        </View>
+                        </TouchableWithoutFeedback>
 
                         {postCardImage ?
-                            <TouchableOpacity style={styles.imageContainer} onPress={() => displayFullImage(postCardImage)}>
-                                <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
-                            </TouchableOpacity>
+                            <TouchableWithoutFeedback onPress={() => displayFullImage(postCardImage)}>
+                                <View style={styles.imageContainer}>
+                                    <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
+                                </View>
+                            </TouchableWithoutFeedback>
                             :
-                            <View style={styles.sportContainer}>
-                                <FontAwesome5 name={item.sport} size={35} color="#ff4d00" />
-                            </View>
+                            <TouchableWithoutFeedback onPress={() => viewCheckIn(item.id)}>
+                                <View>
+                                    <View style={styles.sportContainer}>
+                                        <FontAwesome5 name={item.sport} size={35} color="#ff4d00" />
+                                    </View>
+                                </View>
+                            </TouchableWithoutFeedback>
                         }
                         <View style={styles.footer}>
-                            <View style={styles.titleContainer}>
-                                {postCardImage ?
-                                    <View style={styles.sportTitleContainer}>
-                                        <FontAwesome5 name={item.sport} size={25} color="#ff4d00" />
+                            <TouchableWithoutFeedback onPress={() => viewCheckIn(item.id)}>
+                                <View>
+                                    <View style={styles.titleContainer}>
+                                        {postCardImage ?
+                                            <View style={styles.sportTitleContainer}>
+                                                <FontAwesome5 name={item.sport} size={25} color="#ff4d00" />
+                                            </View>
+                                            : null}
+                                        <Text style={styles.titleText} ellipsizeMode='tail' numberOfLines={2}>{item.title}</Text>
                                     </View>
-                                    : null}
-                                <Text style={styles.titleText} ellipsizeMode='tail' numberOfLines={2}>{item.title}</Text>
-                            </View>
+                                </View>
+                            </TouchableWithoutFeedback>
 
                             {/* <TouchableOpacity style={styles.reaction} onPress={() => setNumberOfLikes(1)}>
                     <Text style={styles.reactionNumber}>{numberOfLikes}</Text>
                     <AntDesign name="like2" size={24} color="white" />
                 </TouchableOpacity> */}
                         </View>
+
                     </ImageBackground>
                 </View>
             )

@@ -48,7 +48,6 @@ export const onCreateCheckIn = /* GraphQL */ `
       date
       likes
       userID
-      userName
       type
       createdAt
       comments {
@@ -69,7 +68,6 @@ export const onUpdateCheckIn = /* GraphQL */ `
       date
       likes
       userID
-      userName
       type
       createdAt
       comments {
@@ -90,7 +88,6 @@ export const onDeleteCheckIn = /* GraphQL */ `
       date
       likes
       userID
-      userName
       type
       createdAt
       comments {
@@ -114,7 +111,6 @@ export const onCreateComment = /* GraphQL */ `
         date
         likes
         userID
-        userName
         type
         createdAt
         updatedAt
@@ -139,7 +135,6 @@ export const onUpdateComment = /* GraphQL */ `
         date
         likes
         userID
-        userName
         type
         createdAt
         updatedAt
@@ -164,7 +159,6 @@ export const onDeleteComment = /* GraphQL */ `
         date
         likes
         userID
-        userName
         type
         createdAt
         updatedAt

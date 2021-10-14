@@ -5,8 +5,9 @@ import { useToast } from 'react-native-fast-toast'
 import GLOBAL from '../global';
 import ConfirmationModal from '../components/ConfirmationModal'
 import { deleteSelectedCheckIn } from '../actions'
+import colors from '../constants/colors';
 
-function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
+function MyPostItem({ item, title, location, date, sport, updateDayCount, viewCheckIn }) {
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const toast = useToast()
@@ -25,13 +26,13 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
 
     return (
         !postCardDeleted &&
-        <TouchableOpacity style={styles.itemContainer} onPress={() => console.log("post clicked")}>
+        <TouchableOpacity style={styles.itemContainer} onPress={() => viewCheckIn(item.id)}>
             <View style={styles.activityIcon}>
-                <FontAwesome5 name={sport} style={styles.sportIcon} size={24} color="white" />
+                <FontAwesome5 name={sport} style={styles.sportIcon} size={24} color={colors.secondary} />
             </View>
             <View style={styles.titleContainer}>
-                <Text style={styles.title}>{title}</Text>
                 <Text style={styles.location}>{location}</Text>
+                <Text style={styles.title} ellipsizeMode='tail' numberOfLines={1}>{title}</Text>
             </View>
             {(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
                 <TouchableOpacity style={styles.deleteButton} onPress={() => setModalVisible(true)}>
@@ -52,11 +53,13 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount }) {
 const styles = StyleSheet.create({
     itemContainer: {
         flexDirection: "row",
+        alignSelf: "center",
         backgroundColor: '#2d3339',
         paddingHorizontal: 10,
         paddingVertical: 15,
         marginBottom: 10,
-        borderRadius: 10
+        borderRadius: 10,
+        width: "98%"
     },
     activityIcon: {
         alignSelf: "center",
@@ -65,15 +68,18 @@ const styles = StyleSheet.create({
     },
     titleContainer: {
         paddingTop: 5,
+        paddingBottom: 10,
+        width: "75%"
     },
     title: {
-        fontSize: 16,
-        fontWeight: "500",
+        fontSize: 12,
+        fontWeight: "400",
         color: "white",
     },
     location: {
+        fontSize: 15,
         color: "white",
-        fontWeight: "400"
+        fontWeight: "500"
     },
     deleteButton: {
         position: "absolute",
@@ -85,7 +91,8 @@ const styles = StyleSheet.create({
         position: "absolute",
         bottom: 5,
         right: 7,
-        color: "white"
+        color: "white",
+        fontWeight: "200"
     },
 })
 export default MyPostItem;

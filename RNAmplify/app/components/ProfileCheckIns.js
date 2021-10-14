@@ -6,7 +6,7 @@ import StatsImage from './StatsImage'
 import Moment from 'moment';
 import colors from '../constants/colors'
 
-function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount }) {
+function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount, viewCheckIn }) {
     const [refreshing, setRefreshing] = useState(false);
     const [showPhotos, setShowPhotos] = useState(false);
     const getDate = (date) => {
@@ -49,6 +49,7 @@ function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount }) {
                                 date={getDate(item.createdAt)}
                                 sport={item.sport}
                                 updateDayCount={updateDayCount}
+                                viewCheckIn={viewCheckIn}
                             />
                         }
                     >

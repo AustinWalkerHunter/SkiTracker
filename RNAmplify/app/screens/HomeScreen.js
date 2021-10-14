@@ -63,6 +63,12 @@ const HomeScreen = ({ route, navigation }) => {
         }
     }
 
+    const viewCheckIn = (checkInId) => {
+        navigation.navigate('ViewCheckInScreen', {
+            checkInId: checkInId
+        })
+    }
+
     const displayFullImage = (checkInPhotoUri) => {
         setFullScreenCheckInPhoto(checkInPhotoUri);
         setImageLoading(true)
@@ -100,6 +106,7 @@ const HomeScreen = ({ route, navigation }) => {
                                         getUserProfile={getUserProfile}
                                         displayFullImage={displayFullImage}
                                         deleteSelectedCheckIn={deleteSelectedCheckIn}
+                                        viewCheckIn={viewCheckIn}
                                     />
                                 }
                             >

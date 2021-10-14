@@ -23,6 +23,7 @@ import { ToastProvider } from 'react-native-fast-toast'
 
 import SettingsScreen from './app/screens/SettingsScreen';
 import AddFriendScreen from './app/screens/AddFriendScreen'
+import ViewCheckInScreen from './app/screens/ViewCheckInScreen'
 import NotificationScreen from './app/screens/NotificationScreen'
 import UserProfileScreen from './app/screens/UserProfileScreen'
 import CheckInScreen from './app/screens/CheckInScreen';
@@ -223,6 +224,19 @@ const App = () => {
               headerTintColor: colors.secondary,
               headerTitleStyle: { color: colors.navigationText },
               title: 'Notifications',
+            }}
+          />
+          <Main.Screen
+            name="ViewCheckInScreen"
+            component={ViewCheckInScreen}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+              headerBackTitle: 'Back',
+              headerBackTitleStyle: { color: colors.navigationText },
+              headerTintColor: colors.secondary,
+              headerTitleStyle: { color: colors.navigationText },
+              title: 'Viewing Check-in',
             }}
           />
           <Main.Screen

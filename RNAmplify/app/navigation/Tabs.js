@@ -22,6 +22,7 @@ const Tab = createMaterialTopTabNavigator();
 const Tabs = () => (
     <Tab.Navigator
         tabBarPosition='bottom'
+        screenOptions={{ swipeEnabled: false }}
         tabBarOptions={{
             iconStyle: {
                 width: 40,

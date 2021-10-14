@@ -24,7 +24,7 @@ export async function updateUsersProfilePicture(user) {
     }
 }
 
-export const getCheckInData = (checkIns) => {
+export const getAllCheckInData = (checkIns) => {
     if (checkIns) {
         var data = { topLocation: "N/A", recentLocation: "N/A", skiing: 0, snowboarding: 0 };
         var locations = {};

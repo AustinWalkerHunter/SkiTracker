@@ -43,7 +43,6 @@ export const getCheckIn = /* GraphQL */ `
       date
       likes
       userID
-      userName
       type
       createdAt
       comments {
@@ -69,7 +68,6 @@ export const listCheckIns = /* GraphQL */ `
         date
         likes
         userID
-        userName
         type
         createdAt
         updatedAt
@@ -92,7 +90,6 @@ export const getComment = /* GraphQL */ `
         date
         likes
         userID
-        userName
         type
         createdAt
         updatedAt
@@ -147,7 +144,6 @@ export const checkInsByDate = /* GraphQL */ `
         date
         likes
         userID
-        userName
         type
         createdAt
         updatedAt

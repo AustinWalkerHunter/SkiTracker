@@ -7,10 +7,10 @@ import { useScrollToTop } from "@react-navigation/native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../constants/colors';
 import GLOBAL from '../global';
-import { getCheckInData } from '../actions'
+import { getAllCheckInData } from '../actions'
 
 
-function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, userCheckInPhotos, updateDayCount }) {
+function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, userCheckInPhotos, updateDayCount, viewCheckIn }) {
     const [fullScreenPhoto, setFullScreenPhoto] = useState()
     const [imageLoading, setImageLoading] = useState(false)
     const ref = React.useRef(null);
@@ -70,12 +70,12 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
                     </View>
                 </View>
                 <View style={styles.userStatsContainer}>
-                    <MyStats dayCount={userDayCount} checkInData={userCheckIns && userCheckIns.length > 0 ? getCheckInData(userCheckIns) : null} />
+                    <MyStats dayCount={userDayCount} checkInData={userCheckIns && userCheckIns.length > 0 ? getAllCheckInData(userCheckIns) : null} />
                     {/* <TouchableOpacity style={styles.showCheckInButton} onPress={() => setShowCheckIns(!showCheckIns)}>
                         <Text style={styles.showCheckInsText}>{!showCheckIns ? "Show" : "Hide"} Check-ins</Text>
                     </TouchableOpacity> */}
                     {!pageLoading ?
-                        <ProfileCheckIns checkIns={userCheckIns} checkInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} />
+                        <ProfileCheckIns checkIns={userCheckIns} checkInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
                         :
                         <ActivityIndicator size="large" color="white" />
                     }

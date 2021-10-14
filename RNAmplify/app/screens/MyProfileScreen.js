@@ -13,7 +13,7 @@ import { updateUsersProfilePicture } from '../actions'
 import { useToast } from 'react-native-fast-toast'
 
 
-const MyProfileScreen = () => {
+const MyProfileScreen = ({ navigation }) => {
     const isFocused = useIsFocused();
     const [activeUser, setActiveUser] = useState({ username: '', description: '', image: null });
     const [userDayCount, setUserDayCount] = useState(0);
@@ -140,9 +140,15 @@ const MyProfileScreen = () => {
         return blob;
     };
 
+    const viewCheckIn = (checkInId) => {
+        navigation.navigate('ViewCheckInScreen', {
+            checkInId: checkInId
+        })
+    }
+
 
     return (
-        <Profile activeUserProfile={true} userProfileImage={userProfileImage} pickImage={pickImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} userCheckInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} />
+        <Profile activeUserProfile={true} userProfileImage={userProfileImage} pickImage={pickImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} userCheckInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
     );
 }
 
