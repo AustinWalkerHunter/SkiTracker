@@ -9,6 +9,7 @@ import colors from '../constants/colors'
 import { checkInsByDate } from '../../src/graphql/queries'
 import GLOBAL from '../global';
 import { deleteSelectedCheckIn } from "../actions"
+import resorts from '../constants/resortData'
 
 const HomeScreen = ({ route, navigation }) => {
     const isFocused = useIsFocused();
@@ -63,9 +64,16 @@ const HomeScreen = ({ route, navigation }) => {
         }
     }
 
-    const viewCheckIn = (checkInId) => {
+    const viewCheckIn = (checkIn) => {
         navigation.navigate('ViewCheckInScreen', {
-            checkInId: checkInId
+            checkIn: checkIn
+        })
+    }
+
+    const viewResort = (resort) => {
+        var resortData = resorts.find(o => o.resort_name === resort)
+        navigation.navigate('ResortScreen', {
+            resortData: resortData
         })
     }
 
@@ -107,6 +115,7 @@ const HomeScreen = ({ route, navigation }) => {
                                         displayFullImage={displayFullImage}
                                         deleteSelectedCheckIn={deleteSelectedCheckIn}
                                         viewCheckIn={viewCheckIn}
+                                        viewResort={viewResort}
                                     />
                                 }
                             >

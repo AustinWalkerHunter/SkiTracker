@@ -140,9 +140,9 @@ const MyProfileScreen = ({ navigation }) => {
         return blob;
     };
 
-    const viewCheckIn = (checkInId) => {
+    const viewCheckIn = (checkIn) => {
         navigation.navigate('ViewCheckInScreen', {
-            checkInId: checkInId
+            checkIn: checkIn
         })
     }
 

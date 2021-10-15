@@ -203,7 +203,7 @@ const CheckInScreen = ({ navigation }) => {
                                 placeholder="Give your check-in a title"
                                 onChangeText={title => setCheckIn({ ...checkIn, title: title })}
                                 placeholderTextColor="grey"
-                                maxLength={200} //Make this longer and just add... 
+                                maxLength={150} //Make this longer and just add... 
                                 multiline={true}
                             />
                         </View>

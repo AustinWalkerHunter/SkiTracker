@@ -26,7 +26,7 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount, viewCh
 
     return (
         !postCardDeleted &&
-        <TouchableOpacity style={styles.itemContainer} onPress={() => viewCheckIn(item.id)}>
+        <TouchableOpacity style={styles.itemContainer} onPress={() => viewCheckIn(item)}>
             <View style={styles.activityIcon}>
                 <FontAwesome5 name={sport} style={styles.sportIcon} size={24} color={colors.secondary} />
             </View>

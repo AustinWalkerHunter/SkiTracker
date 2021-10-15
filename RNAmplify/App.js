@@ -24,6 +24,7 @@ import { ToastProvider } from 'react-native-fast-toast'
 import SettingsScreen from './app/screens/SettingsScreen';
 import AddFriendScreen from './app/screens/AddFriendScreen'
 import ViewCheckInScreen from './app/screens/ViewCheckInScreen'
+import ResortScreen from './app/screens/ResortScreen'
 import NotificationScreen from './app/screens/NotificationScreen'
 import UserProfileScreen from './app/screens/UserProfileScreen'
 import CheckInScreen from './app/screens/CheckInScreen';
@@ -236,7 +237,20 @@ const App = () => {
               headerBackTitleStyle: { color: colors.navigationText },
               headerTintColor: colors.secondary,
               headerTitleStyle: { color: colors.navigationText },
-              title: 'Viewing Check-in',
+              title: 'Check-in',
+            }}
+          />
+          <Main.Screen
+            name="ResortScreen"
+            component={ResortScreen}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+              headerBackTitle: 'Back',
+              headerBackTitleStyle: { color: colors.navigationText },
+              headerTintColor: colors.secondary,
+              headerTitleStyle: { color: colors.navigationText },
+              title: 'Resort',
             }}
           />
           <Main.Screen

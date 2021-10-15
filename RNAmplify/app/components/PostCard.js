@@ -9,7 +9,7 @@ import GLOBAL from '../global';
 import ConfirmationModal from '../components/ConfirmationModal'
 import { useToast } from 'react-native-fast-toast'
 
-function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckIn, viewCheckIn }) {
+function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckIn, viewCheckIn, viewResort }) {
     // const [numberOfLikes, setNumberOfLikes] = useState(likes);
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const profileImage = GLOBAL.allUsers[item.userID].image;
@@ -93,7 +93,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
             {!postCardDeleted && (
                 <View style={[styles.postBox]}>
                     <ImageBackground source={getHolidayImage()} resizeMode='repeat' style={styles.backgroundImage} imageStyle={{ opacity: 0.6 }}>
-                        <TouchableWithoutFeedback onPress={() => viewCheckIn(item.id)}>
+                        <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
                             <View>
                                 <View style={styles.headerContainer}>
                                     <TouchableWithoutFeedback onPress={() => getUserProfile(item.userID)}>
@@ -115,8 +115,10 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                         </TouchableOpacity>
                                     }
                                 </View>
+                                {/* <View style={styles.titleLine} /> */}
+
                                 <View style={styles.headerLocationContainer}>
-                                    <TouchableOpacity onPress={() => console.log("Location Clicked")}>
+                                    <TouchableOpacity onPress={() => viewResort(item.location)}>
                                         <Text style={styles.location}>{item.location}</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -130,7 +132,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                 </View>
                             </TouchableWithoutFeedback>
                             :
-                            <TouchableWithoutFeedback onPress={() => viewCheckIn(item.id)}>
+                            <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
                                 <View>
                                     <View style={styles.sportContainer}>
                                         <FontAwesome5 name={item.sport} size={35} color="#ff4d00" />
@@ -139,7 +141,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                             </TouchableWithoutFeedback>
                         }
                         <View style={styles.footer}>
-                            <TouchableWithoutFeedback onPress={() => viewCheckIn(item.id)}>
+                            <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
                                 <View>
                                     <View style={styles.titleContainer}>
                                         {postCardImage ?
@@ -195,12 +197,20 @@ const styles = StyleSheet.create({
     authorText: {
         color: colors.primaryText,
         fontSize: 18,
-        fontWeight: "bold",
+        fontWeight: "400",
+    },
+    titleLine: {
+        borderWidth: .5,
+        alignSelf: 'center',
+        borderColor: "white",
+        width: "100%",
+        borderColor: colors.grey,
+        marginBottom: 5
     },
     location: {
         color: colors.primaryText,
         fontSize: 20,
-        fontWeight: "300",
+        fontWeight: "400",
         // textDecorationLine: 'underline'
     },
     deletionContainer: {

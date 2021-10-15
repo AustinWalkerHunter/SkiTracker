@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
 import { TouchableOpacity, StyleSheet, Text, Image, View, TextInput, ActivityIndicator } from 'react-native';
-import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import colors from "../constants/colors"
 import SafeScreen from '../components/SafeScreen'
 import { updateUser } from '../../src/graphql/mutations'
@@ -13,50 +13,90 @@ import { Buffer } from "buffer"; // get this via: npm install buffer
 import uuid from 'react-native-uuid';
 import * as FileSystem from "expo-file-system";
 import GLOBAL from '../global';
+import resorts from '../constants/resortData'
 import RoundedButton from '../components/RoundedButton';
 import { useToast } from 'react-native-fast-toast'
 import { getCheckIn } from '../../src/graphql/queries'
 
 const ViewCheckInScreen = ({ route, navigation }) => {
-    const { checkInId } = route.params;
+    const { checkIn } = route.params;
     const isFocused = useIsFocused();
     const [pageLoading, setPageLoading] = useState(true);
     const [checkInData, setCheckInData] = useState();
-
+    const [author, setAuthor] = useState();
+    const [postCardImage, setPostCardImage] = useState();
 
 
     useEffect(() => {
         if (isFocused) {
-            // fetchCheckInData(checkInId);
+            setAuthor(GLOBAL.allUsers[checkIn.userID])
+            if (checkIn.image) {
+                const cachedImage = GLOBAL.checkInPhotos[checkIn.id];
+                if (cachedImage) {
+                    setPostCardImage(cachedImage);
+                }
+                // else {
+                //     fetchPostCardImage();
+                // }
+            }
             setPageLoading(false);
         }
     }, [isFocused]);
 
-    async function fetchCheckInData(checkInId) {
-        try {
-            const checkInData = await API.graphql(graphqlOperation(getCheckIn, { id: checkInId }))
-            setCheckInData(checkInData)
-            console.log(checkInData)
-        } catch (error) {
-            console.log("Error getting user from db")
-        }
-        setPageLoading(false)
+    const viewResort = (resort) => {
+        var resortData = resorts.find(o => o.resort_name === resort)
+        navigation.navigate('ResortScreen', {
+            resortData: resortData
+        })
     }
+
 
 
     return (
         <SafeScreen style={styles.screen}>
-            {!pageLoading ?
-                <View>
-                    <View style={styles.container}>
-                        <View style={styles.icons}>
-                            <FontAwesome5 name="snowplow" size={70} color={colors.secondary} />
-                            <FontAwesome5 style={styles.snowMan} name="snowman" size={50} color="white" />
+            <View style={styles.titleLine} />
+            {!pageLoading && checkIn ?
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <TouchableOpacity>
+                            <View style={styles.authorContainer}>
+                                {
+                                    author.image ?
+                                        <ProfileIcon size={80} image={author.image} isSettingScreen={false} />
+                                        :
+                                        <MaterialCommunityIcons name="account-outline" size={75} color="grey" />
+                                }
+                                <View style={styles.authorTextContainer}>
+                                    <Text style={styles.username}>{author.username}</Text>
+                                    <Text style={styles.days}>Day: 10</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={styles.sportContainer}>
+                            <View >
+                                <FontAwesome5 name={checkIn.sport} size={40} color="#ff4d00" />
+                            </View>
+                            <Text style={styles.date}>{checkIn.date}</Text>
                         </View>
-                        <Text style={styles.text}>Grooming in progress...</Text>
                     </View>
-                </View>
 
+                    <View style={styles.content}>
+                        <TouchableOpacity onPress={() => viewResort(checkIn.location)}>
+                            <Text style={styles.location}>{checkIn.location}</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.title}>{checkIn.title}</Text>
+                        {postCardImage ?
+                            // <View onPress={() => displayFullImage(postCardImage)}>
+                            <View style={styles.imageContainer}>
+                                <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
+                            </View>
+                            // </TouchableOpacity>
+                            : null}
+                    </View>
+                    <View style={styles.footer}>
+
+                    </View>
+                </View >
                 :
                 <ActivityIndicator size="large" color="white" />
             }
@@ -70,28 +110,79 @@ const styles = StyleSheet.create({
         backgroundColor: colors.navigation
     },
     container: {
-        justifyContent: "center",
-        alignItems: 'center',
-        height: "100%",
-        top: -50
+        // paddingTop: 10,
     },
-    icons: {
+    header: {
         flexDirection: "row",
-        justifyContent: "center",
-        // alignItems: 'center',
-        top: 0
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        width: "100%",
+        backgroundColor: colors.primary
     },
-    snowMan: {
-        // bottom: 0
+    authorContainer: {
+        paddingHorizontal: 5,
+        alignItems: "center",
+        flexDirection: "row",
+        alignContent: "center"
+    },
+    authorTextContainer: {
         paddingHorizontal: 10,
-        alignSelf: 'flex-end',
+        flexDirection: "column",
     },
-    text: {
-        textAlign: "center",
-        fontSize: 30,
+    username: {
         color: "white",
-        marginTop: 15
-    }
+        fontSize: 20,
+    },
+    days: {
+        color: "white",
+        fontSize: 15,
+    },
+    sportContainer: {
+        flex: 1,
+        alignItems: "center",
+        alignContent: "center",
+        alignSelf: 'center'
+    },
+    date: {
+        color: "white",
+        fontSize: 15,
+        marginTop: 4
+    },
+    titleLine: {
+        borderWidth: .7,
+        borderColor: "white",
+        width: "100%",
+        borderColor: colors.secondary
+    },
+    content: {
+        backgroundColor: colors.primaryDark,
+        height: "100%",
+        paddingVertical: 10,
+        paddingHorizontal: 5
+    },
+    location: {
+        alignSelf: "center",
+        color: "white",
+        fontSize: 25,
+        textDecorationLine: "underline",
+        marginBottom: 10,
+    },
+    title: {
+        color: "white",
+        fontSize: 15,
+        paddingHorizontal: 5,
+        marginBottom: 5
+    },
+    imageContainer: {
+        height: 300,
+        marginTop: 5,
+        marginBottom: 15
+    },
+    image: {
+        alignSelf: 'center',
+        height: '100%',
+        width: '100%'
+    },
 })
 
 export default ViewCheckInScreen;

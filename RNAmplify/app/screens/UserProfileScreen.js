@@ -62,10 +62,14 @@ const UserProfileScreen = ({ route, navigation }) => {
         setUserCheckInPhotos(userPhotoData);
     }
 
-
+    const viewCheckIn = (checkIn) => {
+        navigation.navigate('ViewCheckInScreen', {
+            checkIn: checkIn
+        })
+    }
 
     return (
-        <Profile activeUserProfile={false} viewedUser={viewedUser} userProfileImage={userProfileImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} userCheckInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} />
+        <Profile activeUserProfile={false} viewedUser={viewedUser} userProfileImage={userProfileImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} userCheckInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
     );
 }
 
