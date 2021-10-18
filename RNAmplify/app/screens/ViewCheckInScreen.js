@@ -5,31 +5,24 @@ import { TouchableOpacity, StyleSheet, Text, Image, View, TextInput, ActivityInd
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import colors from "../constants/colors"
 import SafeScreen from '../components/SafeScreen'
-import { updateUser } from '../../src/graphql/mutations'
 import ProfileIcon from '../components/ProfileIcon'
-import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
-import { Buffer } from "buffer"; // get this via: npm install buffer
-import uuid from 'react-native-uuid';
-import * as FileSystem from "expo-file-system";
 import GLOBAL from '../global';
 import resorts from '../constants/resortData'
-import RoundedButton from '../components/RoundedButton';
-import { useToast } from 'react-native-fast-toast'
-import { getCheckIn } from '../../src/graphql/queries'
+import { getUserCheckInLength } from '../actions'
 
 const ViewCheckInScreen = ({ route, navigation }) => {
     const { checkIn } = route.params;
     const isFocused = useIsFocused();
     const [pageLoading, setPageLoading] = useState(true);
-    const [checkInData, setCheckInData] = useState();
     const [author, setAuthor] = useState();
     const [postCardImage, setPostCardImage] = useState();
+    const [days, setDays] = useState(0);
 
 
     useEffect(() => {
         if (isFocused) {
-            setAuthor(GLOBAL.allUsers[checkIn.userID])
+            getNumberOfDays();
+            setAuthor(GLOBAL.allUsers[checkIn.userID]);
             if (checkIn.image) {
                 const cachedImage = GLOBAL.checkInPhotos[checkIn.id];
                 if (cachedImage) {
@@ -43,6 +36,10 @@ const ViewCheckInScreen = ({ route, navigation }) => {
         }
     }, [isFocused]);
 
+    async function getNumberOfDays() {
+        setDays(await getUserCheckInLength(checkIn.userID));
+    }
+
     const viewResort = (resort) => {
         var resortData = resorts.find(o => o.resort_name === resort)
         navigation.navigate('ResortScreen', {
@@ -50,38 +47,47 @@ const ViewCheckInScreen = ({ route, navigation }) => {
         })
     }
 
-
+    const getUserProfile = (userId) => {
+        if (GLOBAL.activeUserId == userId) {
+            navigation.navigate('MyProfileScreen')
+        }
+        else {
+            navigation.navigate('UserProfileScreen', {
+                viewedUserId: userId
+            })
+        }
+    }
 
     return (
         <SafeScreen style={styles.screen}>
             <View style={styles.titleLine} />
-            {!pageLoading && checkIn ?
+            {!pageLoading && checkIn && author ?
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => getUserProfile(checkIn.userID)}>
                             <View style={styles.authorContainer}>
-                                {
-                                    author.image ?
-                                        <ProfileIcon size={80} image={author.image} isSettingScreen={false} />
-                                        :
-                                        <MaterialCommunityIcons name="account-outline" size={75} color="grey" />
+                                {author.image ?
+                                    <ProfileIcon size={50} image={author.image} isSettingScreen={false} />
+                                    :
+                                    <MaterialCommunityIcons name="account-outline" size={50} color="grey" />
                                 }
                                 <View style={styles.authorTextContainer}>
                                     <Text style={styles.username}>{author.username}</Text>
-                                    <Text style={styles.days}>Day: 10</Text>
+                                    <Text style={styles.date}>{checkIn.date}</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
                         <View style={styles.sportContainer}>
-                            <View >
-                                <FontAwesome5 name={checkIn.sport} size={40} color="#ff4d00" />
+                            <View style={styles.sportIcon}>
+                                <FontAwesome5 name={checkIn.sport} size={30} color="#ff4d00" />
                             </View>
-                            <Text style={styles.date}>{checkIn.date}</Text>
+                            <Text style={styles.days}>Days: {days}</Text>
+
                         </View>
                     </View>
 
                     <View style={styles.content}>
-                        <TouchableOpacity onPress={() => viewResort(checkIn.location)}>
+                        <TouchableOpacity style={styles.locationContainer} onPress={() => { checkIn.location != "Unknown location" ? viewResort(checkIn.location) : null }}>
                             <Text style={styles.location}>{checkIn.location}</Text>
                         </TouchableOpacity>
                         <Text style={styles.title}>{checkIn.title}</Text>
@@ -93,12 +99,13 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                             // </TouchableOpacity>
                             : null}
                     </View>
-                    <View style={styles.footer}>
+                    {/* show tab instead */}
+                    {/* <View style={styles.footer}>
 
-                    </View>
+                    </View> */}
                 </View >
                 :
-                <ActivityIndicator size="large" color="white" />
+                <ActivityIndicator style={{ marginTop: 150 }} size="large" color="white" />
             }
         </SafeScreen>
     )
@@ -113,11 +120,12 @@ const styles = StyleSheet.create({
         // paddingTop: 10,
     },
     header: {
+        // justifyContent: "space-around",
         flexDirection: "row",
         paddingHorizontal: 15,
         paddingVertical: 15,
         width: "100%",
-        backgroundColor: colors.primary
+        backgroundColor: colors.navigation
     },
     authorContainer: {
         paddingHorizontal: 5,
@@ -131,22 +139,27 @@ const styles = StyleSheet.create({
     },
     username: {
         color: "white",
-        fontSize: 20,
+        fontSize: 18,
     },
     days: {
         color: "white",
         fontSize: 15,
+        alignSelf: 'center'
     },
     sportContainer: {
         flex: 1,
-        alignItems: "center",
+        // justifyContent: "flex-end",
+        alignItems: "flex-end",
         alignContent: "center",
+        alignSelf: 'center'
+    },
+    sportIcon: {
         alignSelf: 'center'
     },
     date: {
         color: "white",
         fontSize: 15,
-        marginTop: 4
+        fontWeight: '200'
     },
     titleLine: {
         borderWidth: .7,
@@ -155,22 +168,33 @@ const styles = StyleSheet.create({
         borderColor: colors.secondary
     },
     content: {
-        backgroundColor: colors.primaryDark,
+        backgroundColor: colors.navigation,
         height: "100%",
         paddingVertical: 10,
         paddingHorizontal: 5
     },
+    locationContainer: {
+        alignSelf: "center",
+        padding: 10,
+        width: "70%",
+        borderWidth: 1,
+        borderColor: colors.secondary,
+        borderRadius: 10,
+        backgroundColor: colors.primary,
+        marginBottom: 10,
+
+    },
     location: {
         alignSelf: "center",
         color: "white",
-        fontSize: 25,
-        textDecorationLine: "underline",
-        marginBottom: 10,
+        fontSize: 22,
+        fontWeight: "500",
     },
     title: {
         color: "white",
         fontSize: 15,
-        paddingHorizontal: 5,
+        paddingHorizontal: 3,
+        paddingVertical: 10,
         marginBottom: 5
     },
     imageContainer: {
@@ -183,6 +207,14 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%'
     },
+    footer: {
+        position: "absolute",
+        bottom: 0,
+        height: "15%",
+        padding: 20,
+        width: "100%",
+        backgroundColor: colors.primary
+    }
 })
 
 export default ViewCheckInScreen;

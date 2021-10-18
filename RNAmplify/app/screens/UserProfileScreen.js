@@ -11,7 +11,6 @@ const UserProfileScreen = ({ route, navigation }) => {
     const [viewedUser, setViewedUser] = useState({ username: '', description: '', image: null });
     const [userDayCount, setUserDayCount] = useState(0);
     const [userCheckIns, setUserCheckIns] = useState();
-    const [userCheckInPhotos, setUserCheckInPhotos] = useState([]);
     const [pageLoading, setPageLoading] = useState(true);
     const [userProfileImage, setUserProfileImage] = useState();
 
@@ -41,25 +40,12 @@ const UserProfileScreen = ({ route, navigation }) => {
                 filter: { userID: { eq: viewedUser.id } }
             };
             const userCheckIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items
-            getCheckInPhotos(userCheckIns)
             setUserCheckIns(userCheckIns)
             setUserDayCount(userCheckIns.length);
         } catch (error) {
             console.log("Error getting user from db")
         }
         setPageLoading(false)
-    }
-
-    const getCheckInPhotos = async (userCheckIns) => {
-        var userPhotoData = []
-        userCheckIns.forEach(checkIn => {
-            if (checkIn.image) {
-                var checkInPhoto = GLOBAL.checkInPhotos[checkIn.id];
-                var photoData = { id: checkIn.id, photo: checkInPhoto, title: checkIn.title }
-                userPhotoData.push(photoData)
-            }
-        });
-        setUserCheckInPhotos(userPhotoData);
     }
 
     const viewCheckIn = (checkIn) => {
@@ -69,7 +55,7 @@ const UserProfileScreen = ({ route, navigation }) => {
     }
 
     return (
-        <Profile activeUserProfile={false} viewedUser={viewedUser} userProfileImage={userProfileImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} userCheckInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
+        <Profile activeUserProfile={false} viewedUser={viewedUser} userProfileImage={userProfileImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
     );
 }
 

@@ -51,7 +51,8 @@ export default [
         "black_percent": 0.35,
         "black_acres": 840,
         "lat": 39.17,
-        "lon": -120.22
+        "lon": -120.22,
+        "trail_map": "https://www.palisadestahoe.com/mountain-information/trail-maps#tab=alpine-front-side"
     },
     {
         "resort_name": "Alpine Mountain, PA",
@@ -288,7 +289,7 @@ export default [
         "lon": -149.61
     },
     {
-        "resort_name": "Arizona Snowball, AZ",
+        "resort_name": "Arizona Snowbowl, AZ",
         "state": "Arizona ",
         "summit": 11500,
         "base": 9200,
@@ -627,7 +628,8 @@ export default [
         "black_percent": 0.6,
         "black_acres": 3480,
         "lat": 45.29,
-        "lon": -111.38
+        "lon": -111.38,
+        "trail_map": "https://bigskyresort.com/trail-maps"
     },
     {
         "resort_name": "Bigrock, ME",
@@ -825,7 +827,8 @@ export default [
         "black_percent": 0.33,
         "black_acres": 858,
         "lat": 43.76,
-        "lon": -116.1
+        "lon": -116.1,
+        "trail_map": "https://bogusbasin.org/content/uploads/2020/11/Bogus-Basin-2020-21-Trail-Map-Web-Back.pdf"
     },
     {
         "resort_name": "Bolton Valley, VT",
@@ -5253,7 +5256,8 @@ export default [
         "black_percent": 0.3,
         "black_acres": 1080,
         "lat": 36.74,
-        "lon": -119.25
+        "lon": -119.25,
+        "trail_map": "https://www.palisadestahoe.com/mountain-information/trail-maps#tab=olympic-valley-front-side"
     },
     {
         "resort_name": "Standing Rocks, WI",
@@ -5361,7 +5365,8 @@ export default [
         "black_percent": 0.38,
         "black_acres": 627,
         "lat": 39.27,
-        "lon": -120.3
+        "lon": -120.3,
+        "trail_map": "http://sugar3.sugarbowl.com/tahoe/178/site/graphics/2016site/interior/pdf/sugar_bowl_trailmap_1819.pdf"
     },
     {
         "resort_name": "Sugar Mountain, NC",

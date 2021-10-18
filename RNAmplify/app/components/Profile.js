@@ -10,7 +10,7 @@ import GLOBAL from '../global';
 import { getAllCheckInData } from '../actions'
 
 
-function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, userCheckInPhotos, updateDayCount, viewCheckIn }) {
+function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn }) {
     const [fullScreenPhoto, setFullScreenPhoto] = useState()
     const [imageLoading, setImageLoading] = useState(false)
     const ref = React.useRef(null);
@@ -25,8 +25,10 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
         }, 250);
     }
 
+
     return (
         <View style={styles.screen}>
+            //getting a warning for this scroll view because I have lists inside of it, (another scoll view for photos)
             <ScrollView ref={ref}>
                 <View style={styles.profileContainer}>
                     <View style={styles.profilePictureContainer}>
@@ -34,9 +36,9 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
                             <TouchableOpacity onPress={() => pickImage()}>
                                 {
                                     userProfileImage ?
-                                        <ProfileIcon size={200} image={userProfileImage} isSettingScreen={false} />
+                                        <ProfileIcon size={175} image={userProfileImage} isSettingScreen={false} />
                                         :
-                                        <MaterialCommunityIcons name="account-outline" size={200} color="grey" />
+                                        <MaterialCommunityIcons name="account-outline" size={175} color="grey" />
                                 }
                             </TouchableOpacity>
                             :
@@ -75,7 +77,7 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
                         <Text style={styles.showCheckInsText}>{!showCheckIns ? "Show" : "Hide"} Check-ins</Text>
                     </TouchableOpacity> */}
                     {!pageLoading ?
-                        <ProfileCheckIns checkIns={userCheckIns} checkInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
+                        <ProfileCheckIns checkIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
                         :
                         <ActivityIndicator size="large" color="white" />
                     }

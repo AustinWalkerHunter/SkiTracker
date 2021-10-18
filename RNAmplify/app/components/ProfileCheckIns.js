@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useIsFocused } from "@react-navigation/native";
 import { View, ScrollView, TouchableOpacity, RefreshControl, FlatList, Text, StyleSheet } from 'react-native';
 import MyPostItem from './MyPostItem';
 import { Entypo } from '@expo/vector-icons';
@@ -6,17 +7,38 @@ import StatsImage from './StatsImage'
 import Moment from 'moment';
 import colors from '../constants/colors'
 
-function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount, viewCheckIn }) {
+function ProfileCheckIns({ checkIns, updateDayCount, viewCheckIn }) {
+    const isFocused = useIsFocused();
     const [refreshing, setRefreshing] = useState(false);
     const [showPhotos, setShowPhotos] = useState(false);
+    const [hasPhotos, setHasPhotos] = useState(false);
+
+    useEffect(() => {
+        if (isFocused) {
+            checkForPhotos(checkIns);
+        }
+    }, [isFocused]);
+
     const getDate = (date) => {
         Moment.locale('en');
         var dt = date;
         return (Moment(dt).format('MMM D, YYYY'))
     }
+
+
+    const checkForPhotos = (userCheckIns) => {
+        userCheckIns.some(checkIn => {
+            if (checkIn.image) {
+                console.log("here")
+                setHasPhotos(true);
+                return true;
+            }
+        });
+    }
+
+
     return (
         <View style={styles.checkInsContainer}>
-            {/* <Text style={styles.postsTitle}>Check-ins</Text> */}
             <View style={styles.filter}>
                 <TouchableOpacity style={styles.filterButton} onPress={() => setShowPhotos(false)}>
                     <Text style={styles.filterText}>All</Text>
@@ -63,12 +85,12 @@ function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount, viewCheckIn 
                     </View>
                 :
                 <View>
-                    {checkInPhotos.length > 0 ?
+                    {hasPhotos ?
                         <FlatList
-                            data={checkInPhotos}
+                            data={checkIns}
                             horizontal={true}
                             inverted={false}
-                            keyExtractor={checkInPhotos => checkInPhotos.id.toString()}
+                            keyExtractor={checkIns => checkIns.id.toString()}
                             refreshControl={<RefreshControl
                                 tintColor={"white"}
                                 refreshing={refreshing}
@@ -76,7 +98,10 @@ function ProfileCheckIns({ checkIns, checkInPhotos, updateDayCount, viewCheckIn 
                             />
                             }
                             renderItem={({ item }) =>
-                                <StatsImage id={item.id} title={item.title} image={item.photo} />
+                                <StatsImage
+                                    checkIn={item}
+                                    viewCheckIn={viewCheckIn}
+                                />
                             }
                         >
                         </FlatList>
@@ -121,7 +146,8 @@ const styles = StyleSheet.create({
         left: 5
     },
     zeroStateContainer: {
-        marginTop: 15
+        marginTop: 15,
+        paddingVertical: "10%",
     },
     zeroStateText: {
         color: "white",

@@ -1,30 +1,36 @@
 import React from 'react';
 import { TouchableOpacity, Image, Text, StyleSheet } from 'react-native';
+import GLOBAL from "../global"
 
-function StatsImage({ id, title, image }) {
-    return (
-        <TouchableOpacity style={styles.imageContainer} onPress={() => console.log("Open checkIn")}>
-            <Image style={styles.image} source={{ uri: image }} />
-            <Text style={styles.title}>{title}</Text>
-        </TouchableOpacity>
-    );
+function StatsImage({ checkIn, viewCheckIn }) {
+    if (checkIn.image) {
+        var checkInPhoto = GLOBAL.checkInPhotos[checkIn.id];
+        return (
+            <TouchableOpacity style={styles.imageContainer} onPress={() => viewCheckIn(checkIn)}>
+                <Image style={styles.image} source={{ uri: checkInPhoto }} />
+                <Text style={styles.title} ellipsizeMode='tail' numberOfLines={2}>{checkIn.title}</Text>
+            </TouchableOpacity>
+        );
+    }
+    return null;
 }
 
 const styles = StyleSheet.create({
     imageContainer: {
-        alignItems: 'center',
         paddingVertical: 10,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        marginBottom: 25
     },
     title: {
         color: 'white',
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 15,
         marginVertical: 5,
-        //paddingBottom: 5
+        width: 300,
+        textAlign: "center"
     },
     image: {
-        width: 300,
+        width: 310,
         height: 300,
         marginHorizontal: 5
     }

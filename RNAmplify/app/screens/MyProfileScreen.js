@@ -21,7 +21,6 @@ const MyProfileScreen = ({ navigation }) => {
     const [pageLoading, setPageLoading] = useState(true);
     const [percentage, setPercentage] = useState(0);
     const [userProfileImage, setUserProfileImage] = useState();
-    const [userCheckInPhotos, setUserCheckInPhotos] = useState([]);
     const toast = useToast()
 
     useEffect(() => {
@@ -47,7 +46,6 @@ const MyProfileScreen = ({ navigation }) => {
                 filter: { userID: { eq: GLOBAL.activeUser.id } }
             };
             const userCheckIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items
-            getCheckInPhotos(userCheckIns)
             setUserCheckIns(userCheckIns)
             setUserDayCount(userCheckIns.length);
         } catch (error) {
@@ -55,19 +53,6 @@ const MyProfileScreen = ({ navigation }) => {
         }
         setPageLoading(false)
     }
-
-    const getCheckInPhotos = async (userCheckIns) => {
-        var userPhotoData = []
-        userCheckIns.forEach(checkIn => {
-            if (checkIn.image) {
-                var checkInPhoto = GLOBAL.checkInPhotos[checkIn.id];
-                var photoData = { id: checkIn.id, photo: checkInPhoto, title: checkIn.title }
-                userPhotoData.push(photoData)
-            }
-        });
-        setUserCheckInPhotos(userPhotoData);
-    }
-
 
     const pickImage = async () => {
         const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
@@ -148,7 +133,7 @@ const MyProfileScreen = ({ navigation }) => {
 
 
     return (
-        <Profile activeUserProfile={true} userProfileImage={userProfileImage} pickImage={pickImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} userCheckInPhotos={userCheckInPhotos} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
+        <Profile activeUserProfile={true} userProfileImage={userProfileImage} pickImage={pickImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
     );
 }
 

@@ -118,7 +118,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                 {/* <View style={styles.titleLine} /> */}
 
                                 <View style={styles.headerLocationContainer}>
-                                    <TouchableOpacity onPress={() => viewResort(item.location)}>
+                                    <TouchableOpacity onPress={() => { item.location != "Unknown location" ? viewResort(item.location) : null }}>
                                         <Text style={styles.location}>{item.location}</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -186,7 +186,8 @@ const styles = StyleSheet.create({
     headerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 10,
+        paddingTop: 10,
+        paddingBottom: 2
     },
     headerLocationContainer: {
         alignSelf: 'center',
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
     },
     authorText: {
         color: colors.primaryText,
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: "400",
     },
     titleLine: {
@@ -209,8 +210,9 @@ const styles = StyleSheet.create({
     },
     location: {
         color: colors.primaryText,
-        fontSize: 20,
-        fontWeight: "400",
+        fontSize: 18,
+        fontWeight: "500",
+        opacity: .9
         // textDecorationLine: 'underline'
     },
     deletionContainer: {
@@ -266,7 +268,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     dateText: {
-        fontSize: 13,
+        fontSize: 12,
         color: "white",
         fontWeight: "300"
     },

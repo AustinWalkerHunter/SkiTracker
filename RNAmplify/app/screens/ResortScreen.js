@@ -5,17 +5,7 @@ import { TouchableOpacity, StyleSheet, Text, Image, View, TextInput, ActivityInd
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import colors from "../constants/colors"
 import SafeScreen from '../components/SafeScreen'
-import { updateUser } from '../../src/graphql/mutations'
-import ProfileIcon from '../components/ProfileIcon'
-import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
-import { Buffer } from "buffer"; // get this via: npm install buffer
-import uuid from 'react-native-uuid';
-import * as FileSystem from "expo-file-system";
-import GLOBAL from '../global';
-import RoundedButton from '../components/RoundedButton';
-import { useToast } from 'react-native-fast-toast'
-import { getCheckIn } from '../../src/graphql/queries'
+import { Linking } from 'react-native';
 
 const ResortScreen = ({ route, navigation }) => {
     const { resortData } = route.params;
@@ -34,7 +24,6 @@ const ResortScreen = ({ route, navigation }) => {
     return (
         <SafeScreen style={styles.screen}>
             <View style={styles.titleLine} />
-
             {!pageLoading && resortData ?
                 <View style={styles.container}>
                     <View style={styles.header}>
@@ -45,16 +34,54 @@ const ResortScreen = ({ route, navigation }) => {
                     {/* <View style={styles.titleLine} /> */}
 
                     <View style={styles.content}>
-                        <Text style={styles.data}>Base: {resortData.base} ft.</Text>
-                        <Text style={styles.data}>Summit: {resortData.summit} ft.</Text>
-                        <Text style={styles.data}>Vertical: {resortData.vertical} ft.</Text>
-                        <Text style={styles.data}>Total runs: {resortData.runs}</Text>
-                        <Text style={styles.data}>Number of Lifts: {resortData.lifts}</Text>
-                        <Text style={styles.data}>Total acres: {resortData.acres} Acres</Text>
-
-                    </View>
-                    <View style={styles.footer}>
-
+                        <Text style={styles.statTitle}>Stats</Text>
+                        <View style={styles.stats}>
+                            <View style={styles.statColumn}>
+                                <View style={styles.statRow}>
+                                    <Text style={styles.dataTitle}>Base:</Text>
+                                    <Text style={styles.data}>{resortData.base} ft</Text>
+                                </View>
+                                <View style={styles.rowLine} />
+                                <View style={styles.statRow}>
+                                    <Text style={styles.dataTitle}>Acres:</Text>
+                                    <Text style={styles.data}>{resortData.acres}</Text>
+                                </View>
+                                <View style={styles.rowLine} />
+                                <View style={styles.statRow}>
+                                    <Text style={styles.dataTitle}>Runs:</Text>
+                                    <Text style={styles.data}>{resortData.runs}</Text>
+                                </View>
+                                <View style={styles.rowLine} />
+                            </View>
+                            <View style={styles.statColumn}>
+                                <View style={styles.statRow}>
+                                    <Text style={styles.dataTitle}>Summit:</Text>
+                                    <Text style={styles.data}>{resortData.summit} ft</Text>
+                                </View>
+                                <View style={styles.rowLine} />
+                                <View style={styles.statRow}>
+                                    <Text style={styles.dataTitle}>Vertical:</Text>
+                                    <Text style={styles.data}>{resortData.vertical} ft</Text>
+                                </View>
+                                <View style={styles.rowLine} />
+                                <View style={styles.statRow}>
+                                    <Text style={styles.dataTitle}>Lifts:</Text>
+                                    <Text style={styles.data}>{resortData.lifts}</Text>
+                                </View>
+                                <View style={styles.rowLine} />
+                            </View>
+                        </View>
+                        {resortData.trail_map &&
+                            <View style={styles.mapContainer}>
+                                <Text style={styles.trailText}
+                                    onPress={() => Linking.openURL(resortData.trail_map)}>
+                                    {resortData.resort_name} Trail Map
+                        </Text>
+                            </View>
+                        }
+                        <View style={styles.icon}>
+                            <FontAwesome5 name="mountain" size={250} color={colors.primary} />
+                        </View>
                     </View>
                 </View >
                 :
@@ -81,30 +108,88 @@ const styles = StyleSheet.create({
     header: {
         paddingVertical: 15,
         width: "100%",
-        backgroundColor: colors.primary,
+        backgroundColor: colors.navigation,
         justifyContent: "center",
         alignItems: "center",
+        paddingHorizontal: 2
     },
     title: {
         color: "white",
-        fontSize: 30
+        fontSize: 25
     },
     subTitle: {
         color: "white",
         fontSize: 15,
         fontWeight: "200"
     },
+    statTitle: {
+        fontSize: 25,
+        color: "white",
+        paddingHorizontal: 10,
+        marginBottom: 10,
+        fontWeight: '300'
+    },
     content: {
         height: "100%",
-        padding: 10,
-        backgroundColor: colors.primaryDark
+        paddingVertical: 15
+    },
+    stats: {
+        flexDirection: "row",
+    },
+    statColumn: {
+        flexDirection: "column",
+        width: "50%",
+        paddingHorizontal: 10
+    },
+    statRow: {
+        flexDirection: "row",
+        paddingVertical: 10,
+        width: "100%",
+        justifyContent: 'space-between'
+    },
+    rowLine: {
+        borderWidth: .5,
+        borderColor: "white",
+        width: "100%",
+        borderColor: colors.lightGrey
+    },
+    dataTitle: {
+        color: "white",
+        fontSize: 15,
+        fontWeight: "300"
     },
     data: {
         color: "white",
-        fontSize: 20,
-        paddingBottom: 5
-    }
+        fontSize: 15,
+    },
+    mapContainer: {
+        bottom: "50%",
+        position: "absolute",
+        justifyContent: "center",
+        alignItems: "center",
+        alignSelf: "center",
+        padding: 10,
+        width: "auto",
+        borderRadius: 10,
+        backgroundColor: colors.secondary,
+        marginBottom: 10,
 
+    },
+    trailText: {
+        color: "white",
+        fontSize: 15,
+    },
+    icon: {
+        position: "absolute",
+        top: 5,
+        left: 0,
+        right: 0,
+        bottom: 500,
+        zIndex: -999,
+        justifyContent: 'center',
+        alignItems: 'center',
+        opacity: 0.2
+    }
 })
 
 export default ResortScreen;

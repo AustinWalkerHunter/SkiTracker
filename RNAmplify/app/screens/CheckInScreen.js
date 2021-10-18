@@ -27,7 +27,7 @@ const CheckInScreen = ({ navigation }) => {
     const [checkIn, setCheckIn] = useState({
         title: null,
         sport: null,
-        location: '',
+        location: null,
         image: null,
         date: (Moment(new Date()).format('MMM D, YYYY'))
     });
@@ -52,7 +52,7 @@ const CheckInScreen = ({ navigation }) => {
     }
 
     const submit = async () => {
-        if (checkIn.sport != '') {
+        if (checkIn.sport && checkIn.location) {
             const newCheckIn = {
                 title: checkIn.title ? checkIn.title : "Checked in " + checkIn.sport,
                 location: checkIn.location ? checkIn.location : "Unknown location",
@@ -95,13 +95,14 @@ const CheckInScreen = ({ navigation }) => {
                 console.log("Error getting user from db"); ß
             }
         }
+        setLoading(false);
     }
 
     const clearForm = () => {
         setCheckIn({
             title: '',
             sport: null,
-            location: '',
+            location: null,
             image: null,
             date: (Moment(new Date()).format('MMM D, YYYY'))
         })
@@ -208,6 +209,7 @@ const CheckInScreen = ({ navigation }) => {
                             />
                         </View>
                         <View style={styles.buttonContainer}>
+                            {!checkIn.location && <Text style={styles.requiredIcon}>*required</Text>}
                             <InputPicker
                                 selectedItem={checkIn.location}
                                 onSelectedItem={resortData => setCheckIn({ ...checkIn, location: resortData.resort_name })}
@@ -258,7 +260,7 @@ const CheckInScreen = ({ navigation }) => {
                             setCheckInSubmitted(true)
                             submit()
                         }}
-                        disabled={!checkIn.sport && !checkInSubmitted}
+                        disabled={!(checkIn.sport && checkIn.location) && !checkInSubmitted}
                     ></RoundedButton>
                 </View>
                 : null}
@@ -325,6 +327,15 @@ const styles = StyleSheet.create({
         marginVertical: 3,
         alignSelf: "center",
         width: "98%"
+    },
+    requiredIcon: {
+        fontSize: 13,
+        fontStyle: 'italic',
+        color: "grey",
+        position: "absolute",
+        alignSelf: "flex-end",
+        top: 5,
+        right: 15
     },
     photoContainer: {
         alignItems: "center",

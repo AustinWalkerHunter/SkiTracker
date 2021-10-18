@@ -1,5 +1,6 @@
 import { API, graphqlOperation } from 'aws-amplify';
 import { deleteCheckIn, updateUser } from '../src/graphql/mutations'
+import { listCheckIns } from '../src/graphql/queries'
 import GLOBAL from './global';
 
 export async function deleteSelectedCheckIn(item) {
@@ -50,4 +51,12 @@ export const getAllCheckInData = (checkIns) => {
         }
         return data;
     }
+}
+
+export async function getUserCheckInLength(userId) {
+    const queryParams = {
+        type: "CheckIn",
+        filter: { userID: { eq: userId } }
+    };
+    return ((await API.graphql(graphqlOperation(listCheckIns, queryParams))).data.listCheckIns.items).length;
 }
