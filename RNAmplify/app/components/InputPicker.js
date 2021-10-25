@@ -33,6 +33,7 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
             }}>
                 <Ionicons name={iconName} size={45} color={colors.secondary} />
                 <Text style={textStyle}>{selectedItem ? selectedItem : placeholder}</Text>
+                <Text style={styles.requiredIcon}>*required</Text>
             </TouchableOpacity>
             <Modal visible={modalVisible} transparent={true} animationType="slide">
                 <TouchableOpacity style={styles.modalScreen} onPress={() => setModalVisible(false)} >
@@ -74,6 +75,13 @@ const styles = StyleSheet.create({
     container: {
         alignItems: "center",
         flexDirection: 'row',
+    },
+    requiredIcon: {
+        fontSize: 13,
+        fontStyle: 'italic',
+        color: "grey",
+        position: "absolute",
+        right: 10
     },
     titleInput: {
         color: "black",

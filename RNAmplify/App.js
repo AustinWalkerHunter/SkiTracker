@@ -7,7 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import colors from "./app/constants/colors"
-import { getUser, listUsers, checkInsByDate } from './src/graphql/queries'
+import { getUser, listUsers, checkInsByDate, listLikes } from './src/graphql/queries'
 import { createUser } from './src/graphql/mutations'
 
 import Amplify, { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
@@ -57,9 +57,26 @@ const App = () => {
 
 
   async function fetchAppData() {
-    await fetchActiveUser()
+    await fetchActiveUser();
     await fetchAllUsers();
     await fetchCheckIns();
+    await fetchUserLikes();
+  }
+
+  const fetchUserLikes = async () => {
+    var likes = {};
+    const queryParams = {
+      filter: {
+        userID: { eq: GLOBAL.activeUserId }
+      }
+    };
+    const userLikes = (await API.graphql(graphqlOperation(listLikes, queryParams))).data.listLikes.items;
+
+    userLikes.map((like) => {
+      likes[like.checkInID] = like
+    })
+
+    GLOBAL.activeUserLikes = likes;
   }
 
   const fetchCheckIns = async () => {
@@ -145,6 +162,8 @@ const App = () => {
       console.log("Error getting users profile pictures")
     }
   }
+
+
 
   const onLayoutRootView = useCallback(async () => {
     if (preparingApp) {

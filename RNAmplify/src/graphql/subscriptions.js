@@ -48,11 +48,10 @@ export const onCreateCheckIn = /* GraphQL */ `
       date
       likes
       userID
+      userName
       type
       createdAt
-      comments {
-        nextToken
-      }
+      comments
       updatedAt
     }
   }
@@ -68,11 +67,10 @@ export const onUpdateCheckIn = /* GraphQL */ `
       date
       likes
       userID
+      userName
       type
       createdAt
-      comments {
-        nextToken
-      }
+      comments
       updatedAt
     }
   }
@@ -88,11 +86,10 @@ export const onDeleteCheckIn = /* GraphQL */ `
       date
       likes
       userID
+      userName
       type
       createdAt
-      comments {
-        nextToken
-      }
+      comments
       updatedAt
     }
   }
@@ -101,20 +98,8 @@ export const onCreateComment = /* GraphQL */ `
   subscription OnCreateComment {
     onCreateComment {
       id
+      userID
       checkInID
-      checkIn {
-        id
-        title
-        location
-        sport
-        image
-        date
-        likes
-        userID
-        type
-        createdAt
-        updatedAt
-      }
       content
       createdAt
       updatedAt
@@ -125,20 +110,8 @@ export const onUpdateComment = /* GraphQL */ `
   subscription OnUpdateComment {
     onUpdateComment {
       id
+      userID
       checkInID
-      checkIn {
-        id
-        title
-        location
-        sport
-        image
-        date
-        likes
-        userID
-        type
-        createdAt
-        updatedAt
-      }
       content
       createdAt
       updatedAt
@@ -149,21 +122,42 @@ export const onDeleteComment = /* GraphQL */ `
   subscription OnDeleteComment {
     onDeleteComment {
       id
+      userID
       checkInID
-      checkIn {
-        id
-        title
-        location
-        sport
-        image
-        date
-        likes
-        userID
-        type
-        createdAt
-        updatedAt
-      }
       content
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateLike = /* GraphQL */ `
+  subscription OnCreateLike {
+    onCreateLike {
+      id
+      userID
+      checkInID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateLike = /* GraphQL */ `
+  subscription OnUpdateLike {
+    onUpdateLike {
+      id
+      userID
+      checkInID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteLike = /* GraphQL */ `
+  subscription OnDeleteLike {
+    onDeleteLike {
+      id
+      userID
+      checkInID
       createdAt
       updatedAt
     }

@@ -60,11 +60,10 @@ export const createCheckIn = /* GraphQL */ `
       date
       likes
       userID
+      userName
       type
       createdAt
-      comments {
-        nextToken
-      }
+      comments
       updatedAt
     }
   }
@@ -83,11 +82,10 @@ export const updateCheckIn = /* GraphQL */ `
       date
       likes
       userID
+      userName
       type
       createdAt
-      comments {
-        nextToken
-      }
+      comments
       updatedAt
     }
   }
@@ -106,11 +104,10 @@ export const deleteCheckIn = /* GraphQL */ `
       date
       likes
       userID
+      userName
       type
       createdAt
-      comments {
-        nextToken
-      }
+      comments
       updatedAt
     }
   }
@@ -122,20 +119,8 @@ export const createComment = /* GraphQL */ `
   ) {
     createComment(input: $input, condition: $condition) {
       id
+      userID
       checkInID
-      checkIn {
-        id
-        title
-        location
-        sport
-        image
-        date
-        likes
-        userID
-        type
-        createdAt
-        updatedAt
-      }
       content
       createdAt
       updatedAt
@@ -149,20 +134,8 @@ export const updateComment = /* GraphQL */ `
   ) {
     updateComment(input: $input, condition: $condition) {
       id
+      userID
       checkInID
-      checkIn {
-        id
-        title
-        location
-        sport
-        image
-        date
-        likes
-        userID
-        type
-        createdAt
-        updatedAt
-      }
       content
       createdAt
       updatedAt
@@ -176,21 +149,51 @@ export const deleteComment = /* GraphQL */ `
   ) {
     deleteComment(input: $input, condition: $condition) {
       id
+      userID
       checkInID
-      checkIn {
-        id
-        title
-        location
-        sport
-        image
-        date
-        likes
-        userID
-        type
-        createdAt
-        updatedAt
-      }
       content
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createLike = /* GraphQL */ `
+  mutation CreateLike(
+    $input: CreateLikeInput!
+    $condition: ModelLikeConditionInput
+  ) {
+    createLike(input: $input, condition: $condition) {
+      id
+      userID
+      checkInID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateLike = /* GraphQL */ `
+  mutation UpdateLike(
+    $input: UpdateLikeInput!
+    $condition: ModelLikeConditionInput
+  ) {
+    updateLike(input: $input, condition: $condition) {
+      id
+      userID
+      checkInID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteLike = /* GraphQL */ `
+  mutation DeleteLike(
+    $input: DeleteLikeInput!
+    $condition: ModelLikeConditionInput
+  ) {
+    deleteLike(input: $input, condition: $condition) {
+      id
+      userID
+      checkInID
       createdAt
       updatedAt
     }

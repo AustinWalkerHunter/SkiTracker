@@ -43,11 +43,10 @@ export const getCheckIn = /* GraphQL */ `
       date
       likes
       userID
+      userName
       type
       createdAt
-      comments {
-        nextToken
-      }
+      comments
       updatedAt
     }
   }
@@ -68,8 +67,10 @@ export const listCheckIns = /* GraphQL */ `
         date
         likes
         userID
+        userName
         type
         createdAt
+        comments
         updatedAt
       }
       nextToken
@@ -80,20 +81,8 @@ export const getComment = /* GraphQL */ `
   query GetComment($id: ID!) {
     getComment(id: $id) {
       id
+      userID
       checkInID
-      checkIn {
-        id
-        title
-        location
-        sport
-        image
-        date
-        likes
-        userID
-        type
-        createdAt
-        updatedAt
-      }
       content
       createdAt
       updatedAt
@@ -109,8 +98,38 @@ export const listComments = /* GraphQL */ `
     listComments(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        userID
         checkInID
         content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getLike = /* GraphQL */ `
+  query GetLike($id: ID!) {
+    getLike(id: $id) {
+      id
+      userID
+      checkInID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listLikes = /* GraphQL */ `
+  query ListLikes(
+    $filter: ModelLikeFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listLikes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userID
+        checkInID
         createdAt
         updatedAt
       }
@@ -144,8 +163,10 @@ export const checkInsByDate = /* GraphQL */ `
         date
         likes
         userID
+        userName
         type
         createdAt
+        comments
         updatedAt
       }
       nextToken

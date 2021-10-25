@@ -15,14 +15,21 @@ type CheckIn @model
   date: String!
   likes: Int!
   userID: ID!
+  userName: String
   type: String!
   createdAt: String!
-  comments: [Comment] @connection(keyName: "byCheckIn", fields: ["id"])
+  comments: Int!
 }
 
-type Comment @model @key(name: "byCheckIn", fields: ["checkInID", "content"]) {
+type Comment @model {
   id: ID!
+  userID: ID!
   checkInID: ID!
-  checkIn: CheckIn @connection(fields: ["checkInID"])
   content: String!
+}
+
+type Like @model {
+  id: ID!
+  userID: ID!
+  checkInID: ID!
 }

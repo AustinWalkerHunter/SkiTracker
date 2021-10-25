@@ -28,7 +28,7 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
 
     return (
         <View style={styles.screen}>
-            //getting a warning for this scroll view because I have lists inside of it, (another scoll view for photos)
+            {/* getting a warning for this scroll view because I have lists inside of it, (another scoll view for photos) */}
             <ScrollView ref={ref}>
                 <View style={styles.profileContainer}>
                     <View style={styles.profilePictureContainer}>

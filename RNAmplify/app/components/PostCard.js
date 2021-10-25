@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, TouchableWithoutFeedback, Image, Text, StyleSheet, ImageBackground } from 'react-native';
-import { Feather, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import ProfileIcon from '../components/ProfileIcon'
 import Moment from 'moment';
@@ -8,14 +8,17 @@ import { Storage } from 'aws-amplify';
 import GLOBAL from '../global';
 import ConfirmationModal from '../components/ConfirmationModal'
 import { useToast } from 'react-native-fast-toast'
+import { increaseCheckInLikes, decreaseCheckInLikes } from '../actions'
 
 function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckIn, viewCheckIn, viewResort }) {
-    // const [numberOfLikes, setNumberOfLikes] = useState(likes);
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const profileImage = GLOBAL.allUsers[item.userID].image;
     const username = GLOBAL.allUsers[item.userID].username;
     const [postCardImage, setPostCardImage] = useState();
     const [modalVisible, setModalVisible] = useState(false);
+    const [checkInLiked, setCheckInLiked] = useState(false);
+    const [likedCount, setLikedCount] = useState(0);
+
     const toast = useToast()
 
     const holidayImages = {
@@ -49,6 +52,8 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
 
     useEffect(() => {
         getHolidayImage();
+        setLikedCount(item.likes)
+        setCheckInLiked(GLOBAL.activeUserLikes[item.id])
         if (item.image) {
             const cachedImage = GLOBAL.checkInPhotos[item.id];
             if (cachedImage) {
@@ -77,6 +82,19 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
         }
     }
 
+    const updateReactionCount = (item) => {
+        if (GLOBAL.activeUserLikes[item.id]) {
+            setCheckInLiked(false)
+            setLikedCount(likedCount - 1)
+            decreaseCheckInLikes(item.id);
+        }
+        if (!GLOBAL.activeUserLikes[item.id]) {
+            setCheckInLiked(true)
+            setLikedCount(likedCount + 1)
+            increaseCheckInLikes(item.id);
+        }
+    }
+
     const deleteCheckIn = () => {
         deleteSelectedCheckIn(item)
         setPostCardDeleted(true)
@@ -87,6 +105,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
             placement: "top" // default to bottom
         });
     }
+
 
     return (
         <View>
@@ -115,7 +134,6 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                         </TouchableOpacity>
                                     }
                                 </View>
-                                {/* <View style={styles.titleLine} /> */}
 
                                 <View style={styles.headerLocationContainer}>
                                     <TouchableOpacity onPress={() => { item.location != "Unknown location" ? viewResort(item.location) : null }}>
@@ -140,7 +158,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                 </View>
                             </TouchableWithoutFeedback>
                         }
-                        <View style={styles.footer}>
+                        <View style={styles.postTitleContainer}>
                             <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
                                 <View>
                                     <View style={styles.titleContainer}>
@@ -159,7 +177,23 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                     <AntDesign name="like2" size={24} color="white" />
                 </TouchableOpacity> */}
                         </View>
-
+                        <View style={styles.titleLine} />
+                        <View style={styles.footer}>
+                            <TouchableOpacity onPress={() => updateReactionCount(item)}>
+                                <Text style={styles.reactionText}>{likedCount}
+                                    <View style={styles.reactionImage}>
+                                        <AntDesign name="like1" size={24} color={checkInLiked ? colors.secondary : "white"} />
+                                    </View>
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => viewCheckIn(item)}>
+                                <Text style={styles.reactionText}>0
+                                <View style={styles.reactionImage}>
+                                        <FontAwesome5 name="comment-alt" size={24} color="white" />
+                                    </View>
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
                     </ImageBackground>
                 </View>
             )
@@ -204,9 +238,10 @@ const styles = StyleSheet.create({
         borderWidth: .5,
         alignSelf: 'center',
         borderColor: "white",
-        width: "100%",
+        width: "95%",
         borderColor: colors.grey,
-        marginBottom: 5
+        marginTop: 2,
+        marginBottom: 8
     },
     location: {
         color: colors.primaryText,
@@ -229,9 +264,9 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     imageContainer: {
-        height: 200,
+        height: 150,
         marginTop: 5,
-        marginBottom: 15
+        // marginBottom: 15
     },
     image: {
         alignSelf: 'center',
@@ -243,12 +278,12 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         overflow: 'hidden',
     },
-    footer: {
+    postTitleContainer: {
         flexDirection: 'row',
-        paddingVertical: 2,
+        paddingVertical: 5,
         paddingHorizontal: 10,
-        bottom: 10
     },
+
     titleContainer: {
         marginTop: 5,
         marginLeft: 5,
@@ -272,16 +307,18 @@ const styles = StyleSheet.create({
         color: "white",
         fontWeight: "300"
     },
-    reaction: {
-        position: "absolute",
-        bottom: 20,
-        right: 10,
+    footer: {
         flexDirection: 'row',
+        marginBottom: 10,
+        justifyContent: "space-evenly",
     },
-    reactionNumber: {
-        fontSize: 22,
+    reactionText: {
         color: "white",
-        marginRight: 10
+        fontSize: 20,
+        textAlignVertical: "center"
+    },
+    reactionImage: {
+        paddingLeft: 10,
     }
 })
 

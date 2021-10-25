@@ -60,6 +60,7 @@ const CheckInScreen = ({ navigation }) => {
                 image: checkIn.image,
                 date: checkIn.date || (Moment(new Date()).format('MMM D, YYYY')),
                 likes: 0,
+                comments: 0,
                 userID: GLOBAL.activeUserId,
                 type: "CheckIn"
             }
@@ -92,7 +93,7 @@ const CheckInScreen = ({ navigation }) => {
 
                 clearForm();
             } catch (error) {
-                console.log("Error getting user from db"); ß
+                console.log("Error submitting checking to db");
             }
         }
         setLoading(false);
@@ -209,7 +210,6 @@ const CheckInScreen = ({ navigation }) => {
                             />
                         </View>
                         <View style={styles.buttonContainer}>
-                            {!checkIn.location && <Text style={styles.requiredIcon}>*required</Text>}
                             <InputPicker
                                 selectedItem={checkIn.location}
                                 onSelectedItem={resortData => setCheckIn({ ...checkIn, location: resortData.resort_name })}
@@ -327,15 +327,6 @@ const styles = StyleSheet.create({
         marginVertical: 3,
         alignSelf: "center",
         width: "98%"
-    },
-    requiredIcon: {
-        fontSize: 13,
-        fontStyle: 'italic',
-        color: "grey",
-        position: "absolute",
-        alignSelf: "flex-end",
-        top: 5,
-        right: 15
     },
     photoContainer: {
         alignItems: "center",

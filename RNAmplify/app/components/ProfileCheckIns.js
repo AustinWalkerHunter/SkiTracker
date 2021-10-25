@@ -25,11 +25,9 @@ function ProfileCheckIns({ checkIns, updateDayCount, viewCheckIn }) {
         return (Moment(dt).format('MMM D, YYYY'))
     }
 
-
     const checkForPhotos = (userCheckIns) => {
         userCheckIns.some(checkIn => {
             if (checkIn.image) {
-                console.log("here")
                 setHasPhotos(true);
                 return true;
             }
