@@ -18,6 +18,8 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
     const [modalVisible, setModalVisible] = useState(false);
     const [checkInLiked, setCheckInLiked] = useState(false);
     const [likedCount, setLikedCount] = useState(0);
+    const [likeDisabled, setLikeDisabled] = useState(false);
+
 
     const toast = useToast()
 
@@ -53,7 +55,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
     useEffect(() => {
         getHolidayImage();
         setLikedCount(item.likes)
-        setCheckInLiked(GLOBAL.activeUserLikes[item.id])
+        setCheckInLiked(GLOBAL.activeUserLikes[item.id] || false)
         if (item.image) {
             const cachedImage = GLOBAL.checkInPhotos[item.id];
             if (cachedImage) {
@@ -82,18 +84,41 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
         }
     }
 
+    //Still would like to improve this, I want to delay going to the db
+    //until the user stops tapping the button, deboucing with lodash.
     const updateReactionCount = (item) => {
-        if (GLOBAL.activeUserLikes[item.id]) {
+
+        //use this when you have debouncing
+
+        // setCheckInLiked(!checkInLiked)
+        // if (checkInLiked) {
+        //     setLikedCount(likedCount - 1)
+        // }
+        // else {
+        //     setLikedCount(likedCount + 1)
+        // }
+
+        if (checkInLiked) {
             setCheckInLiked(false)
             setLikedCount(likedCount - 1)
-            decreaseCheckInLikes(item.id);
+            setLikeDisabled(true)
+            setTimeout(function () {
+                decreaseCheckInLikes(item.id);
+                setLikeDisabled(false)
+            }, 3000);
         }
-        if (!GLOBAL.activeUserLikes[item.id]) {
+        if (!checkInLiked) {
             setCheckInLiked(true)
             setLikedCount(likedCount + 1)
-            increaseCheckInLikes(item.id);
+            setLikeDisabled(true)
+            setTimeout(function () {
+                increaseCheckInLikes(item.id);
+                setLikeDisabled(false)
+            }, 3000);
         }
     }
+
+
 
     const deleteCheckIn = () => {
         deleteSelectedCheckIn(item)
@@ -179,7 +204,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                         </View>
                         <View style={styles.titleLine} />
                         <View style={styles.footer}>
-                            <TouchableOpacity onPress={() => updateReactionCount(item)}>
+                            <TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(item)}>
                                 <Text style={styles.reactionText}>{likedCount}
                                     <View style={styles.reactionImage}>
                                         <AntDesign name="like1" size={24} color={checkInLiked ? colors.secondary : "white"} />
