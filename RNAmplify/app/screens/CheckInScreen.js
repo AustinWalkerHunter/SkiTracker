@@ -202,11 +202,16 @@ const CheckInScreen = ({ navigation }) => {
                         </View>
                         <View style={styles.titleContainer}>
                             <TextInput
+                                style={{ width: "100%" }}
                                 placeholder="Give your check-in a title"
                                 onChangeText={title => setCheckIn({ ...checkIn, title: title })}
                                 placeholderTextColor="grey"
                                 maxLength={150} //Make this longer and just add... 
                                 multiline={true}
+                                keyboardType="default"
+                                keyboardAppearance="dark"
+                                returnKeyType="done"
+                                blurOnSubmit={true}
                             />
                         </View>
                         <View style={styles.buttonContainer}>

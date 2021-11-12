@@ -159,7 +159,11 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                         </TouchableOpacity>
                                     }
                                 </View>
-
+                                {!postCardImage &&
+                                    <View style={styles.icon}>
+                                        <FontAwesome5 name="mountain" size={150} color={colors.primaryDark} />
+                                    </View>
+                                }
                                 <View style={styles.headerLocationContainer}>
                                     <TouchableOpacity onPress={() => { item.location != "Unknown location" ? viewResort(item.location) : null }}>
                                         <Text style={styles.location}>{item.location}</Text>
@@ -187,22 +191,17 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                             <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
                                 <View>
                                     <View style={styles.titleContainer}>
-                                        {postCardImage ?
+                                        {/* {postCardImage ?
                                             <View style={styles.sportTitleContainer}>
                                                 <FontAwesome5 name={item.sport} size={25} color="#ff4d00" />
                                             </View>
-                                            : null}
+                                            : null} */}
                                         <Text style={styles.titleText} ellipsizeMode='tail' numberOfLines={2}>{item.title}</Text>
                                     </View>
                                 </View>
                             </TouchableWithoutFeedback>
-
-                            {/* <TouchableOpacity style={styles.reaction} onPress={() => setNumberOfLikes(1)}>
-                    <Text style={styles.reactionNumber}>{numberOfLikes}</Text>
-                    <AntDesign name="like2" size={24} color="white" />
-                </TouchableOpacity> */}
                         </View>
-                        <View style={styles.titleLine} />
+                        {/* <View style={styles.titleLine} /> */}
                         <View style={styles.footer}>
                             <TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(item)}>
                                 <Text style={styles.reactionText}>{likedCount}
@@ -239,8 +238,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.primary,
         alignSelf: 'center',
         width: '100%',
-        marginBottom: 10,
-        borderRadius: 10,
+        marginBottom: 5,
+        // borderRadius: 10,
     },
     headerContainer: {
         flexDirection: 'row',
@@ -271,9 +270,11 @@ const styles = StyleSheet.create({
     location: {
         color: colors.primaryText,
         fontSize: 18,
-        fontWeight: "500",
-        opacity: .9
+        // fontWeight: "500",
+        // zIndex: 999
+        // opacity: .9,
         // textDecorationLine: 'underline'
+
     },
     deletionContainer: {
         position: 'absolute',
@@ -289,7 +290,7 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     imageContainer: {
-        height: 150,
+        height: 300,
         marginTop: 5,
         // marginBottom: 15
     },
@@ -305,8 +306,8 @@ const styles = StyleSheet.create({
     },
     postTitleContainer: {
         flexDirection: 'row',
-        paddingVertical: 5,
-        paddingHorizontal: 10,
+        paddingTop: 5,
+        paddingHorizontal: 8,
     },
 
     titleContainer: {
@@ -334,8 +335,10 @@ const styles = StyleSheet.create({
     },
     footer: {
         flexDirection: 'row',
-        marginBottom: 10,
+        borderBottomEndRadius: 10,
+        paddingVertical: 8,
         justifyContent: "space-evenly",
+        // backgroundColor: "#070e1346",
     },
     reactionText: {
         color: "white",
@@ -344,6 +347,16 @@ const styles = StyleSheet.create({
     },
     reactionImage: {
         paddingLeft: 10,
+    },
+    icon: {
+        zIndex: -999,
+        top: 30,
+        left: 0,
+        right: 0,
+        position: "absolute",
+        justifyContent: 'center',
+        alignItems: 'center',
+        opacity: 0.2
     }
 })
 

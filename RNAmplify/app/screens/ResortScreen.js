@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useIsFocused } from "@react-navigation/native";
-import { TouchableOpacity, StyleSheet, Text, Image, View, TextInput, ActivityIndicator } from 'react-native';
-import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 import colors from "../constants/colors"
 import SafeScreen from '../components/SafeScreen'
 import { Linking } from 'react-native';
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     },
     title: {
         color: "white",
-        fontSize: 25
+        fontSize: 23
     },
     subTitle: {
         color: "white",

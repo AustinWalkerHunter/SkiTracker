@@ -1,5 +1,5 @@
 export default {
-    primary: "#162f41",
+    primary: "#142939",
     primaryDark: "#0d1c26",
     secondary: "#ff6524",
     primaryText: 'white',
@@ -7,6 +7,6 @@ export default {
     grey: "#8c8c8c",
     lightGrey: "#cccccc",
     blue: "#1489b3",
-    navigation: "#1a1a1a",
+    navigation: "#0d0d0d",
     navigationText: 'white',
 }

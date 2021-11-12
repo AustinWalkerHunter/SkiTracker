@@ -34,8 +34,11 @@ const Tabs = () => (
             showIcon: true,
             showLabel: false,
             style: {
-                backgroundColor: colors.navigation,
-                height: "11%",
+                backgroundColor: '#0d0d0dfa',
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
             },
             renderIndicator: () => null
         }}

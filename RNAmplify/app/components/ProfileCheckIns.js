@@ -117,7 +117,8 @@ function ProfileCheckIns({ checkIns, updateDayCount, viewCheckIn }) {
 const styles = StyleSheet.create({
     checkInsContainer: {
         marginHorizontal: 2,
-        width: "100%"
+        width: "100%",
+        paddingBottom: 50
     },
     filter: {
         flexDirection: "row",

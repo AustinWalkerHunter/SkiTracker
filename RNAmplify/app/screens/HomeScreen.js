@@ -97,6 +97,7 @@ const HomeScreen = ({ route, navigation }) => {
                             <FlatList
                                 data={checkIns}
                                 ref={ref}
+                                inverted={false}
                                 keyExtractor={items => items.id.toString()}
                                 // contentContainerStyle={{ paddingBottom: 75 }}
                                 refreshControl={<RefreshControl
@@ -145,7 +146,7 @@ const HomeScreen = ({ route, navigation }) => {
                     }
                     <View style={styles.checkInButtonContainer}>
                         <TouchableOpacity style={styles.checkInButton} onPress={() => navigation.navigate('CheckInScreen')}>
-                            <MaterialCommunityIcons style={styles.checkInIcon} name="map-marker-check" size={45} color="white" />
+                            <MaterialCommunityIcons style={styles.checkInIcon} name="map-marker-check" size={50} color="white" />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.navigation,
     },
     checkInList: {
-        marginHorizontal: 5
+        paddingBottom: 50
     },
     imageViewerContainer: {
         position: 'absolute',
@@ -205,13 +206,13 @@ const styles = StyleSheet.create({
     },
     checkInButtonContainer: {
         position: "absolute",
-        bottom: 13,
-        right: 55,
+        bottom: "20%",
+        right: 50,
     },
     checkInButton: {
         position: 'absolute',
         alignSelf: "center",
-        bottom: '20%',
+        // bottom: '20%',
         borderRadius: 50,
         shadowColor: colors.navigation,
         shadowOffset: { width: -1, height: 3 },

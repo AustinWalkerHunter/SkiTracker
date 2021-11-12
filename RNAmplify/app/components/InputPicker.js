@@ -44,6 +44,9 @@ function InputPicker({ iconName, placeholder, items, textStyle, selectedItem, on
                             onChangeText={(input) => filterLocations(input)}
                             value={searchText}
                             containerStyle={styles.searchStyles}
+                            keyboardType="default"
+                            returnKeyType="done"
+                            blurOnSubmit={true}
                         />
                         {showRemoveButton &&
                             <TouchableOpacity style={styles.closeModalButton} onPress={() => {

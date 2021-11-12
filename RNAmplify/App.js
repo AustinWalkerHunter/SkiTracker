@@ -211,7 +211,7 @@ const App = () => {
               headerBackTitleStyle: { color: colors.navigationText },
               headerTintColor: colors.secondary,
               headerTitleStyle: { color: colors.navigationText },
-              title: 'Settings',
+              title: 'Edit Profile',
               headerRight: () => (
                 <TouchableOpacity style={{ marginRight: 8, alignItems: 'center', justifyContent: 'center', flexDirection: "row" }} onPress={() => Auth.signOut()}>
                   <Text style={{ fontSize: 15, color: colors.navigationText, marginRight: 3 }}>Log Out</Text>
@@ -256,7 +256,7 @@ const App = () => {
               headerBackTitleStyle: { color: colors.navigationText },
               headerTintColor: colors.secondary,
               headerTitleStyle: { color: colors.navigationText },
-              title: 'Check-in',
+              title: 'Viewing Check-in',
             }}
           />
           <Main.Screen
@@ -291,7 +291,7 @@ const App = () => {
             options={{
               headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
               headerTitleStyle: { fontSize: 18, color: colors.navigationText },
-              title: 'Check In',
+              title: 'Create Check In',
               headerShown: true,
               headerBackTitle: 'Back',
               headerBackTitleStyle: { color: colors.navigationText },

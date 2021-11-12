@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
-import { TouchableOpacity, StyleSheet, Text, Image, View, TextInput, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, Image, View, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView } from 'react-native';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import colors from "../constants/colors"
 import SafeScreen from '../components/SafeScreen'
@@ -16,12 +16,11 @@ const ViewCheckInScreen = ({ route, navigation }) => {
     const [pageLoading, setPageLoading] = useState(true);
     const [author, setAuthor] = useState();
     const [postCardImage, setPostCardImage] = useState();
-    const [days, setDays] = useState(0);
-
+    const [commentText, setCommentText] = useState();
 
     useEffect(() => {
         if (isFocused) {
-            getNumberOfDays();
+            //getNumberOfDays();
             setAuthor(GLOBAL.allUsers[checkIn.userID]);
             if (checkIn.image) {
                 const cachedImage = GLOBAL.checkInPhotos[checkIn.id];
@@ -59,55 +58,99 @@ const ViewCheckInScreen = ({ route, navigation }) => {
     }
 
     return (
-        <SafeScreen style={styles.screen}>
-            <View style={styles.titleLine} />
-            {!pageLoading && checkIn && author ?
-                <View style={styles.container}>
-                    <View style={styles.header}>
-                        <TouchableOpacity onPress={() => getUserProfile(checkIn.userID)}>
-                            <View style={styles.authorContainer}>
-                                {author.image ?
-                                    <ProfileIcon size={50} image={author.image} isSettingScreen={false} />
-                                    :
-                                    <MaterialCommunityIcons name="account-outline" size={50} color="grey" />
-                                }
-                                <View style={styles.authorTextContainer}>
-                                    <Text style={styles.username}>{author.username}</Text>
-                                    <Text style={styles.date}>{checkIn.date}</Text>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.screen}>
+            <SafeScreen style={styles.screen}>
+                {/* <View style={styles.titleLine} /> */}
+                <ScrollView >
+                    {!pageLoading && checkIn && author ?
+                        <View style={styles.container}>
+                            <View style={styles.header}>
+                                <TouchableOpacity onPress={() => getUserProfile(checkIn.userID)}>
+                                    <View style={styles.authorContainer}>
+                                        {author.image ?
+                                            <ProfileIcon size={60} image={author.image} isSettingScreen={false} />
+                                            :
+                                            <MaterialCommunityIcons name="account-outline" size={60} color="grey" />
+                                        }
+                                        <View style={styles.authorTextContainer}>
+                                            <Text style={styles.username}>{author.username}</Text>
+                                            <Text style={styles.date}>{checkIn.date}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                                <View style={styles.sportContainer}>
+                                    <View style={styles.sportIcon}>
+                                        <FontAwesome5 name={checkIn.sport} size={35} color="#ff4d00" />
+                                    </View>
                                 </View>
                             </View>
-                        </TouchableOpacity>
-                        <View style={styles.sportContainer}>
-                            <View style={styles.sportIcon}>
-                                <FontAwesome5 name={checkIn.sport} size={30} color="#ff4d00" />
+
+                            <View style={styles.content}>
+                                <TouchableOpacity style={styles.locationContainer} onPress={() => { checkIn.location != "Unknown location" ? viewResort(checkIn.location) : null }}>
+                                    <Text style={styles.location}>{checkIn.location}</Text>
+                                </TouchableOpacity>
+                                {/* <View style={styles.socialActivityContainer}>
+                                    <TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(item)}>
+                                        <Text style={styles.reactionText}>{likedCount}
+                                            <View style={styles.reactionImage}>
+                                                <AntDesign name="like1" size={24} color={checkInLiked ? colors.secondary : "white"} />
+                                            </View>
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => viewCheckIn(item)}>
+                                        <Text style={styles.reactionText}>0
+                                <View style={styles.reactionImage}>
+                                                <FontAwesome5 name="comment-alt" size={24} color="white" />
+                                            </View>
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>*/}
+                                {/* <View style={styles.contentLine} /> */}
+                                <Text style={styles.title}>{checkIn.title}</Text>
+                                {postCardImage ?
+                                    // <View onPress={() => displayFullImage(postCardImage)}>
+                                    <View style={styles.imageContainer}>
+                                        <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
+                                    </View>
+                                    // </TouchableOpacity>
+                                    : null}
                             </View>
-                            <Text style={styles.days}>Days: {days}</Text>
+                            {/* <View style={styles.commentContainer}>
+                            <View style={styles.commentHeader}>
 
-                        </View>
-                    </View>
-
-                    <View style={styles.content}>
-                        <TouchableOpacity style={styles.locationContainer} onPress={() => { checkIn.location != "Unknown location" ? viewResort(checkIn.location) : null }}>
-                            <Text style={styles.location}>{checkIn.location}</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.title}>{checkIn.title}</Text>
-                        {postCardImage ?
-                            // <View onPress={() => displayFullImage(postCardImage)}>
-                            <View style={styles.imageContainer}>
-                                <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
                             </View>
-                            // </TouchableOpacity>
-                            : null}
-                    </View>
-                    {/* show tab instead */}
-                    {/* <View style={styles.footer}>
-
-                    </View> */}
-                </View >
-                :
-                <ActivityIndicator style={{ marginTop: 150 }} size="large" color="white" />
-            }
-        </SafeScreen>
+                        </View> */}
+                        </View >
+                        :
+                        <ActivityIndicator style={{ marginTop: 150 }} size="large" color="white" />
+                    }
+                </ScrollView>
+                <View style={styles.contentLine} />
+            </SafeScreen>
+            <View style={styles.footer}>
+                <View style={styles.commentContainer}>
+                    <TextInput
+                        style={{
+                            width: "100%", marginRight: 20, paddingTop: 0,
+                            paddingBottom: 0
+                        }}
+                        placeholder="Leave a comment..."
+                        onChangeText={text => setCommentText(text)}
+                        placeholderTextColor="grey"
+                        maxLength={200}
+                        multiline={true}
+                        keyboardType="default"
+                        keyboardAppearance="dark"
+                        returnKeyType="done"
+                        blurOnSubmit={true}
+                        textAlign="left"
+                    />
+                    <TouchableOpacity onPress={() => console.log("submit comment")}>
+                        <Text style={styles.postCommentText}>Send</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </KeyboardAvoidingView>
     )
 }
 
@@ -123,7 +166,7 @@ const styles = StyleSheet.create({
         // justifyContent: "space-around",
         flexDirection: "row",
         paddingHorizontal: 15,
-        paddingVertical: 15,
+        paddingVertical: 10,
         width: "100%",
         backgroundColor: colors.navigation
     },
@@ -167,27 +210,32 @@ const styles = StyleSheet.create({
         width: "100%",
         borderColor: colors.secondary
     },
+    contentLine: {
+        alignSelf: "center",
+        borderWidth: .3,
+        width: "100%",
+        borderColor: "grey",
+    },
     content: {
+        flex: .8,
         backgroundColor: colors.navigation,
-        height: "100%",
         paddingVertical: 10,
         paddingHorizontal: 5
     },
     locationContainer: {
         alignSelf: "center",
         padding: 10,
-        width: "70%",
+        width: "80%",
         borderWidth: 1,
         borderColor: colors.secondary,
         borderRadius: 10,
         backgroundColor: colors.primary,
         marginBottom: 10,
-
     },
     location: {
         alignSelf: "center",
         color: "white",
-        fontSize: 22,
+        fontSize: 18,
         fontWeight: "500",
     },
     title: {
@@ -200,20 +248,31 @@ const styles = StyleSheet.create({
     imageContainer: {
         height: 300,
         marginTop: 5,
-        marginBottom: 15
     },
     image: {
         alignSelf: 'center',
         height: '100%',
         width: '100%'
     },
+    commentContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: "78%",
+        padding: 8,
+        marginHorizontal: 15,
+    },
+    postCommentText: {
+        padding: 2,
+        color: "white"
+    },
+    commentHeader: {
+        height: "25%",
+        backgroundColor: "white"
+    },
     footer: {
-        position: "absolute",
-        bottom: 0,
         height: "15%",
-        padding: 20,
-        width: "100%",
-        backgroundColor: colors.primary
+        paddingTop: 15,
+        backgroundColor: colors.navigation
     }
 })
 

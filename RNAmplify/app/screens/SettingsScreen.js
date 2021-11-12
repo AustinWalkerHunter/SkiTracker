@@ -15,6 +15,7 @@ import GLOBAL from '../global';
 import RoundedButton from '../components/RoundedButton';
 import { useToast } from 'react-native-fast-toast'
 import { updateUsersProfilePicture } from '../actions'
+import { AntDesign } from '@expo/vector-icons';
 
 const SettingsScreen = ({ navigation }) => {
     const isFocused = useIsFocused();
@@ -150,8 +151,8 @@ const SettingsScreen = ({ navigation }) => {
                             </View>
                         </View>
                         {/* user since   "createdAt": "2021-08-20T19:36:48.602Z", off the global user */}
-                        <Text style={styles.titleText}>Nickname:</Text>
                         <View style={styles.inputContainer}>
+                            <Text style={styles.titleText}>Nickname:</Text>
                             <TextInput
                                 style={styles.inputText}
                                 placeholder="Give your profile a nickname"
@@ -160,10 +161,15 @@ const SettingsScreen = ({ navigation }) => {
                                     setActiveUser({ ...activeUser, username: username })
                                     checkUserInput(username, activeUser.description);
                                 }}
+                                keyboardType="default"
+                                keyboardAppearance="dark"
+                                returnKeyType="done"
+                                blurOnSubmit={true}
                             >{GLOBAL.allUsers[GLOBAL.activeUserId].username}</TextInput>
+                            <View style={styles.rowLine} />
                         </View>
-                        <Text style={styles.titleText}>Profile description:</Text>
                         <View style={styles.inputContainer}>
+                            <Text style={styles.titleText}>Profile description:</Text>
                             <TextInput
                                 style={styles.inputText}
                                 placeholder="Describe yourself..."
@@ -173,12 +179,17 @@ const SettingsScreen = ({ navigation }) => {
                                     setActiveUser({ ...activeUser, description: description })
                                     checkUserInput(activeUser.username, description);
                                 }}
+                                keyboardType="default"
+                                keyboardAppearance="dark"
+                                returnKeyType="done"
+                                blurOnSubmit={true}
                             >{GLOBAL.allUsers[GLOBAL.activeUserId].description}</TextInput>
+                            <View style={styles.rowLine} />
                         </View>
-                        <View style={styles.validationContainer}>
+                        {/* <View style={styles.validationContainer}>
                             <Text style={styles.footerEmailText}>Email Verified: {userInfo.attributes.email}</Text>
                             <Text style={styles.footerPhoneText}>Phone Not Verified: {userInfo.attributes.phone_number}</Text>
-                        </View>
+                        </View> */}
                     </View>
                     <View style={styles.footer}>
                         <View style={styles.saveContainer}>
@@ -199,7 +210,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.navigation
     },
-
     container: {
         top: 10,
         height: "100%"
@@ -211,27 +221,33 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginVertical: 20,
-        marginBottom: 5
+        marginBottom: 15
     },
     titleText: {
-        color: "white",
-        fontSize: 15,
-        fontWeight: "600",
-        paddingLeft: 10,
-        width: '100%'
+        color: "grey",
+        fontSize: 14,
+        fontWeight: "400",
+        width: '100%',
+        paddingBottom: 5
     },
     inputContainer: {
-        marginTop: 5,
-        marginBottom: 20,
+        alignSelf: "center",
+        marginBottom: 10,
         paddingVertical: 10,
-        backgroundColor: colors.lightGrey
+        width: "90%"
     },
     inputText: {
-        color: "black",
-        fontSize: 20,
-        fontWeight: "600",
-        paddingLeft: 10,
-        width: '100%'
+        color: "white",
+        fontSize: 19,
+        fontWeight: "400",
+        paddingBottom: 10,
+    },
+    rowLine: {
+        alignSelf: "center",
+        borderBottomWidth: 1,
+        width: "100%",
+        borderColor: "grey",
+        paddingBottom: 1
     },
     footer: {
         alignItems: "center",
