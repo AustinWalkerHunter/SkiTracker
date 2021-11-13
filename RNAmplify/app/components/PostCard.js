@@ -19,7 +19,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
     const [checkInLiked, setCheckInLiked] = useState(false);
     const [likedCount, setLikedCount] = useState(0);
     const [likeDisabled, setLikeDisabled] = useState(false);
-
+    const [objIndex, setObjIndex] = useState();
 
     const toast = useToast()
 
@@ -53,9 +53,12 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
 
 
     useEffect(() => {
+        var index = GLOBAL.allCheckIns.findIndex((obj => obj.id == item.id));
         getHolidayImage();
-        setLikedCount(item.likes)
-        setCheckInLiked(GLOBAL.activeUserLikes[item.id] || false)
+        var checkIn = GLOBAL.allCheckIns[index]
+        setObjIndex(index)
+        setLikedCount(checkIn.likes)
+        setCheckInLiked((GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) || false)
         if (item.image) {
             const cachedImage = GLOBAL.checkInPhotos[item.id];
             if (cachedImage) {
@@ -91,6 +94,8 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
             setCheckInLiked(false)
             setLikedCount(likedCount - 1)
             setLikeDisabled(true)
+            GLOBAL.allCheckIns[objIndex].likes = likedCount - 1;
+            GLOBAL.activeUserLikes[item.id].isLiked = false;
             setTimeout(function () {
                 decreaseCheckInLikes(item.id);
                 setLikeDisabled(false)
@@ -100,6 +105,8 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
             setCheckInLiked(true)
             setLikedCount(likedCount + 1)
             setLikeDisabled(true)
+            GLOBAL.allCheckIns[objIndex].likes = likedCount + 1;
+            GLOBAL.activeUserLikes[item.id] = { id: null, isLiked: true };
             setTimeout(function () {
                 increaseCheckInLikes(item.id);
                 setLikeDisabled(false)
@@ -123,7 +130,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
 
     return (
         <View>
-            {!postCardDeleted && (
+            {(!postCardDeleted &&
                 <View style={[styles.postBox]}>
                     <ImageBackground source={getHolidayImage()} resizeMode='repeat' style={styles.backgroundImage} imageStyle={{ opacity: 0.6 }}>
                         <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
@@ -193,9 +200,9 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                         {/* <View style={styles.titleLine} /> */}
                         <View style={styles.footer}>
                             <TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(item)}>
-                                <Text style={styles.reactionText}>{likedCount}
+                                <Text style={styles.reactionText}>{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].likes : likedCount}
                                     <View style={styles.reactionImage}>
-                                        <AntDesign name="like1" size={24} color={checkInLiked ? colors.secondary : "white"} />
+                                        <AntDesign name="like1" size={24} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : "white"} />
                                     </View>
                                 </Text>
                             </TouchableOpacity>

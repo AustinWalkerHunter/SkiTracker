@@ -13,7 +13,7 @@ import CheckInComments from '../components/CheckInComments'
 import { increaseCheckInLikes, decreaseCheckInLikes } from '../actions'
 
 const ViewCheckInScreen = ({ route, navigation }) => {
-    const { checkIn } = route.params;
+    const { checkInId } = route.params;
     const isFocused = useIsFocused();
     const [pageLoading, setPageLoading] = useState(true);
     const [author, setAuthor] = useState();
@@ -24,31 +24,37 @@ const ViewCheckInScreen = ({ route, navigation }) => {
     const [likedCount, setLikedCount] = useState(0);
     const [checkInLiked, setCheckInLiked] = useState(false);
     const [likeDisabled, setLikeDisabled] = useState(false);
+    const [checkIn, setCheckIn] = useState();
+    const [objIndex, setObjIndex] = useState();
+
 
     useEffect(() => {
         if (isFocused) {
-            // var viewedCheckIn = GLOBAL.allCheckIns.filter(c => c.id == checkIn.id);
-            // console.log(viewedCheckIn.likes)
-            setLikedCount(checkIn.likes)
-            setCheckInLiked(GLOBAL.activeUserLikes[checkIn.id] || false)
+            var index = GLOBAL.allCheckIns.findIndex((obj => obj.id == checkInId));
+            var viewedCheckIn = GLOBAL.allCheckIns[index]
+            setObjIndex(index)
+            setCheckIn(GLOBAL.allCheckIns[index])
 
-            getCheckInComments();
-            //getNumberOfDays();
-            setAuthor(GLOBAL.allUsers[checkIn.userID]);
-            if (checkIn.image) {
-                const cachedImage = GLOBAL.checkInPhotos[checkIn.id];
-                if (cachedImage) {
-                    setPostCardImage(cachedImage);
+            if (viewedCheckIn) {
+                setLikedCount(viewedCheckIn.likes)
+                setCheckInLiked((GLOBAL.activeUserLikes[viewedCheckIn.id] && GLOBAL.activeUserLikes[viewedCheckIn.id].isLiked) || false)
+                getCheckInComments(viewedCheckIn.id);
+                setAuthor(GLOBAL.allUsers[viewedCheckIn.userID]);
+                if (viewedCheckIn.image) {
+                    const cachedImage = GLOBAL.checkInPhotos[viewedCheckIn.id];
+                    if (cachedImage) {
+                        setPostCardImage(cachedImage);
+                    }
+                    // else {
+                    //     fetchPostCardImage();
+                    // }
                 }
-                // else {
-                //     fetchPostCardImage();
-                // }
+                setPageLoading(false);
             }
-            setPageLoading(false);
         }
     }, [isFocused]);
 
-    async function getCheckInComments() {
+    async function getCheckInComments(checkInId) {
         const tempComments = [{ id: 1, content: "hello i'm a comment" }, { id: 2, content: "Another comment baby" }]
         setComments();
     }
@@ -58,6 +64,8 @@ const ViewCheckInScreen = ({ route, navigation }) => {
             setCheckInLiked(false)
             setLikedCount(likedCount - 1)
             setLikeDisabled(true)
+            GLOBAL.allCheckIns[objIndex].likes = likedCount - 1;
+            GLOBAL.activeUserLikes[item.id].isLiked = false;
             setTimeout(function () {
                 decreaseCheckInLikes(item.id);
                 setLikeDisabled(false)
@@ -67,6 +75,8 @@ const ViewCheckInScreen = ({ route, navigation }) => {
             setCheckInLiked(true)
             setLikedCount(likedCount + 1)
             setLikeDisabled(true)
+            GLOBAL.allCheckIns[objIndex].likes = likedCount + 1;
+            GLOBAL.activeUserLikes[item.id] = { id: null, isLiked: true };
             setTimeout(function () {
                 increaseCheckInLikes(item.id);
                 setLikeDisabled(false)
@@ -173,7 +183,7 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                     blurOnSubmit={true}
                                     textAlign="left"
                                 />
-                                <TouchableOpacity onPress={() => console.log("submit comment")}>
+                                <TouchableOpacity onPress={() => console.log(objIndex)}>
                                     <Text style={styles.submitCommentText}>Send</Text>
                                 </TouchableOpacity>
                             </View>

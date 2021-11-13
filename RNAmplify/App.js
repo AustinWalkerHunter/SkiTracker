@@ -73,7 +73,8 @@ const App = () => {
     const userLikes = (await API.graphql(graphqlOperation(listLikes, queryParams))).data.listLikes.items;
 
     userLikes.map((like) => {
-      likes[like.checkInID] = like
+      var likeObj = { ...like, isLiked: true }
+      likes[like.checkInID] = likeObj
     })
 
     GLOBAL.activeUserLikes = likes;

@@ -27,7 +27,7 @@ export async function updateUsersProfilePicture(user) {
 
 export async function increaseCheckInLikes(checkInId) {
     try {
-        if (!GLOBAL.activeUserLikes[checkInId]) {
+        if (!GLOBAL.activeUserLikes[checkInId].id) {
             var checkIn = (await API.graphql(graphqlOperation(getCheckIn, { id: checkInId }))).data.getCheckIn;
 
             const numberOfLikes = checkIn.likes + 1;
@@ -47,7 +47,8 @@ export async function increaseCheckInLikes(checkInId) {
 
             await API.graphql(graphqlOperation(updateCheckIn, { input: updatedCheckIn }));
             const userLike = (await API.graphql(graphqlOperation(createLike, { input: newLike }))).data.createLike;
-            GLOBAL.activeUserLikes[checkIn.id] = userLike;
+            var likeObj = { ...userLike, isLiked: true }
+            GLOBAL.activeUserLikes[checkIn.id] = likeObj;
             console.log("CheckIn likes increased")
         }
     } catch (error) {
@@ -57,7 +58,7 @@ export async function increaseCheckInLikes(checkInId) {
 
 export async function decreaseCheckInLikes(checkInId) {
     try {
-        if (GLOBAL.activeUserLikes[checkInId]) {
+        if (GLOBAL.activeUserLikes[checkInId].id) {
             var checkIn = (await API.graphql(graphqlOperation(getCheckIn, { id: checkInId }))).data.getCheckIn;
 
             const likeId = GLOBAL.activeUserLikes[checkIn.id].id;
