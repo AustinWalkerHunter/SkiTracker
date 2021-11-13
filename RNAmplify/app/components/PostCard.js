@@ -87,17 +87,6 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
     //Still would like to improve this, I want to delay going to the db
     //until the user stops tapping the button, deboucing with lodash.
     const updateReactionCount = (item) => {
-
-        //use this when you have debouncing
-
-        // setCheckInLiked(!checkInLiked)
-        // if (checkInLiked) {
-        //     setLikedCount(likedCount - 1)
-        // }
-        // else {
-        //     setLikedCount(likedCount + 1)
-        // }
-
         if (checkInLiked) {
             setCheckInLiked(false)
             setLikedCount(likedCount - 1)
@@ -269,12 +258,8 @@ const styles = StyleSheet.create({
     },
     location: {
         color: colors.primaryText,
-        fontSize: 18,
-        // fontWeight: "500",
-        // zIndex: 999
-        // opacity: .9,
-        // textDecorationLine: 'underline'
-
+        fontSize: 19,
+        fontWeight: "500",
     },
     deletionContainer: {
         position: 'absolute',

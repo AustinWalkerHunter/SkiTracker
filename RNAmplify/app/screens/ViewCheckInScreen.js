@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
 import { TouchableOpacity, StyleSheet, Text, Image, View, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView } from 'react-native';
-import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
 import colors from "../constants/colors"
 import SafeScreen from '../components/SafeScreen'
 import ProfileIcon from '../components/ProfileIcon'
 import GLOBAL from '../global';
 import resorts from '../constants/resortData'
-import { getUserCheckInLength } from '../actions'
+import CheckInComments from '../components/CheckInComments'
+// import { getUserCheckInLength } from '../actions'
+import { increaseCheckInLikes, decreaseCheckInLikes } from '../actions'
 
 const ViewCheckInScreen = ({ route, navigation }) => {
     const { checkIn } = route.params;
@@ -17,9 +19,20 @@ const ViewCheckInScreen = ({ route, navigation }) => {
     const [author, setAuthor] = useState();
     const [postCardImage, setPostCardImage] = useState();
     const [commentText, setCommentText] = useState();
+    const [keyboardOpen, setKeyboardOpen] = useState(false)
+    const [comments, setComments] = useState();
+    const [likedCount, setLikedCount] = useState(0);
+    const [checkInLiked, setCheckInLiked] = useState(false);
+    const [likeDisabled, setLikeDisabled] = useState(false);
 
     useEffect(() => {
         if (isFocused) {
+            // var viewedCheckIn = GLOBAL.allCheckIns.filter(c => c.id == checkIn.id);
+            // console.log(viewedCheckIn.likes)
+            setLikedCount(checkIn.likes)
+            setCheckInLiked(GLOBAL.activeUserLikes[checkIn.id] || false)
+
+            getCheckInComments();
             //getNumberOfDays();
             setAuthor(GLOBAL.allUsers[checkIn.userID]);
             if (checkIn.image) {
@@ -35,8 +48,30 @@ const ViewCheckInScreen = ({ route, navigation }) => {
         }
     }, [isFocused]);
 
-    async function getNumberOfDays() {
-        setDays(await getUserCheckInLength(checkIn.userID));
+    async function getCheckInComments() {
+        const tempComments = [{ id: 1, content: "hello i'm a comment" }, { id: 2, content: "Another comment baby" }]
+        setComments();
+    }
+
+    const updateReactionCount = (item) => {
+        if (checkInLiked) {
+            setCheckInLiked(false)
+            setLikedCount(likedCount - 1)
+            setLikeDisabled(true)
+            setTimeout(function () {
+                decreaseCheckInLikes(item.id);
+                setLikeDisabled(false)
+            }, 3000);
+        }
+        if (!checkInLiked) {
+            setCheckInLiked(true)
+            setLikedCount(likedCount + 1)
+            setLikeDisabled(true)
+            setTimeout(function () {
+                increaseCheckInLikes(item.id);
+                setLikeDisabled(false)
+            }, 3000);
+        }
     }
 
     const viewResort = (resort) => {
@@ -58,12 +93,11 @@ const ViewCheckInScreen = ({ route, navigation }) => {
     }
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.screen}>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={{ flex: 1 }}>
             <SafeScreen style={styles.screen}>
-                {/* <View style={styles.titleLine} /> */}
-                <ScrollView >
-                    {!pageLoading && checkIn && author ?
-                        <View style={styles.container}>
+                {!pageLoading && checkIn && author ?
+                    <View style={styles.container}>
+                        <ScrollView >
                             <View style={styles.header}>
                                 <TouchableOpacity onPress={() => getUserProfile(checkIn.userID)}>
                                     <View style={styles.authorContainer}>
@@ -89,23 +123,6 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                 <TouchableOpacity style={styles.locationContainer} onPress={() => { checkIn.location != "Unknown location" ? viewResort(checkIn.location) : null }}>
                                     <Text style={styles.location}>{checkIn.location}</Text>
                                 </TouchableOpacity>
-                                {/* <View style={styles.socialActivityContainer}>
-                                    <TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(item)}>
-                                        <Text style={styles.reactionText}>{likedCount}
-                                            <View style={styles.reactionImage}>
-                                                <AntDesign name="like1" size={24} color={checkInLiked ? colors.secondary : "white"} />
-                                            </View>
-                                        </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => viewCheckIn(item)}>
-                                        <Text style={styles.reactionText}>0
-                                <View style={styles.reactionImage}>
-                                                <FontAwesome5 name="comment-alt" size={24} color="white" />
-                                            </View>
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>*/}
-                                {/* <View style={styles.contentLine} /> */}
                                 <Text style={styles.title}>{checkIn.title}</Text>
                                 {postCardImage ?
                                     // <View onPress={() => displayFullImage(postCardImage)}>
@@ -113,43 +130,62 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                         <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
                                     </View>
                                     // </TouchableOpacity>
-                                    : null}
+                                    : null
+                                }
+                                <View style={styles.reactionContainer}>
+                                    <View style={styles.reactionHeader}>
+                                        <TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(checkIn)}>
+                                            <Text style={styles.reactionText}>{likedCount}
+                                                <View style={styles.reactionImage}>
+                                                    <AntDesign name="like1" size={24} color={checkInLiked ? colors.secondary : "white"} />
+                                                </View>
+                                            </Text>
+                                        </TouchableOpacity>
+                                        <View>
+                                            <Text style={styles.reactionText}>0
+                                        <View style={styles.reactionImage}>
+                                                    <FontAwesome5 name="comment-alt" size={24} color="white" />
+                                                </View>
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <View style={styles.commentList}>
+                                        <CheckInComments comments={comments} />
+                                    </View>
+                                </View>
                             </View>
-                            {/* <View style={styles.commentContainer}>
-                            <View style={styles.commentHeader}>
-
+                        </ScrollView>
+                        <View style={styles.footer}>
+                            <View style={styles.contentLine} />
+                            <View style={styles.commentContainer}>
+                                <TextInput
+                                    onFocus={() => setKeyboardOpen(true)}
+                                    onBlur={() => setKeyboardOpen(false)}
+                                    style={styles.commentInputBox}
+                                    placeholder="Leave a comment..."
+                                    onChangeText={text => setCommentText(text)}
+                                    placeholderTextColor="grey"
+                                    maxLength={200}
+                                    multiline={true}
+                                    keyboardType="default"
+                                    keyboardAppearance="dark"
+                                    returnKeyType="done"
+                                    blurOnSubmit={true}
+                                    textAlign="left"
+                                />
+                                <TouchableOpacity onPress={() => console.log("submit comment")}>
+                                    <Text style={styles.submitCommentText}>Send</Text>
+                                </TouchableOpacity>
                             </View>
-                        </View> */}
-                        </View >
-                        :
-                        <ActivityIndicator style={{ marginTop: 150 }} size="large" color="white" />
-                    }
-                </ScrollView>
-                <View style={styles.contentLine} />
+                        </View>
+                        {keyboardOpen &&
+                            <View style={{ paddingBottom: "30%" }} />
+                        }
+                    </View >
+                    :
+                    <ActivityIndicator style={{ marginTop: 150 }} size="large" color="white" />
+                }
             </SafeScreen>
-            <View style={styles.footer}>
-                <View style={styles.commentContainer}>
-                    <TextInput
-                        style={{
-                            width: "100%", marginRight: 20, paddingTop: 0,
-                            paddingBottom: 0
-                        }}
-                        placeholder="Leave a comment..."
-                        onChangeText={text => setCommentText(text)}
-                        placeholderTextColor="grey"
-                        maxLength={200}
-                        multiline={true}
-                        keyboardType="default"
-                        keyboardAppearance="dark"
-                        returnKeyType="done"
-                        blurOnSubmit={true}
-                        textAlign="left"
-                    />
-                    <TouchableOpacity onPress={() => console.log("submit comment")}>
-                        <Text style={styles.postCommentText}>Send</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
         </KeyboardAvoidingView>
     )
 }
@@ -160,7 +196,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.navigation
     },
     container: {
-        // paddingTop: 10,
+        flex: 1,
     },
     header: {
         // justifyContent: "space-around",
@@ -168,7 +204,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingVertical: 10,
         width: "100%",
-        backgroundColor: colors.navigation
+        // backgroundColor: colors.navigation
     },
     authorContainer: {
         paddingHorizontal: 5,
@@ -212,9 +248,10 @@ const styles = StyleSheet.create({
     },
     contentLine: {
         alignSelf: "center",
-        borderWidth: .3,
+        borderWidth: .4,
         width: "100%",
         borderColor: "grey",
+        marginBottom: 20
     },
     content: {
         flex: .8,
@@ -254,15 +291,44 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%'
     },
+    reactionContainer: {
+
+    },
+    reactionHeader: {
+        flexDirection: 'row',
+        borderBottomEndRadius: 10,
+        paddingTop: 15,
+        justifyContent: "space-evenly",
+    },
+    reactionText: {
+        color: "white",
+        fontSize: 20,
+        textAlignVertical: "center"
+    },
+    reactionImage: {
+        paddingLeft: 10,
+    },
     commentContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: "78%",
-        padding: 8,
-        marginHorizontal: 15,
+        width: "100%",
+        // marginTop: 12,
+        paddingHorizontal: 8
+        // padding: 8,
+        // backgroundColor: "green"
+        // marginHorizontal: 15,
     },
-    postCommentText: {
-        padding: 2,
+    commentInputBox: {
+        // marginRight: 20,
+        flex: 1,
+        paddingTop: 0,
+        paddingBottom: 0,
+        color: "white"
+    },
+    submitCommentText: {
+        right: 0,
+        // padding: 2,
+        paddingHorizontal: 3,
         color: "white"
     },
     commentHeader: {
@@ -270,9 +336,8 @@ const styles = StyleSheet.create({
         backgroundColor: "white"
     },
     footer: {
-        height: "15%",
-        paddingTop: 15,
-        backgroundColor: colors.navigation
+        height: "10%",
+        // paddingTop: 15,
     }
 })
 
