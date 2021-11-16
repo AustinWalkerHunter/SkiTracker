@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
 import { TouchableOpacity, StyleSheet, Text, Image, View, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView } from 'react-native';
-import { MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome5, AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 import colors from "../constants/colors"
 import SafeScreen from '../components/SafeScreen'
 import ProfileIcon from '../components/ProfileIcon'
 import GLOBAL from '../global';
 import resorts from '../constants/resortData'
 import CheckInComments from '../components/CheckInComments'
-// import { getUserCheckInLength } from '../actions'
-import { increaseCheckInLikes, decreaseCheckInLikes } from '../actions'
+import ConfirmationModal from '../components/ConfirmationModal'
+import { useToast } from 'react-native-fast-toast'
+import { increaseCheckInLikes, decreaseCheckInLikes, deleteSelectedCheckIn } from '../actions'
 
 const ViewCheckInScreen = ({ route, navigation }) => {
     const { checkInId } = route.params;
@@ -26,6 +27,8 @@ const ViewCheckInScreen = ({ route, navigation }) => {
     const [likeDisabled, setLikeDisabled] = useState(false);
     const [checkIn, setCheckIn] = useState();
     const [objIndex, setObjIndex] = useState();
+    const [modalVisible, setModalVisible] = useState(false);
+    const toast = useToast()
 
 
     useEffect(() => {
@@ -84,6 +87,17 @@ const ViewCheckInScreen = ({ route, navigation }) => {
         }
     }
 
+    const deleteCheckIn = () => {
+        deleteSelectedCheckIn(checkIn)
+        navigation.goBack(null)
+        toast.show("Check-in deleted!", {
+            duration: 2000,
+            style: { marginTop: 35, backgroundColor: "green" },
+            textStyle: { fontSize: 20 },
+            placement: "top" // default to bottom
+        });
+    }
+
     const viewResort = (resort) => {
         var resortData = resorts.find(o => o.resort_name === resort)
         navigation.navigate('ResortScreen', {
@@ -107,12 +121,24 @@ const ViewCheckInScreen = ({ route, navigation }) => {
             <SafeScreen style={styles.screen}>
                 {!pageLoading && checkIn && author ?
                     <View style={styles.container}>
+                        <View style={styles.stickyHeader}>
+                            <TouchableOpacity style={styles.backButtonContainer} onPress={() => navigation.goBack(null)}>
+                                <Ionicons name="chevron-back-outline" size={30} color={colors.secondary} />
+                                <Text style={styles.backButtonText} >Back</Text>
+                            </TouchableOpacity>
+                            <Text style={styles.pageTitle}>Viewing Check-in</Text>
+                            {(GLOBAL.activeUserId == checkIn.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
+                                <TouchableOpacity style={styles.deleteButton} onPress={() => setModalVisible(true)}>
+                                    <Entypo name="dots-three-horizontal" size={24} color="white" />
+                                </TouchableOpacity>
+                            }
+                        </View>
                         <ScrollView >
                             <View style={styles.header}>
                                 <TouchableOpacity onPress={() => getUserProfile(checkIn.userID)}>
                                     <View style={styles.authorContainer}>
                                         {author.image ?
-                                            <ProfileIcon size={60} image={author.image} isSettingScreen={false} />
+                                            <ProfileIcon size={75} image={author.image} isSettingScreen={false} />
                                             :
                                             <MaterialCommunityIcons name="account-outline" size={60} color="grey" />
                                         }
@@ -124,7 +150,7 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                 </TouchableOpacity>
                                 <View style={styles.sportContainer}>
                                     <View style={styles.sportIcon}>
-                                        <FontAwesome5 name={checkIn.sport} size={35} color="#ff4d00" />
+                                        <FontAwesome5 name={checkIn.sport} size={45} color="#ff4d00" />
                                     </View>
                                 </View>
                             </View>
@@ -189,12 +215,18 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                             </View>
                         </View>
                         {keyboardOpen &&
-                            <View style={{ paddingBottom: "30%" }} />
+                            <View style={{ paddingBottom: "8%" }} />
                         }
                     </View >
                     :
                     <ActivityIndicator style={{ marginTop: 150 }} size="large" color="white" />
                 }
+                <ConfirmationModal
+                    modalVisible={modalVisible}
+                    setModalVisible={setModalVisible}
+                    title={"Do you want to delete this check-in?"}
+                    confirmAction={() => deleteCheckIn()}
+                />
             </SafeScreen>
         </KeyboardAvoidingView>
     )
@@ -208,13 +240,42 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    stickyHeader: {
+        width: "100%",
+        height: "6%",
+        backgroundColor: colors.navigation,
+        // alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+
+    },
+    pageTitle: {
+        top: "2%",
+        color: "white",
+        fontSize: 17,
+        fontWeight: "500",
+    },
+    backButtonContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        position: "absolute",
+        top: "11%",
+        left: ".5%"
+    },
+    backButtonText: {
+        color: "white",
+        fontSize: 15,
+    },
+    deleteButton: {
+        position: "absolute",
+        top: "20%",
+        right: "4%"
+    },
     header: {
-        // justifyContent: "space-around",
         flexDirection: "row",
         paddingHorizontal: 15,
         paddingVertical: 10,
         width: "100%",
-        // backgroundColor: colors.navigation
     },
     authorContainer: {
         paddingHorizontal: 5,
@@ -282,7 +343,7 @@ const styles = StyleSheet.create({
     location: {
         alignSelf: "center",
         color: "white",
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: "500",
     },
     title: {

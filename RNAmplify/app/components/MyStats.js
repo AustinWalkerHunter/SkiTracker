@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import colors from '../constants/colors'
 
-function MyStats({ dayCount, checkInData }) {
+function MyStats({ dayCount, viewResort, checkInData }) {
     const [showExtraStats, setShowExtraStats] = useState(false)
     return (
         <View style={[styles.statsContainer]}>
@@ -37,22 +37,24 @@ function MyStats({ dayCount, checkInData }) {
                 </View>
             }
             <View style={styles.lowerStats}>
-                <View style={styles.statsData}>
+                <TouchableOpacity style={styles.statsData} onPress={() => { checkInData ? viewResort(checkInData.topLocation) : null }}>
+
+                    {/* <View style={styles.statsData}> */}
                     <View style={styles.titleContainer}>
                         <Text style={styles.dataTitle}>Top Location</Text>
                     </View>
                     <View style={styles.userData}>
                         <Text style={styles.mountainInfo}>{checkInData ? checkInData.topLocation : "N/A"}</Text>
                     </View>
-                </View>
-                <View style={styles.statsData}>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.statsData} onPress={() => { checkInData ? viewResort(checkInData.recentLocation) : null }}>
                     <View style={styles.titleContainer}>
                         <Text style={styles.dataTitle}>Recent Location</Text>
                     </View>
                     <View style={styles.userData}>
                         <Text style={styles.mountainInfo}>{checkInData ? checkInData.recentLocation : "N/A"}</Text>
                     </View>
-                </View>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -66,7 +68,6 @@ const styles = StyleSheet.create({
     },
     stats: {
         justifyContent: 'space-evenly',
-        width: "95%",
         alignSelf: 'center',
         flexDirection: 'row',
     },

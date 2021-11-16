@@ -75,7 +75,10 @@ export async function decreaseCheckInLikes(checkInId) {
                 userID: checkIn.userID,
                 type: checkIn.type
             }
-            await API.graphql(graphqlOperation(updateCheckIn, { input: updatedCheckIn }));
+
+            if (numberOfLikes >= 0) {
+                await API.graphql(graphqlOperation(updateCheckIn, { input: updatedCheckIn }));
+            }
             await API.graphql(graphqlOperation(deleteLike, { input: { id: likeId } }));
 
             GLOBAL.activeUserLikes[checkIn.id] = null;

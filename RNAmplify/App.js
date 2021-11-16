@@ -14,7 +14,7 @@ import Amplify, { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Entypo } from '@expo/vector-icons';
 import { withAuthenticator } from 'aws-amplify-react-native'
 import AppLoading from 'expo-app-loading';
 import * as SplashScreen from 'expo-splash-screen';
@@ -251,13 +251,7 @@ const App = () => {
             name="ViewCheckInScreen"
             component={ViewCheckInScreen}
             options={{
-              headerShown: true,
-              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
-              headerTintColor: colors.secondary,
-              headerTitleStyle: { color: colors.navigationText },
-              title: 'Viewing Check-in',
+              headerShown: false,
             }}
           />
           <Main.Screen

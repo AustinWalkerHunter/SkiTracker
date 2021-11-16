@@ -4,6 +4,7 @@ import { useIsFocused } from "@react-navigation/native";
 import Profile from "../components/Profile"
 import { getUser, checkInsByDate } from '../../src/graphql/queries'
 import GLOBAL from '../global';
+import resorts from '../constants/resortData'
 
 const UserProfileScreen = ({ route, navigation }) => {
     const { viewedUserId } = route.params;
@@ -50,12 +51,19 @@ const UserProfileScreen = ({ route, navigation }) => {
 
     const viewCheckIn = (checkIn) => {
         navigation.navigate('ViewCheckInScreen', {
-            checkIn: checkIn
+            checkInId: checkIn.id
+        })
+    }
+
+    const viewResort = (resort) => {
+        var resortData = resorts.find(o => o.resort_name === resort)
+        navigation.navigate('ResortScreen', {
+            resortData: resortData
         })
     }
 
     return (
-        <Profile activeUserProfile={false} viewedUser={viewedUser} userProfileImage={userProfileImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
+        <Profile activeUserProfile={false} viewedUser={viewedUser} userProfileImage={userProfileImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} viewResort={viewResort} />
     );
 }
 

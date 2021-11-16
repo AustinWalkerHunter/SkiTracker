@@ -11,6 +11,7 @@ import * as FileSystem from "expo-file-system";
 import GLOBAL from '../global';
 import { updateUsersProfilePicture } from '../actions'
 import { useToast } from 'react-native-fast-toast'
+import resorts from '../constants/resortData'
 
 
 const MyProfileScreen = ({ navigation }) => {
@@ -127,13 +128,20 @@ const MyProfileScreen = ({ navigation }) => {
 
     const viewCheckIn = (checkIn) => {
         navigation.navigate('ViewCheckInScreen', {
-            checkIn: checkIn
+            checkInId: checkIn.id
+        })
+    }
+
+    const viewResort = (resort) => {
+        var resortData = resorts.find(o => o.resort_name === resort)
+        navigation.navigate('ResortScreen', {
+            resortData: resortData
         })
     }
 
 
     return (
-        <Profile activeUserProfile={true} userProfileImage={userProfileImage} pickImage={pickImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
+        <Profile activeUserProfile={true} userProfileImage={userProfileImage} pickImage={pickImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} viewResort={viewResort} />
     );
 }
 

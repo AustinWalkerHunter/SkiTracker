@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, TouchableWithoutFeedback, Image, Text, StyleSheet, ImageBackground } from 'react-native';
-import { Feather, MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
+import { Entypo, MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import ProfileIcon from '../components/ProfileIcon'
 import Moment from 'moment';
@@ -151,7 +151,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                     </View>
                                     {(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
                                         <TouchableOpacity style={styles.deletionContainer} onPress={() => setModalVisible(true)}>
-                                            <Feather name="x" size={24} color="white" />
+                                            <Entypo name="dots-three-horizontal" size={24} color="white" />
                                         </TouchableOpacity>
                                     }
                                 </View>
@@ -187,17 +187,11 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                             <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
                                 <View>
                                     <View style={styles.titleContainer}>
-                                        {/* {postCardImage ?
-                                            <View style={styles.sportTitleContainer}>
-                                                <FontAwesome5 name={item.sport} size={25} color="#ff4d00" />
-                                            </View>
-                                            : null} */}
                                         <Text style={styles.titleText} ellipsizeMode='tail' numberOfLines={2}>{item.title}</Text>
                                     </View>
                                 </View>
                             </TouchableWithoutFeedback>
                         </View>
-                        {/* <View style={styles.titleLine} /> */}
                         <View style={styles.footer}>
                             <TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(item)}>
                                 <Text style={styles.reactionText}>{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].likes : likedCount}
@@ -221,7 +215,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
             <ConfirmationModal
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
-                title={"Are you sure you want to delete this post?"}
+                title={"Do you want to delete this check-in?"}
                 confirmAction={() => deleteCheckIn()}
             />
         </View >
@@ -240,18 +234,18 @@ const styles = StyleSheet.create({
     headerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingTop: 10,
-        paddingBottom: 2
+        paddingVertical: 10,
     },
     headerLocationContainer: {
         alignSelf: 'center',
+        marginBottom: 2
     },
     profilePictureContainer: {
         paddingHorizontal: 10,
     },
     authorText: {
         color: colors.primaryText,
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: "400",
     },
     titleLine: {
@@ -265,7 +259,7 @@ const styles = StyleSheet.create({
     },
     location: {
         color: colors.primaryText,
-        fontSize: 19,
+        fontSize: 20,
         fontWeight: "500",
     },
     deletionContainer: {
@@ -284,7 +278,9 @@ const styles = StyleSheet.create({
     imageContainer: {
         height: 300,
         marginTop: 5,
-        // marginBottom: 15
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        borderColor: colors.primaryDark
     },
     image: {
         alignSelf: 'center',
@@ -330,7 +326,6 @@ const styles = StyleSheet.create({
         borderBottomEndRadius: 10,
         paddingVertical: 8,
         justifyContent: "space-evenly",
-        // backgroundColor: "#070e1346",
     },
     reactionText: {
         color: "white",

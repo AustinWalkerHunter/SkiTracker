@@ -10,7 +10,7 @@ import GLOBAL from '../global';
 import { getAllCheckInData } from '../actions'
 
 
-function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn }) {
+function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn, viewResort }) {
     const [fullScreenPhoto, setFullScreenPhoto] = useState()
     const [imageLoading, setImageLoading] = useState(false)
     const ref = React.useRef(null);
@@ -72,7 +72,7 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
                     </View>
                 </View>
                 <View style={styles.userStatsContainer}>
-                    <MyStats dayCount={userDayCount} checkInData={userCheckIns && userCheckIns.length > 0 ? getAllCheckInData(userCheckIns) : null} />
+                    <MyStats dayCount={userDayCount} viewResort={viewResort} checkInData={userCheckIns && userCheckIns.length > 0 ? getAllCheckInData(userCheckIns) : null} />
                     {/* <TouchableOpacity style={styles.showCheckInButton} onPress={() => setShowCheckIns(!showCheckIns)}>
                         <Text style={styles.showCheckInsText}>{!showCheckIns ? "Show" : "Hide"} Check-ins</Text>
                     </TouchableOpacity> */}
@@ -127,11 +127,11 @@ const styles = StyleSheet.create({
         fontSize: 30
     },
     descriptionContainer: {
-        width: "65%",
+        width: "70%",
     },
     userDescription: {
         color: "#a1a1a1",
-        fontSize: 20,
+        fontSize: 18,
         textAlign: 'center'
     },
     userStatsContainer: {

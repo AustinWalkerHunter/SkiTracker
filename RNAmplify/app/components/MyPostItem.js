@@ -1,28 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { FontAwesome5, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
-import { useToast } from 'react-native-fast-toast'
+import { FontAwesome5, AntDesign } from '@expo/vector-icons';
 import GLOBAL from '../global';
-import ConfirmationModal from '../components/ConfirmationModal'
-import { deleteSelectedCheckIn } from '../actions'
 import colors from '../constants/colors';
 
 function MyPostItem({ item, title, location, date, sport, updateDayCount, viewCheckIn }) {
     const [postCardDeleted, setPostCardDeleted] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
-    const toast = useToast()
-
-    const deleteCheckIn = () => {
-        deleteSelectedCheckIn(item)
-        setPostCardDeleted(true)
-        updateDayCount();
-        toast.show("Check-in deleted!", {
-            duration: 2000,
-            style: { marginTop: 35, backgroundColor: "green" },
-            textStyle: { fontSize: 20 },
-            placement: "top"
-        });
-    }
 
     return (
         !postCardDeleted &&
@@ -31,21 +14,26 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount, viewCh
                 <FontAwesome5 name={sport} style={styles.sportIcon} size={24} color={colors.secondary} />
             </View>
             <View style={styles.titleContainer}>
-                <Text style={styles.location}>{location}</Text>
+                <Text style={styles.location} ellipsizeMode='tail' numberOfLines={1}>{location}</Text>
                 <Text style={styles.title} ellipsizeMode='tail' numberOfLines={1}>{title}</Text>
             </View>
-            {(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
-                <TouchableOpacity style={styles.deleteButton} onPress={() => setModalVisible(true)}>
-                    <Feather name="x" size={24} color="white" />
-                </TouchableOpacity>
-            }
             <Text style={styles.date}>{date}</Text>
-            <ConfirmationModal
-                modalVisible={modalVisible}
-                setModalVisible={setModalVisible}
-                title={"Are you sure you want to delete this post?"}
-                confirmAction={() => deleteCheckIn()}
-            />
+            <View style={styles.reactionContainer}>
+                <View>
+                    <Text style={styles.reactionText}>{item.likes}
+                        <View style={styles.reactionImage}>
+                            <AntDesign name="like1" size={20} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : "white"} />
+                        </View>
+                    </Text>
+                </View>
+                <View>
+                    <Text style={styles.reactionText}>{item.comments}
+                        <View style={styles.reactionImage}>
+                            <FontAwesome5 name="comment-alt" size={18} color="white" />
+                        </View>
+                    </Text>
+                </View>
+            </View>
         </TouchableOpacity>
     );
 }
@@ -54,7 +42,7 @@ const styles = StyleSheet.create({
     itemContainer: {
         flexDirection: "row",
         alignSelf: "center",
-        backgroundColor: '#2d3339',
+        backgroundColor: '#262626',
         paddingHorizontal: 10,
         paddingVertical: 15,
         marginBottom: 10,
@@ -69,7 +57,7 @@ const styles = StyleSheet.create({
     titleContainer: {
         paddingTop: 5,
         paddingBottom: 10,
-        width: "75%"
+        width: "65%"
     },
     title: {
         fontSize: 12,
@@ -83,16 +71,31 @@ const styles = StyleSheet.create({
     },
     deleteButton: {
         position: "absolute",
-        top: 3,
-        right: 5,
+        top: "3%",
+        right: "3%",
         color: "white"
     },
     date: {
         position: "absolute",
-        bottom: 5,
-        right: 7,
+        top: 5,
+        right: "2.5%",
         color: "white",
         fontWeight: "200"
+    },
+    reactionContainer: {
+        position: "absolute",
+        flexDirection: 'row',
+        bottom: 5,
+        right: "1%",
+    },
+    reactionText: {
+        color: "white",
+        fontSize: 17,
+        // textAlignVertical: "center",
+    },
+    reactionImage: {
+        paddingLeft: 7,
+        paddingRight: 9
     },
 })
 export default MyPostItem;
