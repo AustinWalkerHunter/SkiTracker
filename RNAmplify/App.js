@@ -26,6 +26,7 @@ import AddFriendScreen from './app/screens/AddFriendScreen'
 import ViewCheckInScreen from './app/screens/ViewCheckInScreen'
 import ResortScreen from './app/screens/ResortScreen'
 import NotificationScreen from './app/screens/NotificationScreen'
+import MountainSearchScreen from './app/screens/MountainSearchScreen'
 import UserProfileScreen from './app/screens/UserProfileScreen'
 import CheckInScreen from './app/screens/CheckInScreen';
 
@@ -232,6 +233,19 @@ const App = () => {
               headerTintColor: colors.secondary,
               headerTitleStyle: { color: colors.navigationText },
               title: 'Add Friends',
+            }}
+          />
+          <Main.Screen
+            name="MountainSearchScreen"
+            component={MountainSearchScreen}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+              headerBackTitle: 'Back',
+              headerBackTitleStyle: { color: colors.navigationText },
+              headerTintColor: colors.secondary,
+              headerTitleStyle: { color: colors.navigationText },
+              title: 'Mountain Finder',
             }}
           />
           <Main.Screen

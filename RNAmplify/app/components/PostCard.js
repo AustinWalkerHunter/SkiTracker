@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, TouchableWithoutFeedback, Image, Text, StyleSheet, ImageBackground } from 'react-native';
-import { Entypo, MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
+import { Entypo, MaterialCommunityIcons, FontAwesome5, AntDesign, Ionicons } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import ProfileIcon from '../components/ProfileIcon'
 import Moment from 'moment';
@@ -157,7 +157,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                 </View>
                                 {!postCardImage &&
                                     <View style={styles.icon}>
-                                        <FontAwesome5 name="mountain" size={150} color={colors.primaryDark} />
+                                        <FontAwesome5 name="mountain" size={145} color={colors.primaryDark} />
                                     </View>
                                 }
                                 <View style={styles.headerLocationContainer}>
@@ -172,6 +172,10 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                             <TouchableWithoutFeedback onPress={() => displayFullImage(postCardImage)}>
                                 <View style={styles.imageContainer}>
                                     <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
+                                    <View style={styles.imageLoading}>
+                                        <Ionicons name="image-outline" size={55} color="#a6a6a6" />
+                                        <Text style={styles.titleText}>Loading image...</Text>
+                                    </View>
                                 </View>
                             </TouchableWithoutFeedback>
                             :
@@ -278,14 +282,18 @@ const styles = StyleSheet.create({
     imageContainer: {
         height: 300,
         marginTop: 5,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-        borderColor: colors.primaryDark
     },
     image: {
         alignSelf: 'center',
         height: '100%',
         width: '100%'
+    },
+    imageLoading: {
+        position: "absolute",
+        alignSelf: 'center',
+        alignItems: 'center',
+        top: '40%',
+        zIndex: -1
     },
     backgroundImage: {
         width: '100%',
@@ -318,7 +326,7 @@ const styles = StyleSheet.create({
     },
     dateText: {
         fontSize: 12,
-        color: "white",
+        color: "#b3b3b3",
         fontWeight: "300"
     },
     footer: {
@@ -337,7 +345,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         zIndex: -999,
-        top: 30,
+        top: 25,
         left: 0,
         right: 0,
         position: "absolute",

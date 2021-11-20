@@ -4,7 +4,7 @@ import Amplify from 'aws-amplify';
 import awsconfig from '../../src/aws-exports'
 Amplify.configure(awsconfig);
 
-import { Ionicons, MaterialCommunityIcons, Feather, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons, Feather, Foundation } from "@expo/vector-icons";
 import { Text, TouchableOpacity } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -80,11 +80,10 @@ const HomeStackScreen = ({ navigation }) => (
                 ),
                 headerRight: () => (
                     <TouchableOpacity style={{ marginHorizontal: 25 }}>
-                        <Ionicons name="notifications-outline"
-                            size={24}
+                        <Foundation name="mountains"
+                            size={28}
                             color={colors.secondary}
-                            onPress={() => navigation.navigate('NotificationScreen')}
-                        />
+                            onPress={() => navigation.navigate('MountainSearchScreen')} />
                     </TouchableOpacity>
                 ),
             }}
@@ -101,6 +100,15 @@ const ProfileStackScreen = ({ navigation }) => (
                 headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
                 headerTitleStyle: { fontSize: 18, color: colors.navigationText },
                 title: 'My Profile',
+                headerLeft: () => (
+                    <TouchableOpacity style={{ marginHorizontal: 25 }}>
+                        <Ionicons name="notifications-outline"
+                            size={24}
+                            color={colors.secondary}
+                            onPress={() => navigation.navigate('NotificationScreen')}
+                        />
+                    </TouchableOpacity>
+                ),
                 headerRight: () => (
                     <TouchableOpacity style={{ marginHorizontal: 25 }}>
                         <Feather name="settings" size={28}
