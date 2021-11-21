@@ -7,7 +7,7 @@ import StatsImage from './StatsImage'
 import Moment from 'moment';
 import colors from '../constants/colors'
 
-function CheckInComments({ comments }) {
+function CheckInComments({ comments, getUserProfile }) {
     const isFocused = useIsFocused();
     const [refreshing, setRefreshing] = useState(false);
 
@@ -36,6 +36,7 @@ function CheckInComments({ comments }) {
                     renderItem={({ item }) =>
                         <CommentItem
                             item={item}
+                            getUserProfile={getUserProfile}
                         />
                     }
                 >
@@ -54,7 +55,8 @@ function CheckInComments({ comments }) {
 
 const styles = StyleSheet.create({
     checkInsContainer: {
-        marginHorizontal: 2,
+        marginHorizontal: 10,
+        marginVertical: 10,
         width: "100%",
         paddingBottom: 50
     },

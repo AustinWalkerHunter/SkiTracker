@@ -84,6 +84,7 @@ export const getComment = /* GraphQL */ `
       userID
       checkInID
       content
+      type
       createdAt
       updatedAt
     }
@@ -101,6 +102,7 @@ export const listComments = /* GraphQL */ `
         userID
         checkInID
         content
+        type
         createdAt
         updatedAt
       }
@@ -167,6 +169,36 @@ export const checkInsByDate = /* GraphQL */ `
         type
         createdAt
         comments
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const commentsByDate = /* GraphQL */ `
+  query CommentsByDate(
+    $type: String
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    commentsByDate(
+      type: $type
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userID
+        checkInID
+        content
+        type
+        createdAt
         updatedAt
       }
       nextToken

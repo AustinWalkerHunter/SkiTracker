@@ -7,4 +7,5 @@ module.exports = {
     allCheckIns: null,
     checkInPhotos: null,
     activeUserLikes: null,
+    checkInCommentCounts: null
 };

@@ -42,7 +42,8 @@ export async function increaseCheckInLikes(checkInId) {
                 date: checkIn.date,
                 likes: numberOfLikes,
                 userID: checkIn.userID,
-                type: checkIn.type
+                type: checkIn.type,
+                comments: checkIn.comments
             }
 
             await API.graphql(graphqlOperation(updateCheckIn, { input: updatedCheckIn }));
@@ -73,7 +74,8 @@ export async function decreaseCheckInLikes(checkInId) {
                 date: checkIn.date,
                 likes: numberOfLikes,
                 userID: checkIn.userID,
-                type: checkIn.type
+                type: checkIn.type,
+                comments: checkIn.comments
             }
 
             if (numberOfLikes >= 0) {
@@ -86,6 +88,30 @@ export async function decreaseCheckInLikes(checkInId) {
         }
     } catch (error) {
         console.log("Error decreasing checkIn likes in db")
+    }
+}
+
+export async function increaseCheckInComments(checkInId) {
+    try {
+        var checkIn = (await API.graphql(graphqlOperation(getCheckIn, { id: checkInId }))).data.getCheckIn;
+        const numberOfComments = checkIn.comments + 1;
+        const updatedCheckIn = {
+            id: checkIn.id,
+            title: checkIn.title,
+            location: checkIn.location,
+            sport: checkIn.sport,
+            image: checkIn.image,
+            date: checkIn.date,
+            likes: checkIn.likes,
+            userID: checkIn.userID,
+            type: checkIn.type,
+            comments: numberOfComments
+        }
+
+        await API.graphql(graphqlOperation(updateCheckIn, { input: updatedCheckIn }));
+        console.log("CheckIn comments increased")
+    } catch (error) {
+        console.log("Error increasing checkIn likes in db")
     }
 }
 

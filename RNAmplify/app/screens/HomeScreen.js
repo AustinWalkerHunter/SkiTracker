@@ -64,9 +64,10 @@ const HomeScreen = ({ route, navigation }) => {
         }
     }
 
-    const viewCheckIn = (checkIn) => {
+    const viewCheckIn = (checkIn, openKeyboard = false) => {
         navigation.navigate('ViewCheckInScreen', {
-            checkInId: checkIn.id
+            checkInId: checkIn.id,
+            openKeyboard: openKeyboard
         })
     }
 

@@ -173,8 +173,8 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                 <View style={styles.imageContainer}>
                                     <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
                                     <View style={styles.imageLoading}>
-                                        <Ionicons name="image-outline" size={55} color="#a6a6a6" />
-                                        <Text style={styles.titleText}>Loading image...</Text>
+                                        <Ionicons name="image-outline" size={75} color="#a6a6a6" />
+                                        <Text style={styles.loadingText}>Loading image...</Text>
                                     </View>
                                 </View>
                             </TouchableWithoutFeedback>
@@ -204,9 +204,9 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                     </View>
                                 </Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => viewCheckIn(item)}>
-                                <Text style={styles.reactionText}>0
-                                <View style={styles.reactionImage}>
+                            <TouchableOpacity onPress={() => viewCheckIn(item, true)}>
+                                <Text style={styles.reactionText}>{GLOBAL.checkInCommentCounts[item.id]}
+                                    <View style={styles.reactionImage}>
                                         <FontAwesome5 name="comment-alt" size={24} color="white" />
                                     </View>
                                 </Text>
@@ -294,6 +294,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         top: '40%',
         zIndex: -1
+    },
+    loadingText: {
+        color: colors.primaryText,
+        fontSize: 15,
+        width: "100%",
+        marginBottom: 5,
     },
     backgroundImage: {
         width: '100%',

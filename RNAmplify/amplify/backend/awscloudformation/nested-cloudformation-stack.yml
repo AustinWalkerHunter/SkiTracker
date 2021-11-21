@@ -135,7 +135,7 @@
             ]
           },
           "S3DeploymentBucket": "amplify-skitracker-dev-92618-deployment",
-          "S3DeploymentRootKey": "amplify-appsync-files/b3ab6d868b545efc20a396907f62b24d3ddbb96e",
+          "S3DeploymentRootKey": "amplify-appsync-files/7c36d7099e6233eac9c7b2c41269afbe433bf142",
           "env": "dev"
         }
       }

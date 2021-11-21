@@ -122,6 +122,7 @@ export const createComment = /* GraphQL */ `
       userID
       checkInID
       content
+      type
       createdAt
       updatedAt
     }
@@ -137,6 +138,7 @@ export const updateComment = /* GraphQL */ `
       userID
       checkInID
       content
+      type
       createdAt
       updatedAt
     }
@@ -152,6 +154,7 @@ export const deleteComment = /* GraphQL */ `
       userID
       checkInID
       content
+      type
       createdAt
       updatedAt
     }

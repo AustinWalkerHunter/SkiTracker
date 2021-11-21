@@ -21,11 +21,14 @@ type CheckIn @model
   comments: Int!
 }
 
-type Comment @model {
+type Comment @model
+  @key(name: "commentsByDate", fields: ["type", "createdAt"], queryField: "commentsByDate"){
   id: ID!
   userID: ID!
   checkInID: ID!
   content: String!
+  type: String!
+  createdAt: String!
 }
 
 type Like @model {

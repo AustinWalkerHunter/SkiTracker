@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { useIsFocused } from "@react-navigation/native";
-import { TouchableOpacity, StyleSheet, Text, Image, View, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView } from 'react-native';
+import { Keyboard, TouchableOpacity, StyleSheet, Text, Image, View, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView } from 'react-native';
 import { MaterialCommunityIcons, FontAwesome5, AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 import colors from "../constants/colors"
 import SafeScreen from '../components/SafeScreen'
@@ -12,11 +12,15 @@ import CheckInComments from '../components/CheckInComments'
 import ConfirmationModal from '../components/ConfirmationModal'
 import { useToast } from 'react-native-fast-toast'
 import { increaseCheckInLikes, decreaseCheckInLikes, deleteSelectedCheckIn } from '../actions'
+import { commentsByDate } from '../../src/graphql/queries'
+import { createComment } from '../../src/graphql/mutations'
+import { increaseCheckInComments } from '../actions'
 
 const ViewCheckInScreen = ({ route, navigation }) => {
-    const { checkInId } = route.params;
+    const { checkInId, openKeyboard } = route.params;
     const isFocused = useIsFocused();
     const [pageLoading, setPageLoading] = useState(true);
+    const [commentsLoading, setCommentsLoading] = useState(true);
     const [author, setAuthor] = useState();
     const [postCardImage, setPostCardImage] = useState();
     const [commentText, setCommentText] = useState();
@@ -41,7 +45,8 @@ const ViewCheckInScreen = ({ route, navigation }) => {
             if (viewedCheckIn) {
                 setLikedCount(viewedCheckIn.likes)
                 setCheckInLiked((GLOBAL.activeUserLikes[viewedCheckIn.id] && GLOBAL.activeUserLikes[viewedCheckIn.id].isLiked) || false)
-                getCheckInComments(viewedCheckIn.id);
+                //getCheckInComments(viewedCheckIn.id);
+                fetchComments(viewedCheckIn.id)
                 setAuthor(GLOBAL.allUsers[viewedCheckIn.userID]);
                 if (viewedCheckIn.image) {
                     const cachedImage = GLOBAL.checkInPhotos[viewedCheckIn.id];
@@ -57,10 +62,10 @@ const ViewCheckInScreen = ({ route, navigation }) => {
         }
     }, [isFocused]);
 
-    async function getCheckInComments(checkInId) {
-        const tempComments = [{ id: 1, content: "hello i'm a comment" }, { id: 2, content: "Another comment baby" }]
-        setComments();
-    }
+    // async function getCheckInComments(checkInId) {
+    //     const tempComments = [{ id: 1, content: "hello i'm a comment" }, { id: 2, content: "Another comment baby" }]
+    //     setComments();
+    // }
 
     const updateReactionCount = (item) => {
         if (checkInLiked) {
@@ -96,6 +101,49 @@ const ViewCheckInScreen = ({ route, navigation }) => {
             textStyle: { fontSize: 20 },
             placement: "top" // default to bottom
         });
+    }
+
+    const fetchComments = async () => {
+        try {
+            const queryParams = {
+                type: "Comment",
+                sortDirection: "ASC",
+                filter: { checkInID: { eq: checkInId } }
+            };
+            const checkInComments = (await API.graphql(graphqlOperation(commentsByDate, queryParams))).data.commentsByDate.items
+            setComments(checkInComments);
+            setCommentsLoading(false)
+        } catch (error) {
+            console.log("Error getting comments from db")
+        }
+    }
+
+    const submitComment = async (commentText) => {
+        if (commentText.length > 0) {
+            try {
+                const newComment = {
+                    userID: GLOBAL.activeUserId,
+                    checkInID: checkInId,
+                    content: commentText,
+                    type: "Comment"
+                }
+                await API.graphql(graphqlOperation(createComment, { input: newComment }));
+                //Update the check In page and comment number
+                increaseCheckInComments(checkInId);
+                GLOBAL.checkInCommentCounts[checkInId] += 1
+                fetchComments();
+                toast.show("Comment added!", {
+                    duration: 2000,
+                    style: { marginTop: 35, backgroundColor: "green" },
+                    textStyle: { fontSize: 20 },
+                    placement: "top" // default to bottom
+                });
+                console.log("Comment added!")
+            }
+            catch (error) {
+                console.log("Error submitting comment to db");
+            }
+        }
     }
 
     const viewResort = (resort) => {
@@ -164,6 +212,10 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                     // <View onPress={() => displayFullImage(postCardImage)}>
                                     <View style={styles.imageContainer}>
                                         <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
+                                        <View style={styles.imageLoading}>
+                                            <Ionicons name="image-outline" size={75} color="#a6a6a6" />
+                                            <Text style={styles.loadingText}>Loading image...</Text>
+                                        </View>
                                     </View>
                                     // </TouchableOpacity>
                                     : null
@@ -178,15 +230,19 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                             </Text>
                                         </TouchableOpacity>
                                         <View>
-                                            <Text style={styles.reactionText}>0
-                                        <View style={styles.reactionImage}>
+                                            <Text style={styles.reactionText}>{GLOBAL.checkInCommentCounts[checkInId]}
+                                                <View style={styles.reactionImage}>
                                                     <FontAwesome5 name="comment-alt" size={24} color="white" />
                                                 </View>
                                             </Text>
                                         </View>
                                     </View>
-                                    <View style={styles.commentList}>
-                                        <CheckInComments comments={comments} />
+                                    <View style={styles.commentListContainer}>
+                                        {!commentsLoading ?
+                                            <CheckInComments comments={comments} getUserProfile={getUserProfile} />
+                                            :
+                                            <ActivityIndicator style={{ marginTop: 20 }} size="large" color="white" />
+                                        }
                                     </View>
                                 </View>
                             </View>
@@ -195,6 +251,7 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                             <View style={styles.contentLine} />
                             <View style={styles.commentContainer}>
                                 <TextInput
+                                    autoFocus={openKeyboard}
                                     onFocus={() => setKeyboardOpen(true)}
                                     onBlur={() => setKeyboardOpen(false)}
                                     style={styles.commentInputBox}
@@ -208,8 +265,14 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                     returnKeyType="done"
                                     blurOnSubmit={true}
                                     textAlign="left"
+                                    value={commentText}
                                 />
-                                <TouchableOpacity onPress={() => console.log(objIndex)}>
+                                <TouchableOpacity onPress={() => {
+                                    submitComment(commentText)
+                                    setKeyboardOpen(false)
+                                    Keyboard.dismiss()
+                                    setCommentText();
+                                }}>
                                     <Text style={styles.submitCommentText}>Send</Text>
                                 </TouchableOpacity>
                             </View>
@@ -362,6 +425,19 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%'
     },
+    imageLoading: {
+        position: "absolute",
+        alignSelf: 'center',
+        alignItems: 'center',
+        top: '40%',
+        zIndex: -1
+    },
+    loadingText: {
+        color: colors.primaryText,
+        fontSize: 15,
+        width: "100%",
+        marginBottom: 5,
+    },
     reactionContainer: {
 
     },
@@ -378,6 +454,9 @@ const styles = StyleSheet.create({
     },
     reactionImage: {
         paddingLeft: 10,
+    },
+    commentListContainer: {
+        width: "100%"
     },
     commentContainer: {
         flexDirection: 'row',
@@ -407,8 +486,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white"
     },
     footer: {
-        height: "10%",
-        // paddingTop: 15,
+        height: "9%",
     }
 })
 

@@ -83,6 +83,7 @@ const App = () => {
 
   const fetchCheckIns = async () => {
     var checkInIdsAndImages = {}
+    var checkInCommentCounts = {}
     const queryParams = {
       type: "CheckIn",
       sortDirection: "DESC"
@@ -94,6 +95,7 @@ const App = () => {
       if (checkIns) {
         await Promise.all(checkIns.map(async (checkIn) => {
           var checkInId = checkIn.id;
+          checkInCommentCounts[checkInId] = checkIn.comments;
           if (checkIn.image) {
             await Storage.get(checkIn.image)
               .then((result) => {
@@ -103,6 +105,7 @@ const App = () => {
           }
         }));
         GLOBAL.checkInPhotos = checkInIdsAndImages;
+        GLOBAL.checkInCommentCounts = checkInCommentCounts;
       }
     }
     catch (error) {

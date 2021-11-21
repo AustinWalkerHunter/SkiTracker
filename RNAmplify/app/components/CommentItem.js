@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { FontAwesome5, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
-import { useToast } from 'react-native-fast-toast'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Moment from 'moment';
 import GLOBAL from '../global';
-import ConfirmationModal from '../components/ConfirmationModal'
-import { deleteSelectedCheckIn } from '../actions'
-import colors from '../constants/colors';
 
-function CommentItem({ item }) {
+import ProfileIcon from '../components/ProfileIcon'
+
+function CommentItem({ item, getUserProfile }) {
     const [commentDeleted, setCommentDeleted] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
-    const toast = useToast()
+    const [author, setAuthor] = useState(GLOBAL.allUsers[item.userID])
+    const getDate = (date) => {
+        Moment.locale('en');
+        var dt = date;
+        return (Moment(dt).format('MMM D, YYYY'))
+    }
+
+
 
     // const deleteComment = () => {
     //     deleteSelectedCheckIn(item)
@@ -26,55 +31,74 @@ function CommentItem({ item }) {
 
     return (
         !commentDeleted &&
-        <View>
-            <Text style={styles.title}>{item.content}</Text>
+        <View style={styles.commentRow}>
+            <View style={styles.authorContainer}>
+                <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
+                    {author.image ?
+                        <ProfileIcon size={35} image={author.image} isSettingScreen={false} />
+                        :
+                        <MaterialCommunityIcons style={{ marginRight: -2 }} name="account-outline" size={35} color="grey" />
+                    }
+                </TouchableOpacity>
+                <View style={styles.authorTextContainer}>
+                    <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
+                        <Text style={styles.username}>{author.username}</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.dateText}>{getDate(item.createdAt)}</Text>
+                    {/* <Text style={styles.date}>{checkIn.date}</Text> */}
+                </View>
+            </View>
+            <View style={styles.contentContainer}>
+                <Text style={styles.commentText}>{item.content}</Text>
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    itemContainer: {
+    commentRow: {
+        // flexDirection: "row"
+    },
+    authorContainer: {
+        paddingHorizontal: 5,
+        width: "100%",
+        alignItems: "center",
         flexDirection: "row",
-        alignSelf: "center",
-        backgroundColor: '#2d3339',
-        paddingHorizontal: 10,
-        paddingVertical: 15,
-        marginBottom: 10,
-        borderRadius: 10,
-        width: "98%"
+        alignContent: "center"
     },
-    activityIcon: {
-        alignSelf: "center",
-        paddingRight: 5,
-        marginRight: 5
+    authorRow: {
+
     },
-    titleContainer: {
-        paddingTop: 5,
-        paddingBottom: 10,
-        width: "75%"
+    authorTextContainer: {
+        width: "90%",
+        paddingHorizontal: 6,
+        alignItems: "center",
+        flexDirection: "row",
+        alignContent: "center",
+        justifyContent: "space-between"
     },
-    title: {
-        fontSize: 12,
-        fontWeight: "400",
+    username: {
         color: "white",
-    },
-    location: {
-        fontSize: 15,
-        color: "white",
+        fontSize: 18,
         fontWeight: "500"
     },
-    deleteButton: {
-        position: "absolute",
-        top: 3,
-        right: 5,
-        color: "white"
+    dateText: {
+        fontSize: 12,
+        color: "#b3b3b3",
+        fontWeight: "300"
     },
-    date: {
-        position: "absolute",
-        bottom: 5,
-        right: 7,
+    contentContainer: {
+        alignItems: "center",
+        flexDirection: "row",
+        alignContent: "center",
+        marginLeft: 45,
+        marginBottom: 10
+    },
+    commentText: {
+        fontSize: 14,
         color: "white",
-        fontWeight: "200"
-    },
+        fontWeight: "300"
+    }
+
 })
 export default CommentItem;

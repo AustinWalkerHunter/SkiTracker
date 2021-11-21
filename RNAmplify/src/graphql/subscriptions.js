@@ -101,6 +101,7 @@ export const onCreateComment = /* GraphQL */ `
       userID
       checkInID
       content
+      type
       createdAt
       updatedAt
     }
@@ -113,6 +114,7 @@ export const onUpdateComment = /* GraphQL */ `
       userID
       checkInID
       content
+      type
       createdAt
       updatedAt
     }
@@ -125,6 +127,7 @@ export const onDeleteComment = /* GraphQL */ `
       userID
       checkInID
       content
+      type
       createdAt
       updatedAt
     }
