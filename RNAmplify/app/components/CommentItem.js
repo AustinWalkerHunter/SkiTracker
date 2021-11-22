@@ -1,56 +1,69 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import Moment from 'moment';
 import GLOBAL from '../global';
+import ConfirmationModal from '../components/ConfirmationModal'
+import { useToast } from 'react-native-fast-toast'
 
 import ProfileIcon from '../components/ProfileIcon'
 
-function CommentItem({ item, getUserProfile }) {
+function CommentItem({ item, getUserProfile, deleteComment }) {
     const [commentDeleted, setCommentDeleted] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const [author, setAuthor] = useState(GLOBAL.allUsers[item.userID])
+    const toast = useToast()
+
     const getDate = (date) => {
         Moment.locale('en');
         var dt = date;
         return (Moment(dt).format('MMM D, YYYY'))
     }
 
-
-
-    // const deleteComment = () => {
-    //     deleteSelectedCheckIn(item)
-    //     setPostCardDeleted(true)
-    //     updateDayCount();
-    //     toast.show("Check-in deleted!", {
-    //         duration: 2000,
-    //         style: { marginTop: 35, backgroundColor: "green" },
-    //         textStyle: { fontSize: 20 },
-    //         placement: "top"
-    //     });
-    // }
-
     return (
-        !commentDeleted &&
-        <View style={styles.commentRow}>
-            <View style={styles.authorContainer}>
-                <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
-                    {author.image ?
-                        <ProfileIcon size={35} image={author.image} isSettingScreen={false} />
-                        :
-                        <MaterialCommunityIcons style={{ marginRight: -2 }} name="account-outline" size={35} color="grey" />
-                    }
-                </TouchableOpacity>
-                <View style={styles.authorTextContainer}>
-                    <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
-                        <Text style={styles.username}>{author.username}</Text>
-                    </TouchableOpacity>
+        <View>
+            {!commentDeleted &&
+                <View style={styles.commentRow}>
+                    <View style={styles.authorContainer}>
+                        <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
+                            <View>
+                                {author.image ?
+                                    <ProfileIcon size={35} image={author.image} isSettingScreen={false} />
+                                    :
+                                    <MaterialCommunityIcons style={{ marginRight: -2 }} name="account-outline" size={35} color="grey" />
+                                }
+                            </View>
+                        </TouchableOpacity>
+                        <View style={styles.authorTextContainer}>
+                            <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
+                                <View>
+                                    <Text style={styles.username}>{author.username}</Text>
+                                </View>
+                            </TouchableOpacity>
+                            {GLOBAL.activeUserId === item.userID &&
+                                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                                    <View style={styles.deleteIcon}>
+                                        <Entypo name="dots-three-horizontal" size={20} color="white" />
+                                    </View>
+                                </TouchableOpacity>
+                            }
+                        </View>
+                    </View>
+                    <View style={styles.contentContainer}>
+                        <Text style={styles.commentText}>{item.content}</Text>
+                    </View>
                     <Text style={styles.dateText}>{getDate(item.createdAt)}</Text>
-                    {/* <Text style={styles.date}>{checkIn.date}</Text> */}
                 </View>
-            </View>
-            <View style={styles.contentContainer}>
-                <Text style={styles.commentText}>{item.content}</Text>
-            </View>
+            }
+            <ConfirmationModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                title={"Do you want to delete this comment?"}
+                confirmAction={() => {
+                    deleteComment(item)
+                    setCommentDeleted(true)
+                }}
+            />
         </View>
     );
 }
@@ -85,7 +98,14 @@ const styles = StyleSheet.create({
     dateText: {
         fontSize: 12,
         color: "#b3b3b3",
-        fontWeight: "300"
+        fontWeight: "300",
+        position: "absolute",
+        top: 0,
+        right: 10
+    },
+    deleteIcon: {
+        top: 15,
+        padding: 10,
     },
     contentContainer: {
         alignItems: "center",

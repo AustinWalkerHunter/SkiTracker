@@ -11,13 +11,13 @@ import resorts from '../constants/resortData'
 import CheckInComments from '../components/CheckInComments'
 import ConfirmationModal from '../components/ConfirmationModal'
 import { useToast } from 'react-native-fast-toast'
-import { increaseCheckInLikes, decreaseCheckInLikes, deleteSelectedCheckIn } from '../actions'
+import { increaseCheckInLikes, decreaseCheckInLikes, deleteSelectedCheckIn, deleteSelectedComment, decreaseCheckInComments } from '../actions'
 import { commentsByDate } from '../../src/graphql/queries'
 import { createComment } from '../../src/graphql/mutations'
 import { increaseCheckInComments } from '../actions'
 
 const ViewCheckInScreen = ({ route, navigation }) => {
-    const { checkInId, openKeyboard } = route.params;
+    const { checkInId, scrollToComments } = route.params;
     const isFocused = useIsFocused();
     const [pageLoading, setPageLoading] = useState(true);
     const [commentsLoading, setCommentsLoading] = useState(true);
@@ -33,7 +33,7 @@ const ViewCheckInScreen = ({ route, navigation }) => {
     const [objIndex, setObjIndex] = useState();
     const [modalVisible, setModalVisible] = useState(false);
     const toast = useToast()
-
+    const ref = React.useRef(null);
 
     useEffect(() => {
         if (isFocused) {
@@ -100,6 +100,20 @@ const ViewCheckInScreen = ({ route, navigation }) => {
             style: { marginTop: 35, backgroundColor: "green" },
             textStyle: { fontSize: 20 },
             placement: "top" // default to bottom
+        });
+    }
+
+    const deleteComment = (commentItem) => {
+        console.log(commentItem)
+        deleteSelectedComment(commentItem)
+        decreaseCheckInComments(commentItem.checkInID);
+        GLOBAL.checkInCommentCounts[commentItem.checkInID] = GLOBAL.checkInCommentCounts[commentItem.checkInID] - 1;
+        fetchComments();
+        toast.show("Comment deleted!", {
+            duration: 2000,
+            style: { marginTop: 35, backgroundColor: "green" },
+            textStyle: { fontSize: 20 },
+            placement: "top"
         });
     }
 
@@ -181,7 +195,10 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                 </TouchableOpacity>
                             }
                         </View>
-                        <ScrollView >
+                        <ScrollView
+                            ref={ref}
+                            onContentSizeChange={() => { scrollToComments && ref.current.scrollToEnd({ animated: true }) }}
+                        >
                             <View style={styles.header}>
                                 <TouchableOpacity onPress={() => getUserProfile(checkIn.userID)}>
                                     <View style={styles.authorContainer}>
@@ -239,7 +256,7 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                     </View>
                                     <View style={styles.commentListContainer}>
                                         {!commentsLoading ?
-                                            <CheckInComments comments={comments} getUserProfile={getUserProfile} />
+                                            <CheckInComments comments={comments} getUserProfile={getUserProfile} deleteComment={deleteComment} />
                                             :
                                             <ActivityIndicator style={{ marginTop: 20 }} size="large" color="white" />
                                         }
@@ -251,7 +268,6 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                             <View style={styles.contentLine} />
                             <View style={styles.commentContainer}>
                                 <TextInput
-                                    autoFocus={openKeyboard}
                                     onFocus={() => setKeyboardOpen(true)}
                                     onBlur={() => setKeyboardOpen(false)}
                                     style={styles.commentInputBox}
@@ -273,7 +289,9 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                     Keyboard.dismiss()
                                     setCommentText();
                                 }}>
-                                    <Text style={styles.submitCommentText}>Send</Text>
+                                    <View>
+                                        <Text style={styles.submitCommentText}>Send</Text>
+                                    </View>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -305,7 +323,7 @@ const styles = StyleSheet.create({
     },
     stickyHeader: {
         width: "100%",
-        height: "6%",
+        height: 40,
         backgroundColor: colors.navigation,
         // alignItems: "center",
         flexDirection: "row",
@@ -379,13 +397,6 @@ const styles = StyleSheet.create({
         borderColor: "white",
         width: "100%",
         borderColor: colors.secondary
-    },
-    contentLine: {
-        alignSelf: "center",
-        borderWidth: .4,
-        width: "100%",
-        borderColor: "grey",
-        marginBottom: 20
     },
     content: {
         flex: .8,
@@ -468,12 +479,19 @@ const styles = StyleSheet.create({
         // backgroundColor: "green"
         // marginHorizontal: 15,
     },
+    contentLine: {
+        alignSelf: "center",
+        borderWidth: .4,
+        width: "100%",
+        borderColor: "grey",
+        marginBottom: 10
+    },
     commentInputBox: {
-        // marginRight: 20,
         flex: 1,
-        paddingTop: 0,
-        paddingBottom: 0,
-        color: "white"
+        paddingTop: 10,
+        paddingBottom: 10,
+        color: "white",
+        // backgroundColor: "green"
     },
     submitCommentText: {
         right: 0,

@@ -144,14 +144,18 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                         </View>
                                     </TouchableWithoutFeedback>
                                     <View style={styles.headerTextContainer}>
-                                        <TouchableOpacity onPress={() => getUserProfile(item.userID)}>
-                                            <Text style={styles.authorText}>{username}</Text>
-                                        </TouchableOpacity>
-                                        <Text style={styles.dateText}>{getDate(item.date)}</Text>
+                                        <TouchableWithoutFeedback onPress={() => getUserProfile(item.userID)}>
+                                            <View>
+                                                <Text style={styles.authorText}>{username}</Text>
+                                                <Text style={styles.dateText}>{getDate(item.date)}</Text>
+                                            </View>
+                                        </TouchableWithoutFeedback>
                                     </View>
                                     {(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
                                         <TouchableOpacity style={styles.deletionContainer} onPress={() => setModalVisible(true)}>
-                                            <Entypo name="dots-three-horizontal" size={24} color="white" />
+                                            <View>
+                                                <Entypo name="dots-three-horizontal" size={24} color="white" />
+                                            </View>
                                         </TouchableOpacity>
                                     }
                                 </View>
@@ -198,18 +202,22 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                         </View>
                         <View style={styles.footer}>
                             <TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(item)}>
-                                <Text style={styles.reactionText}>{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].likes : likedCount}
-                                    <View style={styles.reactionImage}>
-                                        <AntDesign name="like1" size={24} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : "white"} />
-                                    </View>
-                                </Text>
+                                <View style={styles.reactionContainer}>
+                                    <Text style={styles.reactionText}>{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].likes : likedCount}
+                                        <View style={styles.reactionImage}>
+                                            <AntDesign name="like1" size={24} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : "white"} />
+                                        </View>
+                                    </Text>
+                                </View>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => viewCheckIn(item, true)}>
-                                <Text style={styles.reactionText}>{GLOBAL.checkInCommentCounts[item.id]}
-                                    <View style={styles.reactionImage}>
-                                        <FontAwesome5 name="comment-alt" size={24} color="white" />
-                                    </View>
-                                </Text>
+                                <View style={styles.reactionContainer}>
+                                    <Text style={styles.reactionText}>{GLOBAL.checkInCommentCounts[item.id]}
+                                        <View style={styles.reactionImage}>
+                                            <FontAwesome5 name="comment-alt" size={24} color="white" />
+                                        </View>
+                                    </Text>
+                                </View>
                             </TouchableOpacity>
                         </View>
                     </ImageBackground>
@@ -251,6 +259,7 @@ const styles = StyleSheet.create({
         color: colors.primaryText,
         fontSize: 17,
         fontWeight: "400",
+        paddingRight: 30,
     },
     titleLine: {
         borderWidth: .5,
@@ -268,8 +277,10 @@ const styles = StyleSheet.create({
     },
     deletionContainer: {
         position: 'absolute',
-        top: 10,
-        right: 15
+        padding: 10,
+        right: 5,
+        top: 0,
+        paddingLeft: 20,
     },
     sportContainer: {
         alignSelf: 'center',
@@ -341,10 +352,13 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         justifyContent: "space-evenly",
     },
+    reactionContainer: {
+        paddingHorizontal: 20,
+    },
     reactionText: {
         color: "white",
         fontSize: 20,
-        textAlignVertical: "center"
+        textAlignVertical: "center",
     },
     reactionImage: {
         paddingLeft: 10,

@@ -7,7 +7,7 @@ import StatsImage from './StatsImage'
 import Moment from 'moment';
 import colors from '../constants/colors'
 
-function CheckInComments({ comments, getUserProfile }) {
+function CheckInComments({ comments, getUserProfile, deleteComment }) {
     const isFocused = useIsFocused();
     const [refreshing, setRefreshing] = useState(false);
 
@@ -37,6 +37,7 @@ function CheckInComments({ comments, getUserProfile }) {
                         <CommentItem
                             item={item}
                             getUserProfile={getUserProfile}
+                            deleteComment={deleteComment}
                         />
                     }
                 >

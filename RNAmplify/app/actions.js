@@ -1,5 +1,5 @@
 import { API, graphqlOperation } from 'aws-amplify';
-import { deleteCheckIn, updateUser, updateCheckIn, createLike, deleteLike } from '../src/graphql/mutations'
+import { deleteCheckIn, updateUser, updateCheckIn, createLike, deleteLike, deleteComment } from '../src/graphql/mutations'
 import { listCheckIns, getCheckIn } from '../src/graphql/queries'
 import GLOBAL from './global';
 
@@ -12,6 +12,19 @@ export async function deleteSelectedCheckIn(item) {
             }
         } catch (error) {
             console.log("Error deleting from db")
+        }
+    }
+}
+
+export async function deleteSelectedComment(item) {
+    if (item) {
+        try {
+            if (GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) {
+                await API.graphql(graphqlOperation(deleteComment, { input: { id: item.id } }));
+                console.log("Comment deleted.")
+            }
+        } catch (error) {
+            console.log("Error deleting comment from db")
         }
     }
 }
@@ -110,6 +123,35 @@ export async function increaseCheckInComments(checkInId) {
 
         await API.graphql(graphqlOperation(updateCheckIn, { input: updatedCheckIn }));
         console.log("CheckIn comments increased")
+    } catch (error) {
+        console.log("Error increasing checkIn likes in db")
+    }
+}
+
+export async function decreaseCheckInComments(checkInId) {
+    try {
+        var checkIn = (await API.graphql(graphqlOperation(getCheckIn, { id: checkInId }))).data.getCheckIn;
+        const numberOfComments = checkIn.comments - 1;
+        const updatedCheckIn = {
+            id: checkIn.id,
+            title: checkIn.title,
+            location: checkIn.location,
+            sport: checkIn.sport,
+            image: checkIn.image,
+            date: checkIn.date,
+            likes: checkIn.likes,
+            userID: checkIn.userID,
+            type: checkIn.type,
+            comments: numberOfComments
+        }
+
+        if (numberOfComments >= 0) {
+            await API.graphql(graphqlOperation(updateCheckIn, { input: updatedCheckIn }));
+            console.log("CheckIn comments increased")
+        }
+        else {
+            console.log("Number of comments is already 0")
+        }
     } catch (error) {
         console.log("Error increasing checkIn likes in db")
     }
