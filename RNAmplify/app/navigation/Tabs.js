@@ -48,11 +48,6 @@ const Tabs = () => (
                 <Ionicons name="ios-home-outline" size={35} color={color} />
             ),
         }} />
-        {/* <Tab.Screen name="CheckIn" component={CheckInStackScreen} options={{
-            tabBarIcon: ({ color }) => (
-                <MaterialCommunityIcons name="map-marker-check" size={38} color={color} />
-            ),
-        }} /> */}
         <Tab.Screen name="Profile" component={ProfileStackScreen} options={{
             tabBarIcon: ({ color }) => (
                 <MaterialCommunityIcons name="account-outline" size={40} color={color} />

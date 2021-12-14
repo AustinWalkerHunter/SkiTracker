@@ -11,11 +11,18 @@ import { getUser, listUsers, checkInsByDate, listLikes } from './src/graphql/que
 import { createUser } from './src/graphql/mutations'
 
 import Amplify, { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 import { MaterialIcons, Entypo } from '@expo/vector-icons';
-import { withAuthenticator } from 'aws-amplify-react-native'
+import {
+  Authenticator,
+  ConfirmSignIn,
+  ConfirmSignUp,
+  ForgotPassword,
+  SignIn,
+  SignUp
+} from 'aws-amplify-react-native'
 import AppLoading from 'expo-app-loading';
 import * as SplashScreen from 'expo-splash-screen';
 import { ToastProvider } from 'react-native-fast-toast'
@@ -29,42 +36,190 @@ import NotificationScreen from './app/screens/NotificationScreen'
 import MountainSearchScreen from './app/screens/MountainSearchScreen'
 import UserProfileScreen from './app/screens/UserProfileScreen'
 import CheckInScreen from './app/screens/CheckInScreen';
+import SignInScreen from './app/screens/SignInScreen';
 
+const AuthStack = createStackNavigator();
 const Main = createStackNavigator();
 
+const AuthenticationNavigator = props => {
+  return (
+    <AuthStack.Navigator>
+      <AuthStack.Screen name="SignIn" options={{ headerShown: false, title: 'SignIn' }}>
+        {screenProps => (
+          <SignInScreen {...screenProps} updateAuthState={props.updateAuthState} fetchAppData={props.fetchAppData} />
+        )}
+      </AuthStack.Screen>
+    </AuthStack.Navigator>
+  )
+}
+const AppNavigator = props => {
+  return (
+    <Main.Navigator>
+      <Main.Screen
+        name="Tabs"
+        component={Tabs}
+        options={{ headerShown: false, title: 'Home' }}
+      />
+      <Main.Screen
+        name="SettingsScreen"
+        component={SettingsScreen}
+        options={{
+          headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+          headerBackTitle: 'Back',
+          headerBackTitleStyle: { color: colors.navigationText },
+          headerTintColor: colors.secondary,
+          headerTitleStyle: { color: colors.navigationText },
+          title: 'Edit Profile',
+          headerRight: () => (
+            <TouchableOpacity style={{ marginRight: 8, alignItems: 'center', justifyContent: 'center', flexDirection: "row" }} onPress={() => {
+              Auth.signOut();
+              props.updateAuthState(false)
+            }}>
+              <Text style={{ fontSize: 15, color: colors.navigationText, marginRight: 3 }}>Log Out</Text>
+              <MaterialIcons name="logout" size={24} color={colors.secondary} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Main.Screen
+        name="AddFriendScreen"
+        component={AddFriendScreen}
+        options={{
+          headerShown: true,
+          headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+          headerBackTitle: 'Back',
+          headerBackTitleStyle: { color: colors.navigationText },
+          headerTintColor: colors.secondary,
+          headerTitleStyle: { color: colors.navigationText },
+          title: 'Add Friends',
+        }}
+      />
+      <Main.Screen
+        name="MountainSearchScreen"
+        component={MountainSearchScreen}
+        options={{
+          headerShown: true,
+          headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+          headerBackTitle: 'Back',
+          headerBackTitleStyle: { color: colors.navigationText },
+          headerTintColor: colors.secondary,
+          headerTitleStyle: { color: colors.navigationText },
+          title: 'Mountain Finder',
+        }}
+      />
+      <Main.Screen
+        name="NotificationScreen"
+        component={NotificationScreen}
+        options={{
+          headerShown: true,
+          headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+          headerBackTitle: 'Back',
+          headerBackTitleStyle: { color: colors.navigationText },
+          headerTintColor: colors.secondary,
+          headerTitleStyle: { color: colors.navigationText },
+          title: 'Notifications',
+        }}
+      />
+      <Main.Screen
+        name="ViewCheckInScreen"
+        component={ViewCheckInScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Main.Screen
+        name="ResortScreen"
+        component={ResortScreen}
+        options={{
+          headerShown: true,
+          headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+          headerBackTitle: 'Back',
+          headerBackTitleStyle: { color: colors.navigationText },
+          headerTintColor: colors.secondary,
+          headerTitleStyle: { color: colors.navigationText },
+          title: 'Resort',
+        }}
+      />
+      <Main.Screen
+        name="UserProfileScreen"
+        component={UserProfileScreen}
+        options={{
+          headerShown: true,
+          headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+          headerBackTitle: 'Back',
+          headerBackTitleStyle: { color: colors.navigationText },
+          headerTintColor: colors.secondary,
+          headerTitleStyle: { color: colors.navigationText },
+          title: 'User Profile',
+        }}
+      />
+      <Main.Screen
+        name="CheckInScreen"
+        component={CheckInScreen}
+        options={{
+          headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+          headerTitleStyle: { fontSize: 18, color: colors.navigationText },
+          title: 'Create Check In',
+          headerShown: true,
+          headerBackTitle: 'Back',
+          headerBackTitleStyle: { color: colors.navigationText },
+          headerTintColor: colors.secondary,
+          headerTitleStyle: { color: colors.navigationText },
+        }}
+      />
+    </Main.Navigator>
+  )
+}
 
-const App = () => {
-
-
+export default function App() {
   const [preparingApp, setPreparingApp] = useState(true)
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
   useEffect(() => {
+    checkAuthState();
     async function prepare() {
       try {
         // Keep the splash screen visible while we fetch resources
-        await SplashScreen.preventAutoHideAsync()
-          .catch(() => { /* reloading the app might trigger some race conditions, ignore them */ });
+        // await SplashScreen.preventAutoHideAsync()
+        // .catch (() => { /* reloading the app might trigger some race conditions, ignore them */ });
         await fetchAppData(); // the white screen still shows while this is fetching, spash screen prevent hide is not working
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // await new Promise(resolve => setTimeout(resolve, 2000));
+        setPreparingApp(false)
       } catch (e) {
         console.warn(e);
       } finally {
-        setPreparingApp(false)
+        // setPreparingApp(false)
         //await SplashScreen.hideAsync(); // maybe put this on the first screen
       }
     }
     prepare();
   }, []);
 
+  async function checkAuthState() {
+    try {
+      await Auth.currentAuthenticatedUser();
+      setIsUserLoggedIn(true)
+    } catch (err) {
+      setIsUserLoggedIn(false)
+    }
+
+  }
+
+  function updateAuthState(isUserLoggedIn) {
+    setIsUserLoggedIn(isUserLoggedIn)
+  }
 
   async function fetchAppData() {
     await fetchActiveUser();
-    await fetchAllUsers();
-    await fetchCheckIns();
-    await fetchUserLikes();
+    if (GLOBAL.activeUserId) {
+      await fetchAllUsers();
+      await fetchCheckIns();
+      await fetchUserLikes();
+    }
   }
 
   const fetchUserLikes = async () => {
+    console.log("fetchUserLikes")
     var likes = {};
     const queryParams = {
       filter: {
@@ -82,6 +237,7 @@ const App = () => {
   }
 
   const fetchCheckIns = async () => {
+    console.log("fetchCheckIns")
     var checkInIdsAndImages = {}
     var checkInCommentCounts = {}
     const queryParams = {
@@ -114,27 +270,35 @@ const App = () => {
   }
 
   const fetchActiveUser = async () => {
-    const userInfo = await Auth.currentAuthenticatedUser();
-    GLOBAL.activeUserId = userInfo.attributes.sub;
-    if (userInfo) {
-      const userData = (await API.graphql(graphqlOperation(getUser, { id: userInfo.attributes.sub }))).data.getUser;
-      if (userData) {
-        GLOBAL.activeUser = { username: userData.username, id: userData.id, description: userData.description, image: userData.image };;
-        console.log("User found in db")
-        return;
+    try {
+      console.log("fetchActiveUser")
+      const userInfo = await Auth.currentAuthenticatedUser();
+      GLOBAL.activeUserId = userInfo.attributes.sub;
+      if (userInfo) {
+        const userData = (await API.graphql(graphqlOperation(getUser, { id: userInfo.attributes.sub }))).data.getUser;
+        if (userData) {
+          GLOBAL.activeUser = { username: userData.username, id: userData.id, description: userData.description, image: userData.image };;
+          console.log("User found in db")
+          return;
+        }
+        const newUser = {
+          id: userInfo.attributes.sub,
+          username: userInfo.username,
+          image: null,
+          description: "Hi, I'm " + userInfo.username
+        }
+        await API.graphql(graphqlOperation(createUser, { input: newUser }));
+        GLOBAL.activeUser = newUser;
       }
-      const newUser = {
-        id: userInfo.attributes.sub,
-        username: userInfo.username,
-        image: null,
-        description: "Hi, I'm " + userInfo.username
-      }
-      await API.graphql(graphqlOperation(createUser, { input: newUser }));
-      GLOBAL.activeUser = newUser;
+    } catch (error) {
+      console.log("No active user found.")
+      setPreparingApp(false)
     }
   }
 
   const fetchAllUsers = async () => {
+    console.log("fetchAllUsers")
+
     var usersById = {};
     try {
       const allUserData = (await API.graphql(graphqlOperation(listUsers))).data.listUsers.items
@@ -200,122 +364,33 @@ const App = () => {
 
   return (
     <ToastProvider>
-      < NavigationContainer>
-        <Main.Navigator>
-          <Main.Screen
-            name="Tabs"
-            component={Tabs}
-            options={{ headerShown: false, title: 'Home' }}
-          />
-          <Main.Screen
-            name="SettingsScreen"
-            component={SettingsScreen}
-            options={{
-              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
-              headerTintColor: colors.secondary,
-              headerTitleStyle: { color: colors.navigationText },
-              title: 'Edit Profile',
-              headerRight: () => (
-                <TouchableOpacity style={{ marginRight: 8, alignItems: 'center', justifyContent: 'center', flexDirection: "row" }} onPress={() => Auth.signOut()}>
-                  <Text style={{ fontSize: 15, color: colors.navigationText, marginRight: 3 }}>Log Out</Text>
-                  <MaterialIcons name="logout" size={24} color={colors.secondary} />
-                </TouchableOpacity>
-              ),
-            }}
-          />
-          <Main.Screen
-            name="AddFriendScreen"
-            component={AddFriendScreen}
-            options={{
-              headerShown: true,
-              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
-              headerTintColor: colors.secondary,
-              headerTitleStyle: { color: colors.navigationText },
-              title: 'Add Friends',
-            }}
-          />
-          <Main.Screen
-            name="MountainSearchScreen"
-            component={MountainSearchScreen}
-            options={{
-              headerShown: true,
-              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
-              headerTintColor: colors.secondary,
-              headerTitleStyle: { color: colors.navigationText },
-              title: 'Mountain Finder',
-            }}
-          />
-          <Main.Screen
-            name="NotificationScreen"
-            component={NotificationScreen}
-            options={{
-              headerShown: true,
-              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
-              headerTintColor: colors.secondary,
-              headerTitleStyle: { color: colors.navigationText },
-              title: 'Notifications',
-            }}
-          />
-          <Main.Screen
-            name="ViewCheckInScreen"
-            component={ViewCheckInScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Main.Screen
-            name="ResortScreen"
-            component={ResortScreen}
-            options={{
-              headerShown: true,
-              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
-              headerTintColor: colors.secondary,
-              headerTitleStyle: { color: colors.navigationText },
-              title: 'Resort',
-            }}
-          />
-          <Main.Screen
-            name="UserProfileScreen"
-            component={UserProfileScreen}
-            options={{
-              headerShown: true,
-              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
-              headerTintColor: colors.secondary,
-              headerTitleStyle: { color: colors.navigationText },
-              title: 'User Profile',
-            }}
-          />
-          <Main.Screen
-            name="CheckInScreen"
-            component={CheckInScreen}
-            options={{
-              headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-              headerTitleStyle: { fontSize: 18, color: colors.navigationText },
-              title: 'Create Check In',
-              headerShown: true,
-              headerBackTitle: 'Back',
-              headerBackTitleStyle: { color: colors.navigationText },
-              headerTintColor: colors.secondary,
-              headerTitleStyle: { color: colors.navigationText },
-            }}
-          />
-        </Main.Navigator>
-        <StatusBar style="light" />
-      </NavigationContainer >
+      <NavigationContainer>
+        {/* <View style={styles.container}> */}
+        {isUserLoggedIn
+          ?
+          <AppNavigator updateAuthState={updateAuthState} />
+          :
+          <AuthenticationNavigator updateAuthState={updateAuthState} fetchAppData={fetchAppData} />
+          // <Authenticator hideDefault={true}>
+          //   <SignIn />
+          //   <SignUp />
+          //   <ConfirmSignIn />
+          //   <ConfirmSignUp />
+          //   <ForgotPassword />
+          // </Authenticator>
+        }
+        {/* </View> */}
+      </NavigationContainer>
     </ToastProvider>
   )
 }
 
-export default withAuthenticator(App)
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+
+})
+
+// export default withAuthenticator(App, false, [], null, MyTheme,)

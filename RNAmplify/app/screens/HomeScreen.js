@@ -29,7 +29,12 @@ const HomeScreen = ({ route, navigation }) => {
                 route.params.newCheckInAdded = false;
             }
             else {
-                setCheckIns(GLOBAL.allCheckIns);
+                if (GLOBAL.allCheckIns) {
+                    setCheckIns(GLOBAL.allCheckIns);
+                }
+                else {
+                    fetchCheckIns();
+                }
             }
             setLoading(false)
         }
