@@ -12,19 +12,26 @@ export default function SignIn({ navigation, updateAuthState, fetchAppData }) {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [skiing, setSkiing] = useState(true);
+    const [error, setError] = useState(false);
+    const [errorCounter, setErrorCounter] = useState(0)
 
     async function signIn() {
-        if (username.length > 0 && password.length > 5) {
+        if (username.length > 0 && password.length > 0) {
             setLoading(true)
             try {
                 await Auth.signIn(username, password);
-                console.log(' Success');
+                setError(false)
                 await fetchAppData()
                 updateAuthState(true);
             } catch (error) {
                 console.log(' Error signing in...', error);
+                setLoading(false)
+                setError(true)
+                setErrorCounter(errorCounter + 1)
             }
         }
+        setError(true)
+        setErrorCounter(errorCounter + 1)
     }
 
     function switchSport() {
@@ -45,42 +52,48 @@ export default function SignIn({ navigation, updateAuthState, fetchAppData }) {
                     <Text style={styles.header}>{skiing ? "SkiTracker" : "BoardTracker?"}</Text>
                     <Text style={styles.subHeader}>{skiing ? "Time to shred" : "Back to the bunny hill"}</Text>
                 </View>
-                {!loading ?
 
-                    <View style={styles.inputContainer}>
-                        <LogInInput
-                            value={username}
-                            onChangeText={text => setUsername(text)}
-                            leftIcon="account"
-                            placeholder="Username"
-                            autoCapitalize="none"
-                            keyboardType="email-address"
-                            textContentType="emailAddress"
-                        />
-                        <LogInInput
-                            value={password}
-                            onChangeText={text => setPassword(text)}
-                            leftIcon="lock"
-                            placeholder="Password"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry
-                            textContentType="password"
-                        />
+
+                <View style={styles.inputContainer}>
+                    <LogInInput
+                        value={username}
+                        onChangeText={text => setUsername(text)}
+                        leftIcon="account"
+                        placeholder="Username"
+                        autoCapitalize="none"
+                        keyboardType="email-address"
+                        textContentType="emailAddress"
+                    />
+                    <LogInInput
+                        value={password}
+                        onChangeText={text => setPassword(text)}
+                        leftIcon="lock"
+                        placeholder="Password"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        secureTextEntry
+                        textContentType="password"
+                    />
+                    {!loading ?
                         <View style={styles.logInButton}>
                             <RoundedButton title="Login" onPress={signIn} color={skiing ? colors.secondary : colors.blue} />
                         </View>
-                        <View style={styles.footerButtonContainer}>
-                            <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                                <Text style={styles.forgotPasswordButtonText}>
-                                    Don't have an account? Sign Up
+                        :
+                        <ActivityIndicator style={styles.loadingSpinner} size="large" color={colors.secondary} />
+                    }
+                    <View style={styles.footerButtonContainer}>
+                        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                            <Text style={styles.forgotPasswordButtonText}>
+                                Don't have an account? Sign Up
                             </Text>
-                            </TouchableOpacity>
-                        </View>
+                        </TouchableOpacity>
                     </View>
-                    :
-                    <ActivityIndicator style={styles.loadingSpinner} size="large" color="white" />
-                }
+                    {error &&
+                        <View style={styles.errorContainer}>
+                            <Text style={errorCounter < 5 ? styles.errorText : styles.largeErrorText}>Username or Password incorrect</Text>
+                        </View>
+                    }
+                </View>
             </View>
         </SafeAreaView>
     );
@@ -124,14 +137,30 @@ const styles = StyleSheet.create({
         width: "75%"
     },
     footerButtonContainer: {
-        marginVertical: 15,
+        paddingVertical: 15,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 20
     },
     forgotPasswordButtonText: {
         color: 'white',
         fontSize: 18,
         fontWeight: '600'
+    },
+    errorContainer: {
+        alignItems: 'center',
+    },
+    errorText: {
+        textAlign: "center",
+        color: 'red',
+        fontSize: 18,
+        fontWeight: '500'
+    },
+    largeErrorText: {
+        textAlign: "center",
+        color: 'red',
+        fontSize: 35,
+        fontWeight: '500'
     },
     loadingSpinner: {
         marginTop: 10
