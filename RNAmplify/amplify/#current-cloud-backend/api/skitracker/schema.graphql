@@ -31,7 +31,7 @@ type Comment @model
   createdAt: String!
 }
 
-type Like @model {
+type Like @model { 
   id: ID!
   userID: ID!
   checkInID: ID!

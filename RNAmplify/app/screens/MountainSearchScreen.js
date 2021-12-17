@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.navigation,
     },
     searchContainer: {
-        width: "100%"
+        width: "100%",
+        paddingBottom: 100
     },
     titleInput: {
         color: "black",

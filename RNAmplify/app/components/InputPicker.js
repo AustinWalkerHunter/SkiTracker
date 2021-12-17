@@ -96,7 +96,8 @@ const styles = StyleSheet.create({
     },
     modalView: {
         backgroundColor: "#0d0d0d",
-        height: "70%"
+        height: "70%",
+        paddingBottom: 20
     },
     searchStyles: {
         backgroundColor: "#0d0d0d",

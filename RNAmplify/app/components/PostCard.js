@@ -139,7 +139,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                     <TouchableWithoutFeedback onPress={() => getUserProfile(item.userID)}>
                                         <View style={styles.profilePictureContainer}>
                                             {
-                                                profileImage ? <ProfileIcon size={50} image={profileImage} /> :
+                                                profileImage ? <ProfileIcon size={70} image={profileImage} /> :
                                                     <MaterialCommunityIcons name="account-outline" size={40} color="grey" />}
                                         </View>
                                     </TouchableWithoutFeedback>
@@ -161,7 +161,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                 </View>
                                 {!postCardImage &&
                                     <View style={styles.icon}>
-                                        <FontAwesome5 name="mountain" size={145} color={colors.primaryDark} />
+                                        <FontAwesome5 name="mountain" size={145} color={colors.lightGrey} />
                                     </View>
                                 }
                                 <View style={styles.headerLocationContainer}>
@@ -237,7 +237,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
 
 const styles = StyleSheet.create({
     postBox: {
-        backgroundColor: colors.primary,
+        backgroundColor: "#26262688",
         alignSelf: 'center',
         width: '100%',
         marginBottom: 5,

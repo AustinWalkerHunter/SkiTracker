@@ -1,40 +1,75 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome5, AntDesign } from '@expo/vector-icons';
 import GLOBAL from '../global';
 import colors from '../constants/colors';
 
 function MyPostItem({ item, title, location, date, sport, updateDayCount, viewCheckIn }) {
     const [postCardDeleted, setPostCardDeleted] = useState(false);
+    const [postCardImage, setPostCardImage] = useState(null);
+
+    useEffect(() => {
+        if (item.image) {
+            const cachedImage = GLOBAL.checkInPhotos[item.id];
+            if (cachedImage) {
+                setPostCardImage(cachedImage);
+            }
+            else {
+                fetchPostCardImage();
+            }
+        }
+    }, []);
+
+    async function fetchPostCardImage() {
+        if (item.image) {
+            try {
+                await Storage.get(item.image)
+                    .then((result) => {
+                        setPostCardImage(result);
+                    })
+                    .catch((err) => console.log(err));
+            }
+            catch (error) {
+                console.log("Error getting image")
+            }
+        }
+    }
 
     return (
         !postCardDeleted &&
-        <TouchableOpacity style={styles.itemContainer} onPress={() => viewCheckIn(item)}>
-            <View style={styles.activityIcon}>
-                <FontAwesome5 name={sport} style={styles.sportIcon} size={24} color={colors.secondary} />
-            </View>
-            <View style={styles.titleContainer}>
-                <Text style={styles.location} ellipsizeMode='tail' numberOfLines={1}>{location}</Text>
-                <Text style={styles.title} ellipsizeMode='tail' numberOfLines={1}>{title}</Text>
-            </View>
-            <Text style={styles.date}>{date}</Text>
-            <View style={styles.reactionContainer}>
-                <View>
-                    <Text style={styles.reactionText}>{item.likes}
-                        <View style={styles.reactionImage}>
-                            <AntDesign name="like1" size={20} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : "white"} />
-                        </View>
-                    </Text>
+        <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
+            <View style={styles.itemContainer}>
+                <View style={styles.activityIcon}>
+                    {item.image ?
+                        // <View >
+                        <Image style={{ width: 75, height: 75 }} resizeMode={'contain'} source={{ uri: postCardImage }} />
+                        :
+                        <FontAwesome5 style={{ paddingLeft: 5, width: 75 }} name="mountain" size={50} color="#595959" />
+                    }
                 </View>
-                <View>
-                    <Text style={styles.reactionText}>{item.comments}
-                        <View style={styles.reactionImage}>
-                            <FontAwesome5 name="comment-alt" size={18} color="white" />
-                        </View>
-                    </Text>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.location} ellipsizeMode='tail' numberOfLines={1}>{location}</Text>
+                    <Text style={styles.title} ellipsizeMode='tail' numberOfLines={2}>{title}</Text>
+                </View>
+                {/* <Text style={styles.date}>{date}</Text> */}
+                <View style={styles.reactionContainer}>
+                    <View style={styles.likeContainer}>
+                        <Text style={styles.reactionText}>{item.likes}
+                            <View style={styles.reactionImage}>
+                                <AntDesign name="like1" size={20} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : "white"} />
+                            </View>
+                        </Text>
+                    </View>
+                    <View style={styles.commentContainer}>
+                        <Text style={styles.reactionText}>{item.comments}
+                            <View style={styles.reactionImage}>
+                                <FontAwesome5 name="comment-alt" size={18} color="white" />
+                            </View>
+                        </Text>
+                    </View>
                 </View>
             </View>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback >
     );
 }
 
@@ -42,37 +77,46 @@ const styles = StyleSheet.create({
     itemContainer: {
         flexDirection: "row",
         alignSelf: "center",
-        backgroundColor: '#262626',
+        backgroundColor: '#26262633',
         paddingHorizontal: 10,
-        paddingVertical: 15,
-        marginBottom: 10,
-        borderRadius: 10,
+        paddingVertical: 10,
+        marginBottom: 7,
         width: "98%"
     },
     activityIcon: {
         alignSelf: "center",
         paddingRight: 5,
-        marginRight: 5
+        marginRight: 5,
+        // width: "25%"
+    },
+    imageLoading: {
+        position: "absolute",
+        alignSelf: 'center',
+        alignItems: 'center',
+        top: '40%',
+        zIndex: -1
     },
     titleContainer: {
-        paddingTop: 5,
-        paddingBottom: 10,
-        width: "65%"
+        alignSelf: 'center',
+        alignItems: 'flex-start',
+        flex: 1,
+    },
+    reactionContainer: {
+        paddingLeft: 5,
+        alignSelf: 'center',
+        alignItems: 'flex-end',
     },
     title: {
-        fontSize: 12,
-        fontWeight: "400",
+        fontSize: 13,
+        fontWeight: "300",
         color: "white",
     },
     location: {
         fontSize: 15,
         color: "white",
-        fontWeight: "500"
+        fontWeight: "600"
     },
     deleteButton: {
-        position: "absolute",
-        top: "3%",
-        right: "3%",
         color: "white"
     },
     date: {
@@ -82,16 +126,19 @@ const styles = StyleSheet.create({
         color: "white",
         fontWeight: "200"
     },
-    reactionContainer: {
-        position: "absolute",
-        flexDirection: 'row',
-        bottom: 5,
-        right: "1%",
+    likeContainer: {
+        paddingVertical: 2,
+        color: "white",
+        fontWeight: "200"
+    },
+    commentContainer: {
+        paddingVertical: 2,
+        color: "white",
+        fontWeight: "200"
     },
     reactionText: {
         color: "white",
         fontSize: 17,
-        // textAlignVertical: "center",
     },
     reactionImage: {
         paddingLeft: 7,

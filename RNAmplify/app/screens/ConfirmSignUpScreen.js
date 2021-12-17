@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useIsFocused } from "@react-navigation/native";
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { Auth } from 'aws-amplify';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,66 +7,33 @@ import RoundedButton from '../components/RoundedButton';
 import { FontAwesome5 } from '@expo/vector-icons';
 import colors from '../constants/colors'
 
-export default function SignInScreen({ navigation, updateAuthState, fetchAppData }) {
-    const isFocused = useIsFocused();
+export default function SignUpScreen({ navigation, updateAuthState, fetchAppData }) {
     const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [authCode, setAuthCode] = useState('');
     const [loading, setLoading] = useState(false);
-    const [skiing, setSkiing] = useState(true);
     const [error, setError] = useState(false);
-    const [tapCounter, setTapCounter] = useState(0)
 
-    useEffect(() => {
-        if (!isFocused) {
-            setTimeout(() => {
-                setError(false)
-            }, 500);
-
-        }
-    }, [isFocused]);
-
-    async function signIn() {
-        if (username.length > 0 && password.length > 0) {
-            setError(false)
-            setLoading(true)
+    async function signUp() {
+        if (username.length > 0 && password.length > 0 && email.length > 0) {
             try {
-                await Auth.signIn(username, password);
-                await fetchAppData()
-                updateAuthState(true);
+                await Auth.signUp({ username, password, attributes: { email } });
+                console.log(' Sign-up Confirmed');
+                navigation.navigate('ConfirmSignUp');
             } catch (error) {
-                console.log(' Error signing in...', error);
-                setLoading(false)
-                setError(true)
+                console.log(' Error signing up...', error);
             }
         }
-        setError(true)
-    }
-
-    function switchSport() {
-        setSkiing(!skiing);
-    }
-
-    function updateTapCounter() {
-        var count = tapCounter + 1;
-        setTapCounter(count)
-        if (count % 3 == 0) {
-            switchSport();
+        else {
+            setError(true)
         }
     }
+
 
     return (
         <SafeAreaView style={styles.safeAreaContainer}>
             <View style={styles.container}>
                 <View style={styles.headerContainer}>
-                    <TouchableOpacity onPress={() => updateTapCounter()}>
-                        {skiing ?
-                            <FontAwesome5 name="skiing" size={75} color={colors.secondary} />
-                            :
-                            <FontAwesome5 name="snowboarding" size={75} color={colors.blue} />
-                        }
-                    </TouchableOpacity>
-                    <Text style={styles.header}>{skiing ? "SkiTracker" : "BoardTracker?"}</Text>
-                    <Text style={styles.subHeader}>{skiing ? "Time to shred" : "Back to the bunny hill"}</Text>
+                    <Text style={styles.header}>Create a new account</Text>
                 </View>
 
 
@@ -76,38 +42,35 @@ export default function SignInScreen({ navigation, updateAuthState, fetchAppData
                         value={username}
                         onChangeText={text => setUsername(text)}
                         leftIcon="account"
-                        placeholder="Username"
+                        placeholder="Enter Username"
                         autoCapitalize="none"
-                        keyboardType="email-address"
-                        textContentType="emailAddress"
+                        textContentType="username"
                     />
                     <LogInInput
-                        value={password}
-                        onChangeText={text => setPassword(text)}
-                        leftIcon="lock"
-                        placeholder="Password"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        secureTextEntry
-                        textContentType="password"
+                        value={authCode}
+                        onChangeText={text => setAuthCode(text)}
+                        leftIcon="numeric"
+                        placeholder="Enter verification code"
+                        keyboardType="numeric"
+
                     />
                     {!loading ?
                         <View style={styles.logInButton}>
-                            <RoundedButton title="Login" onPress={signIn} color={skiing ? colors.secondary : colors.blue} />
+                            <RoundedButton title="Sign Up" onPress={signUp} color={colors.secondary} />
                         </View>
                         :
                         <ActivityIndicator style={styles.loadingSpinner} size="large" color={colors.secondary} />
                     }
                     <View style={styles.footerButtonContainer}>
-                        <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
                             <Text style={styles.forgotPasswordButtonText}>
-                                Don't have an account? Sign Up
+                                Already have an account? Sign In
                             </Text>
                         </TouchableOpacity>
                     </View>
                     {error &&
                         <View style={styles.errorContainer}>
-                            <Text style={styles.errorText}>Username or password incorrect</Text>
+                            <Text style={styles.errorText}>Looks like some information is missing!</Text>
                         </View>
                     }
                 </View>
@@ -124,14 +87,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        marginVertical: "20%"
+        marginVertical: "15%"
     },
     headerContainer: {
         alignItems: 'center',
-        marginBottom: 20
+        marginBottom: 25
     },
     header: {
-        fontSize: 40,
+        fontSize: 25,
         color: 'white',
         fontWeight: '700',
     },
