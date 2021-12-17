@@ -50,20 +50,20 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount, viewCh
                 <View style={styles.titleContainer}>
                     <Text style={styles.location} ellipsizeMode='tail' numberOfLines={1}>{location}</Text>
                     <Text style={styles.title} ellipsizeMode='tail' numberOfLines={2}>{title}</Text>
+                    <Text style={styles.date}>{date}</Text>
                 </View>
-                {/* <Text style={styles.date}>{date}</Text> */}
                 <View style={styles.reactionContainer}>
                     <View style={styles.likeContainer}>
                         <Text style={styles.reactionText}>{item.likes}
                             <View style={styles.reactionImage}>
-                                <AntDesign name="like1" size={20} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : "white"} />
+                                <AntDesign name="like1" size={20} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : colors.secondaryWhite} />
                             </View>
                         </Text>
                     </View>
                     <View style={styles.commentContainer}>
                         <Text style={styles.reactionText}>{item.comments}
                             <View style={styles.reactionImage}>
-                                <FontAwesome5 name="comment-alt" size={18} color="white" />
+                                <FontAwesome5 name="comment" size={20} color={colors.primaryBlue} />
                             </View>
                         </Text>
                     </View>
@@ -97,8 +97,10 @@ const styles = StyleSheet.create({
         zIndex: -1
     },
     titleContainer: {
+        flexDirection: "column",
         alignSelf: 'center',
         alignItems: 'flex-start',
+        justifyContent: "space-between",
         flex: 1,
     },
     reactionContainer: {
@@ -110,9 +112,10 @@ const styles = StyleSheet.create({
         fontSize: 13,
         fontWeight: "300",
         color: "white",
+        paddingVertical: 5,
     },
     location: {
-        fontSize: 15,
+        fontSize: 16,
         color: "white",
         fontWeight: "600"
     },
@@ -120,9 +123,7 @@ const styles = StyleSheet.create({
         color: "white"
     },
     date: {
-        position: "absolute",
-        top: 5,
-        right: "2.5%",
+        fontSize: 10,
         color: "white",
         fontWeight: "200"
     },

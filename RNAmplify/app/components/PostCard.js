@@ -205,7 +205,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                 <View style={styles.reactionContainer}>
                                     <Text style={styles.reactionText}>{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].likes : likedCount}
                                         <View style={styles.reactionImage}>
-                                            <AntDesign name="like1" size={24} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : "white"} />
+                                            <AntDesign name="like1" size={24} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : colors.secondaryWhite} />
                                         </View>
                                     </Text>
                                 </View>
@@ -214,7 +214,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                 <View style={styles.reactionContainer}>
                                     <Text style={styles.reactionText}>{GLOBAL.checkInCommentCounts[item.id]}
                                         <View style={styles.reactionImage}>
-                                            <FontAwesome5 name="comment-alt" size={24} color="white" />
+                                            <FontAwesome5 style={styles.commentImage} name="comment" size={24} color={colors.primaryBlue} />
                                         </View>
                                     </Text>
                                 </View>
@@ -363,15 +363,18 @@ const styles = StyleSheet.create({
     reactionImage: {
         paddingLeft: 10,
     },
+    commentImage: {
+        top: 1
+    },
     icon: {
         zIndex: -999,
-        top: 25,
+        top: 40,
         left: 0,
         right: 0,
         position: "absolute",
         justifyContent: 'center',
         alignItems: 'center',
-        opacity: 0.2
+        opacity: 0.1
     }
 })
 

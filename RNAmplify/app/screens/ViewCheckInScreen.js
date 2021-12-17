@@ -242,14 +242,14 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                         <TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(checkIn)}>
                                             <Text style={styles.reactionText}>{likedCount}
                                                 <View style={styles.reactionImage}>
-                                                    <AntDesign name="like1" size={24} color={checkInLiked ? colors.secondary : "white"} />
+                                                    <AntDesign name="like1" size={24} color={checkInLiked ? colors.secondary : colors.secondaryWhite} />
                                                 </View>
                                             </Text>
                                         </TouchableOpacity>
                                         <View>
                                             <Text style={styles.reactionText}>{GLOBAL.checkInCommentCounts[checkInId]}
                                                 <View style={styles.reactionImage}>
-                                                    <FontAwesome5 name="comment-alt" size={24} color="white" />
+                                                    <FontAwesome5 name="comment" size={24} color={colors.primaryBlue} />
                                                 </View>
                                             </Text>
                                         </View>
