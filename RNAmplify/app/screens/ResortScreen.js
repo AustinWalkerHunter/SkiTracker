@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useIsFocused } from "@react-navigation/native";
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { FontAwesome5, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import colors from "../constants/colors"
 import SafeScreen from '../components/SafeScreen'
 import { Linking } from 'react-native';
-
+import Header from '../components/Header'
 const ResortScreen = ({ route, navigation }) => {
     const { resortData } = route.params;
     const isFocused = useIsFocused();
@@ -22,16 +22,14 @@ const ResortScreen = ({ route, navigation }) => {
 
     return (
         <SafeScreen style={styles.screen}>
-            <View style={styles.titleLine} />
             {!pageLoading && resortData ?
                 <View style={styles.container}>
+                    <Header navigation={navigation} title={"Resort"} rightText={"Check-in"} rightIcon={"map-marker-check"} data={resortData.resort_name} />
                     <View style={styles.header}>
                         <Text style={styles.title}>{resortData.resort_name}</Text>
                         <Text style={styles.subTitle}>{resortData.state}</Text>
 
                     </View>
-                    {/* <View style={styles.titleLine} /> */}
-
                     <View style={styles.content}>
                         <Text style={styles.statTitle}>Stats</Text>
                         <View style={styles.stats}>
@@ -75,7 +73,7 @@ const ResortScreen = ({ route, navigation }) => {
                                 <Text style={styles.trailText}
                                     onPress={() => Linking.openURL(resortData.trail_map)}>
                                     {resortData.resort_name} Trail Map
-                        </Text>
+                                </Text>
                             </View>
                         }
                         <View style={styles.icon}>
@@ -95,12 +93,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.navigation
     },
-    titleLine: {
-        borderWidth: .7,
-        borderColor: "white",
-        width: "100%",
-        borderColor: colors.secondary
-    },
+
     container: {
 
     },

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
-import { MaterialIcons, Entypo } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import Amplify, { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import SettingsScreen from '../screens/SettingsScreen';
 import AddFriendScreen from '../screens/AddFriendScreen'
@@ -14,7 +14,7 @@ import colors from '../constants/colors'
 import Tabs from './Tabs'
 import { createStackNavigator } from '@react-navigation/stack';
 
-function AppNavigator({ updateAuthState }) {
+function AppNavigator({ updateAuthState, navigation }) {
     const Main = createStackNavigator();
     return (
         <Main.Navigator>
@@ -54,7 +54,7 @@ function AppNavigator({ updateAuthState }) {
                     headerBackTitleStyle: { color: colors.navigationText },
                     headerTintColor: colors.secondary,
                     headerTitleStyle: { color: colors.navigationText },
-                    title: 'Add Friends',
+                    title: 'Find Friends',
                 }}
             />
             <Main.Screen
@@ -67,7 +67,7 @@ function AppNavigator({ updateAuthState }) {
                     headerBackTitleStyle: { color: colors.navigationText },
                     headerTintColor: colors.secondary,
                     headerTitleStyle: { color: colors.navigationText },
-                    title: 'Mountain Finder',
+                    title: 'Ski Resorts',
                 }}
             />
             <Main.Screen
@@ -93,14 +93,24 @@ function AppNavigator({ updateAuthState }) {
             <Main.Screen
                 name="ResortScreen"
                 component={ResortScreen}
+                // options={{
+                //     headerShown: true,
+                //     headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+                //     headerBackTitle: 'Back',
+                //     headerBackTitleStyle: { color: colors.navigationText },
+                //     headerTintColor: colors.secondary,
+                //     headerTitleStyle: { color: colors.navigationText },
+                //     title: 'Resort',
+                //     headerRight: () => (
+                //         <TouchableOpacity style={{ marginRight: 8, alignItems: 'center', justifyContent: 'center', flexDirection: "row" }} onPress={() => console.log("go to checkin screen")}>
+                //             <Text style={{ fontSize: 18, color: colors.navigationText, marginRight: 3 }}>Check-In</Text>
+                //             <MaterialCommunityIcons name="map-marker-check" size={25} color={colors.secondary} />
+
+                //         </TouchableOpacity>
+                //     ),
+                // }}
                 options={{
-                    headerShown: true,
-                    headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-                    headerBackTitle: 'Back',
-                    headerBackTitleStyle: { color: colors.navigationText },
-                    headerTintColor: colors.secondary,
-                    headerTitleStyle: { color: colors.navigationText },
-                    title: 'Resort',
+                    headerShown: false,
                 }}
             />
             <Main.Screen
@@ -113,7 +123,7 @@ function AppNavigator({ updateAuthState }) {
                     headerBackTitleStyle: { color: colors.navigationText },
                     headerTintColor: colors.secondary,
                     headerTitleStyle: { color: colors.navigationText },
-                    title: 'User Profile',
+                    title: false,
                 }}
             />
             <Main.Screen
@@ -122,7 +132,7 @@ function AppNavigator({ updateAuthState }) {
                 options={{
                     headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
                     headerTitleStyle: { fontSize: 18, color: colors.navigationText },
-                    title: 'Create Check In',
+                    title: 'Check-in',
                     headerShown: true,
                     headerBackTitle: 'Back',
                     headerBackTitleStyle: { color: colors.navigationText },

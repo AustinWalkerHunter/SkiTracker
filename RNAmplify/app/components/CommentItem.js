@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignContent: "center",
         marginLeft: 45,
-        marginBottom: 10
+        marginBottom: 10,
+        marginRight: 40
     },
     commentText: {
         fontSize: 14,

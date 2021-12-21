@@ -72,14 +72,14 @@ export default function App() {
       <View
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary }}
         onLayout={onLayoutRootView}>
-        <Image
+        {/* <Image
           source={require('./assets/icon.png')}
           style={{
             resizeMode: 'contain',
-            width: 110,
-            height: 110
+            width: height / 5,
+            height: width / 5
           }}
-        />
+        /> */}
       </View>
     )
   }

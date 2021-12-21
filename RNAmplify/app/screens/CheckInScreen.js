@@ -19,7 +19,8 @@ import { useIsFocused } from "@react-navigation/native";
 import DatePicker from '../components/DatePicker';
 import Moment from 'moment';
 
-const CheckInScreen = ({ navigation }) => {
+const CheckInScreen = ({ route, navigation }) => {
+    const { viewedLocation } = route.params;
     const toast = useToast()
     const [checkInSubmitted, setCheckInSubmitted] = useState(false)
     const [loading, setLoading] = useState(false);
@@ -27,7 +28,7 @@ const CheckInScreen = ({ navigation }) => {
     const [checkIn, setCheckIn] = useState({
         title: null,
         sport: null,
-        location: null,
+        location: viewedLocation || null,
         image: null,
         date: (Moment(new Date()).format('MMM D, YYYY'))
     });
@@ -193,10 +194,10 @@ const CheckInScreen = ({ navigation }) => {
                             <Text style={styles.activityTitle}>Select your sport</Text>
                             <View style={styles.activityRow}>
                                 <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[0].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[0])}>
-                                    <FontAwesome5 name="skiing" size={24} color={checkIn.sport === sports[0].label ? "white" : "black"} />
+                                    <FontAwesome5 name="skiing" size={40} color={checkIn.sport === sports[0].label ? "white" : "black"} />
                                 </TouchableOpacity>
                                 <TouchableOpacity style={[styles.activityStyle, { backgroundColor: checkIn.sport === sports[1].label ? colors.secondary : "white" }]} onPress={() => sportSelected(sports[1])}>
-                                    <FontAwesome5 name="snowboarding" size={24} color={checkIn.sport === sports[1].label ? "white" : "black"} />
+                                    <FontAwesome5 name="snowboarding" size={40} color={checkIn.sport === sports[1].label ? "white" : "black"} />
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -371,7 +372,7 @@ const styles = StyleSheet.create({
     },
     activityTitle: {
         color: "white",
-        fontSize: 25,
+        fontSize: 28,
         marginBottom: 25
     },
     activityRow: {
@@ -381,11 +382,12 @@ const styles = StyleSheet.create({
     activityStyle: {
         backgroundColor: "white",
         marginHorizontal: 30,
-        padding: 10,
-        width: 50,
-        height: 50,
+        paddingVertical: 13,
+        paddingHorizontal: 11,
+        width: 70,
+        height: 70,
         borderWidth: 1,
-        borderRadius: 50 / 2
+        borderRadius: 70 / 2
     },
     addPhotoContainer: {
         marginVertical: 10

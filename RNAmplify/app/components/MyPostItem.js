@@ -54,7 +54,7 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount, viewCh
                 </View>
                 <View style={styles.reactionContainer}>
                     <View style={styles.likeContainer}>
-                        <Text style={styles.reactionText}>{item.likes}
+                        <Text style={styles.reactionText}>{GLOBAL.allCheckIns[item.id] ? GLOBAL.allCheckIns[item.id].likes : item.likes}
                             <View style={styles.reactionImage}>
                                 <AntDesign name="like1" size={20} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : colors.secondaryWhite} />
                             </View>

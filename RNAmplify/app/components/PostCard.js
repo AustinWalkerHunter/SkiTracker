@@ -18,6 +18,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
     const [modalVisible, setModalVisible] = useState(false);
     const [checkInLiked, setCheckInLiked] = useState(false);
     const [likedCount, setLikedCount] = useState(0);
+    const [commentCount, setCommentCount] = useState(0);
     const [likeDisabled, setLikeDisabled] = useState(false);
     const [objIndex, setObjIndex] = useState();
 
@@ -58,6 +59,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
         var checkIn = GLOBAL.allCheckIns[index]
         setObjIndex(index)
         setLikedCount(checkIn.likes)
+        setCommentCount(checkIn.comments)
         setCheckInLiked((GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) || false)
         if (item.image) {
             const cachedImage = GLOBAL.checkInPhotos[item.id];
@@ -191,35 +193,35 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                                 </View>
                             </TouchableWithoutFeedback>
                         }
-                        <View style={styles.postTitleContainer}>
-                            <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
-                                <View>
-                                    <View style={styles.titleContainer}>
-                                        <Text style={styles.titleText} ellipsizeMode='tail' numberOfLines={2}>{item.title}</Text>
+                        <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
+                            <View style={styles.postTitleContainer}>
+                                <View style={styles.titleContainer}>
+                                    <Text style={styles.titleText} ellipsizeMode='tail' numberOfLines={2}>{item.title}</Text>
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
+                            <View style={styles.footer}>
+                                <TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(item)}>
+                                    <View style={styles.reactionContainer}>
+                                        <Text style={styles.reactionText}>{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].likes : likedCount}
+                                            <View style={styles.reactionImage}>
+                                                <AntDesign name="like1" size={24} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : colors.secondaryWhite} />
+                                            </View>
+                                        </Text>
                                     </View>
-                                </View>
-                            </TouchableWithoutFeedback>
-                        </View>
-                        <View style={styles.footer}>
-                            <TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(item)}>
-                                <View style={styles.reactionContainer}>
-                                    <Text style={styles.reactionText}>{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].likes : likedCount}
-                                        <View style={styles.reactionImage}>
-                                            <AntDesign name="like1" size={24} color={(GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) ? colors.secondary : colors.secondaryWhite} />
-                                        </View>
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => viewCheckIn(item, true)}>
-                                <View style={styles.reactionContainer}>
-                                    <Text style={styles.reactionText}>{GLOBAL.checkInCommentCounts[item.id]}
-                                        <View style={styles.reactionImage}>
-                                            <FontAwesome5 style={styles.commentImage} name="comment" size={24} color={colors.primaryBlue} />
-                                        </View>
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => viewCheckIn(item, true)}>
+                                    <View style={styles.reactionContainer}>
+                                        <Text style={styles.reactionText}>{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].comments : commentCount}
+                                            <View style={styles.reactionImage}>
+                                                <FontAwesome5 style={styles.commentImage} name="comment" size={24} color={colors.primaryBlue} />
+                                            </View>
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </TouchableWithoutFeedback>
                     </ImageBackground>
                 </View>
             )
@@ -241,7 +243,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: '100%',
         marginBottom: 5,
-        // borderRadius: 10,
+        borderRadius: 10,
     },
     headerContainer: {
         flexDirection: 'row',

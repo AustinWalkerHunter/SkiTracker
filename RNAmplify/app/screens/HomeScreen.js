@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import { useIsFocused, useScrollToTop } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { RefreshControl, View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-native';
+import { RefreshControl, View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-native';
 import PostCard from "../components/PostCard"
 import SafeScreen from '../components/SafeScreen'
 import colors from '../constants/colors'
@@ -94,7 +94,7 @@ const HomeScreen = ({ route, navigation }) => {
 
 
     return (
-        <SafeScreen style={styles.screen}>
+        <View style={styles.screen}>
             {!loading ?
                 <View>
                     <View style={styles.checkInList}>
@@ -104,6 +104,7 @@ const HomeScreen = ({ route, navigation }) => {
                                 data={checkIns}
                                 ref={ref}
                                 inverted={false}
+                                contentContainerStyle={{ paddingBottom: '50%' }}
                                 keyExtractor={items => items.id.toString()}
                                 // contentContainerStyle={{ paddingBottom: 75 }}
                                 refreshControl={<RefreshControl
@@ -151,8 +152,8 @@ const HomeScreen = ({ route, navigation }) => {
                             : null
                     }
                     <View style={styles.checkInButtonContainer}>
-                        <TouchableOpacity style={styles.checkInButton} onPress={() => navigation.navigate('CheckInScreen')}>
-                            <MaterialCommunityIcons style={styles.checkInIcon} name="map-marker-check" size={50} color="white" />
+                        <TouchableOpacity style={styles.checkInButton} onPress={() => navigation.navigate('CheckInScreen', { viewedLocation: null })}>
+                            <MaterialCommunityIcons style={styles.checkInIcon} name="map-marker-check" size={52} color="white" />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -161,7 +162,7 @@ const HomeScreen = ({ route, navigation }) => {
                     <ActivityIndicator size="large" color="white" />
                 </View>
             }
-        </SafeScreen>
+        </View >
     );
 }
 
@@ -171,7 +172,6 @@ const styles = StyleSheet.create({
         backgroundColor: colors.navigation,
     },
     checkInList: {
-        paddingBottom: 50
     },
     imageViewerContainer: {
         position: 'absolute',
@@ -183,12 +183,14 @@ const styles = StyleSheet.create({
         zIndex: 999
     },
     imageDisplay: {
-        position: 'absolute',
-        bottom: "10%",
+        // position: 'absolute',
+        // top: "20%",
         width: "100%",
-        height: "100%",
+        height: undefined,
+        aspectRatio: 1
     },
     image: {
+        bottom: "10%",
         alignSelf: 'center',
         height: '100%',
         width: '100%'
@@ -196,7 +198,7 @@ const styles = StyleSheet.create({
     closeImageViewer: {
         position: 'absolute',
         alignSelf: "center",
-        bottom: '20%',
+        bottom: 100,
         borderRadius: 25,
         borderWidth: 1,
         borderColor: "white",
@@ -212,20 +214,18 @@ const styles = StyleSheet.create({
     },
     checkInButtonContainer: {
         position: "absolute",
-        bottom: "20%",
-        right: 50,
+        bottom: 90,
+        right: '3%',
     },
     checkInButton: {
-        position: 'absolute',
         alignSelf: "center",
-        // bottom: '20%',
         borderRadius: 50,
         shadowColor: colors.navigation,
         shadowOffset: { width: -1, height: 3 },
         shadowOpacity: 0.9,
         shadowRadius: 2,
         elevation: 5,
-        padding: 12,
+        padding: 15,
         backgroundColor: colors.secondary,
         zIndex: 999,
     },

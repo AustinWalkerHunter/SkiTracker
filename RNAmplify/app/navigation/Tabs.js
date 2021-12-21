@@ -26,15 +26,15 @@ const Tabs = () => (
         tabBarOptions={{
             iconStyle: {
                 width: 40,
-                height: 60
+                height: 55
             },
-            tabBarVisible: false,
+            tabBarVisible: true,
             inactiveTintColor: 'grey',
             activeTintColor: colors.secondary,
             showIcon: true,
             showLabel: false,
             style: {
-                backgroundColor: '#0d0d0dfa',
+                backgroundColor: '#0d0d0df9',
                 position: 'absolute',
                 left: 0,
                 right: 0,
@@ -94,7 +94,7 @@ const ProfileStackScreen = ({ navigation }) => (
             options={{
                 headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
                 headerTitleStyle: { fontSize: 18, color: colors.navigationText },
-                title: 'My Profile',
+                title: false,
                 headerLeft: () => (
                     <TouchableOpacity style={{ marginHorizontal: 25 }}>
                         <Ionicons name="notifications-outline"

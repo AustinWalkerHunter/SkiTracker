@@ -27,6 +27,7 @@ const ViewCheckInScreen = ({ route, navigation }) => {
     const [keyboardOpen, setKeyboardOpen] = useState(false)
     const [comments, setComments] = useState();
     const [likedCount, setLikedCount] = useState(0);
+    const [commentCount, setCommentCount] = useState(0);
     const [checkInLiked, setCheckInLiked] = useState(false);
     const [likeDisabled, setLikeDisabled] = useState(false);
     const [checkIn, setCheckIn] = useState();
@@ -44,6 +45,7 @@ const ViewCheckInScreen = ({ route, navigation }) => {
 
             if (viewedCheckIn) {
                 setLikedCount(viewedCheckIn.likes)
+                setCommentCount(viewedCheckIn.comments)
                 setCheckInLiked((GLOBAL.activeUserLikes[viewedCheckIn.id] && GLOBAL.activeUserLikes[viewedCheckIn.id].isLiked) || false)
                 //getCheckInComments(viewedCheckIn.id);
                 fetchComments(viewedCheckIn.id)
@@ -61,11 +63,6 @@ const ViewCheckInScreen = ({ route, navigation }) => {
             }
         }
     }, [isFocused]);
-
-    // async function getCheckInComments(checkInId) {
-    //     const tempComments = [{ id: 1, content: "hello i'm a comment" }, { id: 2, content: "Another comment baby" }]
-    //     setComments();
-    // }
 
     const updateReactionCount = (item) => {
         if (checkInLiked) {
@@ -107,7 +104,8 @@ const ViewCheckInScreen = ({ route, navigation }) => {
         console.log(commentItem)
         deleteSelectedComment(commentItem)
         decreaseCheckInComments(commentItem.checkInID);
-        GLOBAL.checkInCommentCounts[commentItem.checkInID] = GLOBAL.checkInCommentCounts[commentItem.checkInID] - 1;
+        setCommentCount(commentCount - 1)
+        GLOBAL.allCheckIns[objIndex].comments = commentCount - 1;
         fetchComments();
         toast.show("Comment deleted!", {
             duration: 2000,
@@ -144,7 +142,8 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                 await API.graphql(graphqlOperation(createComment, { input: newComment }));
                 //Update the check In page and comment number
                 increaseCheckInComments(checkInId);
-                GLOBAL.checkInCommentCounts[checkInId] += 1
+                GLOBAL.allCheckIns[objIndex].comments = commentCount + 1;
+                setCommentCount(commentCount + 1)
                 fetchComments();
                 toast.show("Comment added!", {
                     duration: 2000,
@@ -247,7 +246,7 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                                             </Text>
                                         </TouchableOpacity>
                                         <View>
-                                            <Text style={styles.reactionText}>{GLOBAL.checkInCommentCounts[checkInId]}
+                                            <Text style={styles.reactionText}>{GLOBAL.allCheckIns[checkInId] ? GLOBAL.allCheckIns[checkInId].comments : commentCount}
                                                 <View style={styles.reactionImage}>
                                                     <FontAwesome5 name="comment" size={24} color={colors.primaryBlue} />
                                                 </View>
@@ -428,7 +427,9 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     imageContainer: {
-        height: 300,
+        width: "100%",
+        height: undefined,
+        aspectRatio: 1,
         marginTop: 5,
     },
     image: {
@@ -473,15 +474,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: "100%",
-        // marginTop: 12,
         paddingHorizontal: 8
-        // padding: 8,
-        // backgroundColor: "green"
-        // marginHorizontal: 15,
     },
     contentLine: {
         alignSelf: "center",
-        borderWidth: .4,
+        borderWidth: .5,
         width: "100%",
         borderColor: "grey",
         marginBottom: 10
@@ -491,11 +488,9 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
         color: "white",
-        // backgroundColor: "green"
     },
     submitCommentText: {
         right: 0,
-        // padding: 2,
         paddingHorizontal: 3,
         color: "white"
     },
