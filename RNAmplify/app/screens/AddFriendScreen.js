@@ -26,7 +26,7 @@ const AddFriendScreen = ({ navigation }) => {
     function getAllUsers() {
         var allUsers = []
         for (const key in GLOBAL.allUsers) {
-            allUsers.push(GLOBAL.allUsers[key])
+            if (GLOBAL.activeUserId != key) allUsers.push(GLOBAL.allUsers[key])
         }
         setUsers(allUsers)
         setSearchItems(allUsers);

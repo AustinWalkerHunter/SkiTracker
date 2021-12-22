@@ -202,3 +202,45 @@ export const deleteLike = /* GraphQL */ `
     }
   }
 `;
+export const createFollowing = /* GraphQL */ `
+  mutation CreateFollowing(
+    $input: CreateFollowingInput!
+    $condition: ModelFollowingConditionInput
+  ) {
+    createFollowing(input: $input, condition: $condition) {
+      id
+      userID
+      followingID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateFollowing = /* GraphQL */ `
+  mutation UpdateFollowing(
+    $input: UpdateFollowingInput!
+    $condition: ModelFollowingConditionInput
+  ) {
+    updateFollowing(input: $input, condition: $condition) {
+      id
+      userID
+      followingID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteFollowing = /* GraphQL */ `
+  mutation DeleteFollowing(
+    $input: DeleteFollowingInput!
+    $condition: ModelFollowingConditionInput
+  ) {
+    deleteFollowing(input: $input, condition: $condition) {
+      id
+      userID
+      followingID
+      createdAt
+      updatedAt
+    }
+  }
+`;

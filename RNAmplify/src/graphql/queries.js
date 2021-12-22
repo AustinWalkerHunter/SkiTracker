@@ -139,6 +139,35 @@ export const listLikes = /* GraphQL */ `
     }
   }
 `;
+export const getFollowing = /* GraphQL */ `
+  query GetFollowing($id: ID!) {
+    getFollowing(id: $id) {
+      id
+      userID
+      followingID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listFollowings = /* GraphQL */ `
+  query ListFollowings(
+    $filter: ModelFollowingFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFollowings(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userID
+        followingID
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const checkInsByDate = /* GraphQL */ `
   query CheckInsByDate(
     $type: String

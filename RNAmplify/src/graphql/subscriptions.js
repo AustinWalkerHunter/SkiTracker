@@ -166,3 +166,36 @@ export const onDeleteLike = /* GraphQL */ `
     }
   }
 `;
+export const onCreateFollowing = /* GraphQL */ `
+  subscription OnCreateFollowing {
+    onCreateFollowing {
+      id
+      userID
+      followingID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateFollowing = /* GraphQL */ `
+  subscription OnUpdateFollowing {
+    onUpdateFollowing {
+      id
+      userID
+      followingID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteFollowing = /* GraphQL */ `
+  subscription OnDeleteFollowing {
+    onDeleteFollowing {
+      id
+      userID
+      followingID
+      createdAt
+      updatedAt
+    }
+  }
+`;

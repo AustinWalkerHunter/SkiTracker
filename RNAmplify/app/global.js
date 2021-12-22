@@ -7,5 +7,7 @@ module.exports = {
     allCheckIns: null,
     checkInPhotos: null,
     activeUserLikes: null,
-    checkInCommentCounts: null
+    checkInCommentCounts: null,
+    following: null,
+    followingStateUpdated: false
 };

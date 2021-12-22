@@ -24,9 +24,17 @@ const HomeScreen = ({ route, navigation }) => {
 
     useEffect(() => {
         if (isFocused) {
+            if (GLOBAL.followingStateUpdated) {
+                GLOBAL.followingStateUpdated = false;
+                fetchCheckIns();
+            }
             if (route.params?.newCheckInAdded) {
                 fetchCheckIns();
                 route.params.newCheckInAdded = false;
+                if (ref.current) {
+                    ref.current.scrollToOffset({ offset: 0, animated: true })
+                }
+
             }
             else {
                 if (GLOBAL.allCheckIns) {
@@ -42,6 +50,7 @@ const HomeScreen = ({ route, navigation }) => {
 
     async function fetchCheckIns() {
         setLoading(true)
+        var followingCheckIns = [];
         try {
             const queryParams = {
                 type: "CheckIn",
@@ -49,8 +58,13 @@ const HomeScreen = ({ route, navigation }) => {
             };
             const checkIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items;
             if (checkIns) {
-                setCheckIns(checkIns)
-                GLOBAL.allCheckIns = checkIns;
+                checkIns.map((checkIn) => {
+                    if (GLOBAL.following.includes(checkIn.userID) || GLOBAL.activeUserId.includes(checkIn.userID)) {
+                        followingCheckIns.push(checkIn)
+                    }
+                })
+                setCheckIns(followingCheckIns)
+                GLOBAL.allCheckIns = followingCheckIns
             }
         } catch (error) {
             console.log("Error getting user on Home Screen")

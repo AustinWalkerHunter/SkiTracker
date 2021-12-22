@@ -10,7 +10,7 @@ function Header({ navigation, title, rightText, rightIcon, data }) {
                 <View style={{ flex: 1, alignItems: "flex-start" }}>
                     <TouchableOpacity style={styles.leftContainer} onPress={() => navigation.goBack(null)}>
                         <Ionicons name="chevron-back-outline" size={30} color={colors.secondary} />
-                        <Text style={styles.text} >Back</Text>
+                        <Text style={styles.text}>Back</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "white",
-        fontSize: 18,
+        fontSize: 15,
     },
     pageTitle: {
         justifyContent: 'center',
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         marginRight: 2
     },
     text: {
-        fontSize: 18,
+        fontSize: 15,
         color: colors.navigationText,
     },
     titleLine: {

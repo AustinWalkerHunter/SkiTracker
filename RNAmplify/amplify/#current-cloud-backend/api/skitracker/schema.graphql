@@ -36,3 +36,10 @@ type Like @model {
   userID: ID!
   checkInID: ID!
 }
+
+type Following @model { 
+  id: ID!
+  userID: ID!
+  followingID: ID!
+}
+

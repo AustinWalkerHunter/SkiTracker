@@ -1,11 +1,12 @@
 import { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
-import { getUser, listUsers, checkInsByDate, listLikes } from '../src/graphql/queries'
+import { getUser, listUsers, checkInsByDate, listLikes, listFollowings } from '../src/graphql/queries'
 import { createUser } from '../src/graphql/mutations'
 import GLOBAL from './global';
 
 export async function fetchAppData() {
     await fetchActiveUser();
     if (GLOBAL.activeUserId) {
+        await fetchFollowing();
         await fetchAllUsers();
         await fetchCheckIns();
         await fetchUserLikes();
@@ -39,6 +40,21 @@ const fetchActiveUser = async () => {
     }
 }
 
+const fetchFollowing = async () => {
+    console.log("fetchFollowing")
+    var followerArray = [];
+    const queryParams = {
+        filter: {
+            userID: { eq: GLOBAL.activeUserId }
+        }
+    };
+    const followingData = (await API.graphql(graphqlOperation(listFollowings, queryParams))).data.listFollowings.items;
+    followingData.map((user) => {
+        followerArray.push(user.followingID)
+    })
+    console.log(followingData)
+    GLOBAL.following = followerArray;
+}
 const fetchAllUsers = async () => {
     console.log("fetchAllUsers")
 
@@ -97,6 +113,7 @@ const fetchCheckIns = async () => {
     console.log("fetchCheckIns")
     var checkInIdsAndImages = {}
     var checkInCommentCounts = {}
+    var followingCheckIns = [];
     const queryParams = {
         type: "CheckIn",
         sortDirection: "DESC"
@@ -104,11 +121,13 @@ const fetchCheckIns = async () => {
 
     try {
         const checkIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items;
-        GLOBAL.allCheckIns = checkIns;
         if (checkIns) {
             await Promise.all(checkIns.map(async (checkIn) => {
                 var checkInId = checkIn.id;
                 checkInCommentCounts[checkInId] = checkIn.comments;
+                if (GLOBAL.following.includes(checkIn.userID) || GLOBAL.activeUserId.includes(checkIn.userID)) {
+                    followingCheckIns.push(checkIn)
+                }
                 if (checkIn.image) {
                     await Storage.get(checkIn.image)
                         .then((result) => {
@@ -119,6 +138,7 @@ const fetchCheckIns = async () => {
             }));
             GLOBAL.checkInPhotos = checkInIdsAndImages;
             GLOBAL.checkInCommentCounts = checkInCommentCounts;
+            GLOBAL.allCheckIns = followingCheckIns;
         }
     }
     catch (error) {

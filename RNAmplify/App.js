@@ -10,12 +10,9 @@ Amplify.configure(awsconfig);
 // import AppLoading from 'expo-app-loading';
 import * as SplashScreen from 'expo-splash-screen';
 import { ToastProvider } from 'react-native-fast-toast'
-
-
 import AppNavigator from './app/navigation/AppNavigator'
 import AuthenticationNavigator from './app/navigation/AuthenticationNavigator'
 import { fetchAppData } from './app/setUp'
-
 
 export default function App() {
   const [preparingApp, setPreparingApp] = useState(true)

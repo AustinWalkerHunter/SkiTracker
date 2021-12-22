@@ -1,7 +1,46 @@
 import { API, graphqlOperation } from 'aws-amplify';
-import { deleteCheckIn, updateUser, updateCheckIn, createLike, deleteLike, deleteComment } from '../src/graphql/mutations'
-import { listCheckIns, getCheckIn } from '../src/graphql/queries'
+import { deleteFollowing, deleteCheckIn, updateUser, updateCheckIn, createLike, deleteLike, deleteComment, createFollowing } from '../src/graphql/mutations'
+import { listCheckIns, getCheckIn, listFollowings } from '../src/graphql/queries'
 import GLOBAL from './global';
+
+
+export async function followUser(userId) {
+    if (userId && !GLOBAL.following.includes(userId)) {
+        try {
+            await API.graphql(graphqlOperation(createFollowing, { input: { userID: GLOBAL.activeUserId, followingID: userId } }));
+            GLOBAL.following.push(userId)
+            GLOBAL.followingStateUpdated = true;
+            console.log("User followed")
+        } catch (error) {
+            console.log("Error following user in DB")
+        }
+    }
+}
+
+export async function unfollowUser(userId) {
+    if (userId && GLOBAL.following.includes(userId)) {
+        const queryParams = {
+            filter: {
+                userID: { eq: GLOBAL.activeUserId }
+            }
+        };
+        const followingData = (await API.graphql(graphqlOperation(listFollowings, queryParams))).data.listFollowings.items;
+        var followId = followingData.filter(follow => {
+            return (follow.userID == GLOBAL.activeUserId && follow.followingID == userId)
+        })
+        try {
+            await API.graphql(graphqlOperation(deleteFollowing, { input: { id: followId[0].id } }));
+            const index = GLOBAL.following.indexOf(userId);
+            if (index > -1) {
+                GLOBAL.following.splice(index, 1);
+            }
+            GLOBAL.followingStateUpdated = true;
+            console.log("User unfollowed")
+        } catch (error) {
+            console.log("Error unfollowing from db")
+        }
+    }
+}
 
 export async function deleteSelectedCheckIn(item) {
     if (item) {
