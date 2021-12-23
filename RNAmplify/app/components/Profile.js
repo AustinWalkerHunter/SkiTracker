@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     profilePictureContainer: {
         justifyContent: "center",
         alignItems: "center",
-        marginVertical: 20,
+        marginTop: 10,
         marginBottom: 5
     },
     nameContainer: {

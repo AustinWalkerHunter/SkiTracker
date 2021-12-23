@@ -10,6 +10,7 @@ export async function fetchAppData() {
         await fetchAllUsers();
         await fetchCheckIns();
         await fetchUserLikes();
+        GLOBAL.followingStateUpdated = true;
     }
 }
 

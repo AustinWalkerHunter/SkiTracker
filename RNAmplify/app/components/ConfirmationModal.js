@@ -4,7 +4,7 @@ import { Alert, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-na
 import colors from "../constants/colors";
 
 
-function ConfirmationModal({ modalVisible, setModalVisible, title, confirmAction }) {
+function ConfirmationModal({ modalVisible, setModalVisible, title, confirmAction, follow = false }) {
     return (
         <Modal
             animationType="none"
@@ -28,13 +28,13 @@ function ConfirmationModal({ modalVisible, setModalVisible, title, confirmAction
                             <Text style={styles.textStyle}>Cancel</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={[styles.button, styles.buttonConfirm]}
+                            style={[styles.button, { backgroundColor: follow ? colors.primaryBlue : "red" }]}
                             onPress={() => {
                                 confirmAction()
                                 setModalVisible(false)
                             }}
                         >
-                            <Text style={styles.textStyle}>Delete</Text>
+                            <Text style={styles.textStyle}>{follow ? "Unfollow" : "Delete"}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -70,21 +70,23 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     button: {
-        marginHorizontal: 30,
+        marginHorizontal: 15,
         borderRadius: 20,
-        padding: 20,
-        elevation: 2
+        paddingVertical: 15,
+        paddingHorizontal: 10,
+        elevation: 2,
+        width: 100
     },
     buttonOpen: {
         backgroundColor: "#F194FF",
     },
     buttonClose: {
         backgroundColor: colors.grey,
-        paddingHorizontal: 25
+        // paddingHorizontal: 25
     },
     buttonConfirm: {
-        backgroundColor: "red",
-        paddingHorizontal: 25,
+        // backgroundColor: "red",
+        // paddingHorizontal: 25,
     },
     textStyle: {
         color: "white",

@@ -25,26 +25,28 @@ const HomeScreen = ({ route, navigation }) => {
     useEffect(() => {
         if (isFocused) {
             if (GLOBAL.followingStateUpdated) {
+                setLoading(true)
                 GLOBAL.followingStateUpdated = false;
                 fetchCheckIns();
             }
             if (route.params?.newCheckInAdded) {
+                setLoading(true)
                 fetchCheckIns();
                 route.params.newCheckInAdded = false;
                 if (ref.current) {
                     ref.current.scrollToOffset({ offset: 0, animated: true })
                 }
-
             }
-            else {
-                if (GLOBAL.allCheckIns) {
-                    setCheckIns(GLOBAL.allCheckIns);
-                }
-                else {
-                    fetchCheckIns();
-                }
-            }
-            setLoading(false)
+            // else {
+            //     if (GLOBAL.allCheckIns) {
+            //         setCheckIns(GLOBAL.allCheckIns);
+            //         setLoading(false)
+            //     }
+            //     else {
+            //         fetchCheckIns();
+            //     }
+            // }
+            // setLoading(false)
         }
     }, [isFocused]);
 
@@ -58,7 +60,7 @@ const HomeScreen = ({ route, navigation }) => {
             };
             const checkIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items;
             if (checkIns) {
-                checkIns.map((checkIn) => {
+                await checkIns.map((checkIn) => {
                     if (GLOBAL.following.includes(checkIn.userID) || GLOBAL.activeUserId.includes(checkIn.userID)) {
                         followingCheckIns.push(checkIn)
                     }

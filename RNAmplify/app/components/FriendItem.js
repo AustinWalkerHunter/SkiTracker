@@ -5,57 +5,71 @@ import ProfileIcon from '../components/ProfileIcon'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import GLOBAL from '../global'
 import { followUser, unfollowUser } from '../actions'
+import ConfirmationModal from '../components/ConfirmationModal'
 
 function FriendItem({ user, getUserProfile }) {
     const [following, setFollowing] = useState(GLOBAL.following.includes(user.id))
+    const [modalVisible, setModalVisible] = useState(false);
 
     return (
-        <TouchableOpacity style={styles.container} onPress={() => getUserProfile(user.id)}>
-            <View style={styles.profileContainer}>
-                <View style={styles.profilePictureContainer}>
-                    <View>
-                        {
-                            user.image ?
-                                <ProfileIcon size={75} image={user.image} />
-                                :
-                                <MaterialCommunityIcons name="account-outline" size={75} color="grey" />
-                        }
+        <View style={styles.container}>
+            <TouchableOpacity onPress={() => getUserProfile(user.id)}>
+                <View style={styles.profileContainer}>
+                    <View style={styles.profilePictureContainer}>
+                        <View>
+                            {
+                                user.image ?
+                                    <ProfileIcon size={75} image={user.image} />
+                                    :
+                                    <MaterialCommunityIcons name="account-outline" size={75} color="grey" />
+                            }
+                        </View>
+                    </View>
+                    <View style={styles.nameContainer}>
+                        <Text style={styles.userName}>{user.username}</Text>
                     </View>
                 </View>
-                <View style={styles.nameContainer}>
-                    <Text style={styles.userName}>{user.username}</Text>
-                    <View style={styles.followContainer}>
-                        {following
-                            ?
-                            <TouchableOpacity style={[styles.button, { backgroundColor: colors.secondary }]} onPress={() => {
-                                unfollowUser(user.id)
-                                setFollowing(false)
-                            }}>
-                                <Text style={styles.text}>Following</Text>
-                            </TouchableOpacity>
-                            :
-                            <TouchableOpacity style={[styles.button, { backgroundColor: colors.primaryBlue }]} onPress={() => {
-                                followUser(user.id)
-                                setFollowing(true)
-                            }}>
-                                <Text style={styles.text}>Follow</Text>
-                            </TouchableOpacity>
-                        }
-                    </View>
-                </View>
+            </TouchableOpacity>
+            <View style={styles.followContainer}>
+                {following
+                    ?
+                    <TouchableOpacity style={[styles.button, { backgroundColor: colors.secondary }]} onPress={() => {
+                        setModalVisible(true)
+                    }}>
+                        <Text style={styles.text}>Following</Text>
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity style={[styles.button, { backgroundColor: colors.primaryBlue }]} onPress={() => {
+                        followUser(user.id)
+                        setFollowing(true)
+                    }}>
+                        <Text style={styles.text}>Follow</Text>
+                    </TouchableOpacity>
+                }
             </View>
-        </TouchableOpacity>
+            <ConfirmationModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                title={"Are you sure you want to unfollow " + user.username + "?"}
+                confirmAction={() => {
+                    unfollowUser(user.id)
+                    setFollowing(false)
+                }}
+                follow={true}
+            />
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 5,
+        // padding: 5,
         alignItems: 'center',
-        textAlignVertical: 'center'
+        textAlignVertical: 'center',
+        marginBottom: 7
     },
     profileContainer: {
-        bottom: 10
+        bottom: 5
     },
     profilePictureContainer: {
         justifyContent: "center",
@@ -72,8 +86,10 @@ const styles = StyleSheet.create({
         fontSize: 13
     },
     followContainer: {
-        // width: "75%"
-        paddingVertical: 5
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%'
+
     },
     button: {
         height: 26,
@@ -81,13 +97,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 30,
+        width: '70%'
+
     },
     text: {
         color: "white",
-        fontSize: 15,
+        fontSize: 13,
         textAlign: 'center',
-        fontWeight: '600',
-        width: '85%'
+        fontWeight: '500',
     }
 })
 export default FriendItem;
