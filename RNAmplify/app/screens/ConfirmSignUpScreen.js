@@ -1,39 +1,41 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Keyboard } from 'react-native';
 import { Auth } from 'aws-amplify';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LogInInput from '../components/LogInInput';
 import RoundedButton from '../components/RoundedButton';
-import { FontAwesome5 } from '@expo/vector-icons';
 import colors from '../constants/colors'
 
-export default function SignUpScreen({ navigation, updateAuthState, fetchAppData }) {
+export default function ConfirmSignUpScreen({ navigation }) {
     const [username, setUsername] = useState('');
     const [authCode, setAuthCode] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState();
 
     async function signUp() {
-        if (username.length > 0 && password.length > 0 && email.length > 0) {
+        Keyboard.dismiss()
+        if (username.length > 0 && authCode.length > 0) {
             try {
-                await Auth.signUp({ username, password, attributes: { email } });
-                console.log(' Sign-up Confirmed');
-                navigation.navigate('ConfirmSignUp');
+                setLoading(true)
+                await Auth.confirmSignUp(username, authCode);
+                console.log('Account Verified');
+                navigation.navigate('SignInScreen', {
+                    comfirmation: true
+                });
             } catch (error) {
-                console.log(' Error signing up...', error);
+                setErrorMessage("Verification code does not match. Please enter a valid verification code.")
             }
         }
         else {
-            setError(true)
+            setErrorMessage("Missing sign up information...")
         }
     }
-
 
     return (
         <SafeAreaView style={styles.safeAreaContainer}>
             <View style={styles.container}>
                 <View style={styles.headerContainer}>
-                    <Text style={styles.header}>Create a new account</Text>
+                    <Text style={styles.header}>Confirm verification code</Text>
                 </View>
 
 
@@ -56,21 +58,21 @@ export default function SignUpScreen({ navigation, updateAuthState, fetchAppData
                     />
                     {!loading ?
                         <View style={styles.logInButton}>
-                            <RoundedButton title="Sign Up" onPress={signUp} color={colors.secondary} />
+                            <RoundedButton title="Confirm" onPress={signUp} color={colors.secondary} />
                         </View>
                         :
                         <ActivityIndicator style={styles.loadingSpinner} size="large" color={colors.secondary} />
                     }
-                    <View style={styles.footerButtonContainer}>
+                    {/* <View style={styles.footerButtonContainer}>
                         <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
                             <Text style={styles.forgotPasswordButtonText}>
                                 Already have an account? Sign In
                             </Text>
                         </TouchableOpacity>
-                    </View>
-                    {error &&
+                    </View> */}
+                    {errorMessage &&
                         <View style={styles.errorContainer}>
-                            <Text style={styles.errorText}>Looks like some information is missing!</Text>
+                            <Text style={styles.errorText}>{errorMessage}</Text>
                         </View>
                     }
                 </View>

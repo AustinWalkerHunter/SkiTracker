@@ -19,9 +19,9 @@ function FriendItem({ user, getUserProfile }) {
                         <View>
                             {
                                 user.image ?
-                                    <ProfileIcon size={75} image={user.image} />
+                                    <ProfileIcon size={60} image={user.image} />
                                     :
-                                    <MaterialCommunityIcons name="account-outline" size={75} color="grey" />
+                                    <MaterialCommunityIcons name="account-outline" size={60} color="grey" />
                             }
                         </View>
                     </View>
@@ -88,8 +88,8 @@ const styles = StyleSheet.create({
     followContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%'
-
+        width: '100%',
+        paddingBottom: 10
     },
     button: {
         height: 26,
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 30,
-        width: '70%'
+        width: '65%'
 
     },
     text: {

@@ -1,32 +1,36 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Keyboard } from 'react-native';
 import { Auth } from 'aws-amplify';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LogInInput from '../components/LogInInput';
 import RoundedButton from '../components/RoundedButton';
-import { FontAwesome5 } from '@expo/vector-icons';
 import colors from '../constants/colors'
 
-export default function SignUpScreen({ navigation, updateAuthState, fetchAppData }) {
+export default function SignUpScreen({ navigation }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState();
 
     async function signUp() {
-        // if (username.length > 0 && password.length > 0 && email.length > 0) {
-        //     try {
-        //         await Auth.signUp({ username, password, attributes: { email } });
-        //         console.log(' Sign-up Confirmed');
-        //         navigation.navigate('ConfirmSignUp');
-        //     } catch (error) {
-        //         console.log(' Error signing up...', error);
-        //     }
-        // }
-        // else {
-        //     setError(true)
-        // }
+        Keyboard.dismiss()
+        if (username.length > 0 && password.length > 0 && email.length > 0) {
+            try {
+
+                setLoading(true)
+                await Auth.signUp({ username, password, attributes: { email } });
+                console.log('Sign-up Confirmed');
+                navigation.navigate('ConfirmSignUpScreen');
+            } catch (error) {
+                setLoading(false)
+                console.log(' Error signing up...', error);
+                setErrorMessage(error.message)
+            }
+        }
+        else {
+            setErrorMessage("Sign up info missing")
+        }
     }
 
 
@@ -36,8 +40,6 @@ export default function SignUpScreen({ navigation, updateAuthState, fetchAppData
                 <View style={styles.headerContainer}>
                     <Text style={styles.header}>Create a new account</Text>
                 </View>
-
-
                 <View style={styles.inputContainer}>
                     <LogInInput
                         value={username}
@@ -59,7 +61,7 @@ export default function SignUpScreen({ navigation, updateAuthState, fetchAppData
                     />
                     <LogInInput
                         value={email}
-                        onChangeText={text => setPassword(text)}
+                        onChangeText={text => setEmail(text)}
                         leftIcon="email"
                         placeholder="Enter Email"
                         autoCapitalize="none"
@@ -82,9 +84,9 @@ export default function SignUpScreen({ navigation, updateAuthState, fetchAppData
                             </Text>
                         </TouchableOpacity>
                     </View>
-                    {error &&
+                    {errorMessage &&
                         <View style={styles.errorContainer}>
-                            <Text style={styles.errorText}>Looks like some information is missing!</Text>
+                            <Text style={styles.errorText}>{errorMessage}</Text>
                         </View>
                     }
                 </View>
@@ -131,7 +133,7 @@ const styles = StyleSheet.create({
         width: "75%"
     },
     footerButtonContainer: {
-        paddingVertical: 15,
+        paddingVertical: 20,
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 20

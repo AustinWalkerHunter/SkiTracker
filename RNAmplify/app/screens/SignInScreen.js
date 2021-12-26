@@ -1,32 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useIsFocused } from "@react-navigation/native";
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Keyboard } from 'react-native';
 import { Auth } from 'aws-amplify';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LogInInput from '../components/LogInInput';
 import RoundedButton from '../components/RoundedButton';
 import { FontAwesome5 } from '@expo/vector-icons';
 import colors from '../constants/colors'
+import { useToast } from 'react-native-fast-toast'
 
-export default function SignInScreen({ navigation, updateAuthState, fetchAppData }) {
+export default function SignInScreen({ route, navigation, updateAuthState, fetchAppData }) {
     const isFocused = useIsFocused();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [skiing, setSkiing] = useState(true);
+    const [confirmed, setConfirmed] = useState(false);
     const [error, setError] = useState(false);
     const [tapCounter, setTapCounter] = useState(0)
+    const toast = useToast()
 
     useEffect(() => {
         if (!isFocused) {
             setTimeout(() => {
                 setError(false)
             }, 500);
-
+        }
+        else {
+            if (route.params?.comfirmation) {
+                setError(false)
+                toast.show("Sign up confirmed!", {
+                    duration: 2000,
+                    style: { marginTop: 35, backgroundColor: "green" },
+                    textStyle: { fontSize: 20 },
+                    placement: "top" // default to bottom
+                });
+            }
         }
     }, [isFocused]);
 
     async function signIn() {
+        Keyboard.dismiss()
         if (username.length > 0 && password.length > 0) {
             setError(false)
             setLoading(true)
@@ -110,6 +124,11 @@ export default function SignInScreen({ navigation, updateAuthState, fetchAppData
                             <Text style={styles.errorText}>Username or password incorrect</Text>
                         </View>
                     }
+                    {confirmed &&
+                        <View style={styles.errorContainer}>
+                            <Text style={styles.confirmText}>Sign up Confirmed!</Text>
+                        </View>
+                    }
                 </View>
             </View>
         </SafeAreaView>
@@ -154,7 +173,7 @@ const styles = StyleSheet.create({
         width: "75%"
     },
     footerButtonContainer: {
-        paddingVertical: 15,
+        paddingVertical: 20,
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 20
@@ -172,6 +191,12 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 18,
         fontWeight: '500'
+    },
+    confirmText: {
+        textAlign: "center",
+        color: 'green',
+        fontSize: 25,
+        fontWeight: '600'
     },
     largeErrorText: {
         textAlign: "center",

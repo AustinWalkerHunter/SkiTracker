@@ -38,7 +38,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-skitracker-dev-92618-deployment/amplify-cfn-templates/auth/skitracker0db79b20-cloudformation-template.yml",
         "logicalId": "authskitracker0db79b20"
       },
-      "lastPushTimeStamp": "2021-12-21T23:26:35.250Z",
+      "lastPushTimeStamp": "2021-12-26T22:27:23.210Z",
       "output": {
         "UserPoolId": "us-west-2_7sc4WYfIr",
         "AppClientIDWeb": "14540m3d9ksfloqjshdab04n2g",
@@ -72,7 +72,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-skitracker-dev-92618-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiskitracker"
       },
-      "lastPushTimeStamp": "2021-12-21T23:26:36.165Z",
+      "lastPushTimeStamp": "2021-12-26T22:27:23.213Z",
       "lastPushDirHash": "9bTaPI83zWwE52cqbcCValx7Ncg="
     }
   },
@@ -84,7 +84,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-skitracker-dev-92618-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
         "logicalId": "storages327289e4f"
       },
-      "lastPushTimeStamp": "2021-12-21T23:26:35.266Z",
+      "lastPushTimeStamp": "2021-12-26T22:27:23.214Z",
       "output": {
         "BucketName": "skitracker2a6622919f84471ba174a683e093e09a92618-dev",
         "Region": "us-west-2"

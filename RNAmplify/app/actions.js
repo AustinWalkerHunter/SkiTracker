@@ -47,6 +47,8 @@ export async function deleteSelectedCheckIn(item) {
         try {
             if (GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) {
                 await API.graphql(graphqlOperation(deleteCheckIn, { input: { id: item.id } }));
+                // remove check in from global state here
+
                 console.log("CheckIn deleted.")
             }
         } catch (error) {

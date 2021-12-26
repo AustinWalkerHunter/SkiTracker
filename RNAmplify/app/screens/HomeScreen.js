@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import { useIsFocused, useScrollToTop } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Entypo, FontAwesome5 } from "@expo/vector-icons";
 import { RefreshControl, View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-native';
 import PostCard from "../components/PostCard"
 import SafeScreen from '../components/SafeScreen'
@@ -112,9 +112,9 @@ const HomeScreen = ({ route, navigation }) => {
     return (
         <View style={styles.screen}>
             {!loading ?
-                <View>
+                <View style={styles.container}>
                     <View style={styles.checkInList}>
-                        {checkIns && checkIns.length > 0
+                        {GLOBAL.allCheckIns && GLOBAL.allCheckIns.length > 0
                             ?
                             <FlatList
                                 data={checkIns}
@@ -122,7 +122,6 @@ const HomeScreen = ({ route, navigation }) => {
                                 inverted={false}
                                 contentContainerStyle={{ paddingBottom: '50%' }}
                                 keyExtractor={items => items.id.toString()}
-                                // contentContainerStyle={{ paddingBottom: 75 }}
                                 refreshControl={<RefreshControl
                                     tintColor={"white"}
                                     refreshing={refreshing}
@@ -146,8 +145,13 @@ const HomeScreen = ({ route, navigation }) => {
                             </FlatList>
                             :
                             <View style={styles.zeroStateContainer}>
+                                <Text style={styles.zeroStateTitle}>Welcome {GLOBAL.activeUser.username}!</Text>
                                 <Text style={styles.zeroStateText}>No check-ins found.</Text>
-                                <Text style={styles.zeroStateText}>Make one!</Text>
+                                <Text style={styles.zeroStateText}>Add one!</Text>
+                                <Entypo style={styles.zeroStateIcon} name="arrow-long-down" size={100} color={colors.secondary} />
+                                <View style={styles.mountainIcon}>
+                                    <FontAwesome5 name="mountain" size={250} color={colors.primaryDark} />
+                                </View>
                             </View>
                         }
                     </View>
@@ -187,7 +191,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.navigation,
     },
-    checkInList: {
+    container: {
+        flex: 1
     },
     imageViewerContainer: {
         position: 'absolute',
@@ -253,18 +258,35 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     zeroStateContainer: {
-        justifyContent: 'center',
-        marginTop: 100
+        width: "100%",
+        marginTop: "30%"
     },
-    zeroStateText: {
+    zeroStateTitle: {
         color: "white",
         fontSize: 35,
         alignSelf: 'center',
+        marginBottom: 75,
+        fontWeight: '600'
+    },
+    zeroStateText: {
+        color: "white",
+        fontSize: 25,
+        alignSelf: 'center',
     },
     zeroStateIcon: {
-        position: 'absolute',
-        bottom: -300,
-        right: 30
+        marginTop: 120,
+        alignSelf: "flex-end"
+    },
+    mountainIcon: {
+        zIndex: -999,
+        // top: 40,
+        bottom: 200,
+        left: 0,
+        right: 0,
+        position: "absolute",
+        // justifyContent: 'center',
+        alignItems: 'center',
+        opacity: 0.4
     }
 })
 
