@@ -17,7 +17,7 @@ import { createComment } from '../../src/graphql/mutations'
 import { increaseCheckInComments } from '../actions'
 
 const ViewCheckInScreen = ({ route, navigation }) => {
-    const { checkInId, scrollToComments } = route.params;
+    const { checkInId, scrollToComments, fromMyProfile } = route.params;
     const isFocused = useIsFocused();
     const [pageLoading, setPageLoading] = useState(true);
     const [commentsLoading, setCommentsLoading] = useState(true);
@@ -89,9 +89,14 @@ const ViewCheckInScreen = ({ route, navigation }) => {
         }
     }
 
-    const deleteCheckIn = () => {
-        deleteSelectedCheckIn(checkIn)
-        navigation.goBack(null)
+    const deleteCheckIn = async () => {
+        await deleteSelectedCheckIn(checkIn)
+        if (fromMyProfile) {
+            navigation.navigate('MyProfileScreen');
+        }
+        else {
+            navigation.navigate('HomeScreen');
+        }
         toast.show("Check-in deleted!", {
             duration: 2000,
             style: { marginTop: 35, backgroundColor: "green" },

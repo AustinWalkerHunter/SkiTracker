@@ -118,6 +118,11 @@ export default function SignInScreen({ route, navigation, updateAuthState, fetch
                                 Don't have an account? Sign Up
                             </Text>
                         </TouchableOpacity>
+                        {/* <TouchableOpacity onPress={() => navigation.navigate('ConfirmSignUpScreen')}>
+                            <Text style={styles.forgotPasswordButtonText}>
+                                Verify account
+                            </Text>
+                        </TouchableOpacity> */}
                     </View>
                     {error &&
                         <View style={styles.errorContainer}>

@@ -6,6 +6,7 @@ import GLOBAL from './global';
 export async function fetchAppData() {
     await fetchActiveUser();
     if (GLOBAL.activeUserId) {
+        await fetchActiveUserCheckins();
         await fetchFollowing();
         await fetchAllUsers();
         await fetchCheckIns();
@@ -41,6 +42,21 @@ const fetchActiveUser = async () => {
     }
 }
 
+const fetchActiveUserCheckins = async () => {
+    console.log("FETCHING ACTIVE USER CHECKINS")
+    try {
+        const queryParams = {
+            type: "CheckIn",
+            sortDirection: "DESC",
+            filter: { userID: { eq: GLOBAL.activeUser.id } }
+        };
+        const activeUserCheckIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items
+        GLOBAL.activeUserCheckIns = activeUserCheckIns;
+    } catch (error) {
+        console.log("Error getting active user checkins from db")
+    }
+}
+
 const fetchFollowing = async () => {
     console.log("fetchFollowing")
     var followerArray = [];
@@ -53,7 +69,6 @@ const fetchFollowing = async () => {
     followingData.map((user) => {
         followerArray.push(user.followingID)
     })
-    console.log(followingData)
     GLOBAL.following = followerArray;
 }
 const fetchAllUsers = async () => {

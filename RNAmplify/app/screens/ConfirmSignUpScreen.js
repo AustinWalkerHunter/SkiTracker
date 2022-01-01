@@ -5,6 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import LogInInput from '../components/LogInInput';
 import RoundedButton from '../components/RoundedButton';
 import colors from '../constants/colors'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 export default function ConfirmSignUpScreen({ navigation }) {
     const [username, setUsername] = useState('');
@@ -23,11 +25,12 @@ export default function ConfirmSignUpScreen({ navigation }) {
                     comfirmation: true
                 });
             } catch (error) {
+                setLoading(false)
                 setErrorMessage("Verification code does not match. Please enter a valid verification code.")
             }
         }
         else {
-            setErrorMessage("Missing sign up information...")
+            setErrorMessage("Username or verification code missing...")
         }
     }
 
@@ -35,7 +38,11 @@ export default function ConfirmSignUpScreen({ navigation }) {
         <SafeAreaView style={styles.safeAreaContainer}>
             <View style={styles.container}>
                 <View style={styles.headerContainer}>
+                    <MaterialCommunityIcons name="robot" size={75} color={colors.secondary} />
                     <Text style={styles.header}>Confirm verification code</Text>
+                    <View style={styles.subHeaderContainer}>
+                        <Text style={styles.subHeader}>Check your email for the code!</Text>
+                    </View>
                 </View>
 
 
@@ -58,7 +65,7 @@ export default function ConfirmSignUpScreen({ navigation }) {
                     />
                     {!loading ?
                         <View style={styles.logInButton}>
-                            <RoundedButton title="Confirm" onPress={signUp} color={colors.secondary} />
+                            <RoundedButton title="Confirm Code" onPress={signUp} color={colors.secondary} />
                         </View>
                         :
                         <ActivityIndicator style={styles.loadingSpinner} size="large" color={colors.secondary} />
@@ -93,16 +100,21 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         alignItems: 'center',
-        marginBottom: 25
+        // marginBottom: 25
     },
     header: {
-        fontSize: 25,
+        fontSize: 26,
         color: 'white',
         fontWeight: '700',
     },
+    subHeaderContainer: {
+        width: "80%",
+        paddingVertical: 10
+    },
     subHeader: {
         fontSize: 18,
-        color: 'white',
+        textAlign: "center",
+        color: colors.secondary,
         fontWeight: '400',
     },
     title: {
@@ -131,6 +143,8 @@ const styles = StyleSheet.create({
     },
     errorContainer: {
         alignItems: 'center',
+        paddingVertical: 10,
+        width: "90%"
     },
     errorText: {
         textAlign: "center",

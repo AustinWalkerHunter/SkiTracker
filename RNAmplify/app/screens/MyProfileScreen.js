@@ -40,6 +40,8 @@ const MyProfileScreen = ({ navigation }) => {
     }
 
     async function fetchActiveUserCheckIns() {
+        // without fetching, the order is messed up when a new check in is added
+        // the newest check in goes to the bottom
         try {
             const queryParams = {
                 type: "CheckIn",
@@ -52,6 +54,10 @@ const MyProfileScreen = ({ navigation }) => {
         } catch (error) {
             console.log("Error getting user from db")
         }
+        // This would stop the page from refreshing
+        // Adding a check to see if we need to refresh might help
+        // setUserCheckIns(GLOBAL.activeUserCheckIns) 
+        setUserDayCount(GLOBAL.activeUserCheckIns.length);
         setPageLoading(false)
     }
 
@@ -128,7 +134,8 @@ const MyProfileScreen = ({ navigation }) => {
 
     const viewCheckIn = (checkIn) => {
         navigation.navigate('ViewCheckInScreen', {
-            checkInId: checkIn.id
+            checkInId: checkIn.id,
+            fromMyProfile: true
         })
     }
 

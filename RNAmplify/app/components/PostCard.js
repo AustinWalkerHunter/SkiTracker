@@ -7,10 +7,9 @@ import Moment from 'moment';
 import { Storage } from 'aws-amplify';
 import GLOBAL from '../global';
 import ConfirmationModal from '../components/ConfirmationModal'
-import { useToast } from 'react-native-fast-toast'
 import { increaseCheckInLikes, decreaseCheckInLikes } from '../actions'
 
-function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckIn, viewCheckIn, viewResort }) {
+function PostCard({ item, getUserProfile, displayFullImage, deleteCheckIn, viewCheckIn, viewResort }) {
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const profileImage = GLOBAL.allUsers[item.userID].image;
     const username = GLOBAL.allUsers[item.userID].username;
@@ -21,8 +20,6 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
     const [commentCount, setCommentCount] = useState(0);
     const [likeDisabled, setLikeDisabled] = useState(false);
     const [objIndex, setObjIndex] = useState();
-
-    const toast = useToast()
 
     const holidayImages = {
         thanksGiving: require("../../assets/thanksGiving.jpeg"),
@@ -58,7 +55,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
         getHolidayImage();
         var checkIn = GLOBAL.allCheckIns[index]
         setObjIndex(index)
-        setLikedCount(checkIn.likes)
+        setLikedCount(checkIn?.likes || 0)
         setCommentCount(checkIn.comments)
         setCheckInLiked((GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked) || false)
         if (item.image) {
@@ -115,20 +112,6 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
             }, 3000);
         }
     }
-
-
-
-    const deleteCheckIn = () => {
-        deleteSelectedCheckIn(item)
-        setPostCardDeleted(true)
-        toast.show("Check-in deleted!", {
-            duration: 2000,
-            style: { marginTop: 35, backgroundColor: "green" },
-            textStyle: { fontSize: 20 },
-            placement: "top" // default to bottom
-        });
-    }
-
 
     return (
         <View>
@@ -230,7 +213,10 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteSelectedCheckI
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
                 title={"Do you want to delete this check-in?"}
-                confirmAction={() => deleteCheckIn()}
+                confirmAction={async () => {
+                    await deleteCheckIn(item)
+                    setPostCardDeleted(true)
+                }}
             />
         </View >
     );

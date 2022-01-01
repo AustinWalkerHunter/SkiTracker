@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Keyboard } from 'react-native';
 import { Auth } from 'aws-amplify';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AntDesign } from '@expo/vector-icons';
 import LogInInput from '../components/LogInInput';
 import RoundedButton from '../components/RoundedButton';
 import colors from '../constants/colors'
@@ -25,7 +26,12 @@ export default function SignUpScreen({ navigation }) {
             } catch (error) {
                 setLoading(false)
                 console.log(' Error signing up...', error);
-                setErrorMessage(error.message)
+                if (error.code == "InvalidParameterException") {
+                    setErrorMessage("Username invalid. No spaces allowed.")
+                }
+                else {
+                    setErrorMessage(error.message)
+                }
             }
         }
         else {
@@ -33,11 +39,11 @@ export default function SignUpScreen({ navigation }) {
         }
     }
 
-
     return (
         <SafeAreaView style={styles.safeAreaContainer}>
             <View style={styles.container}>
                 <View style={styles.headerContainer}>
+                    <AntDesign name="adduser" size={75} color={colors.secondary} />
                     <Text style={styles.header}>Create a new account</Text>
                 </View>
                 <View style={styles.inputContainer}>

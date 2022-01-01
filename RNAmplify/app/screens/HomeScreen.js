@@ -10,14 +10,15 @@ import { checkInsByDate } from '../../src/graphql/queries'
 import GLOBAL from '../global';
 import { deleteSelectedCheckIn } from "../actions"
 import resorts from '../constants/resortData'
+import { useToast } from 'react-native-fast-toast'
 
-const HomeScreen = ({ route, navigation }) => {
+const HomeScreen = ({ navigation }) => {
     const isFocused = useIsFocused();
     const [loading, setLoading] = useState(true);
-    const [checkIns, setCheckIns] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [fullScreenCheckInPhoto, setFullScreenCheckInPhoto] = useState()
     const [imageLoading, setImageLoading] = useState(false)
+    const toast = useToast()
 
     const ref = React.useRef(null);
     useScrollToTop(ref);
@@ -25,28 +26,20 @@ const HomeScreen = ({ route, navigation }) => {
     useEffect(() => {
         if (isFocused) {
             if (GLOBAL.followingStateUpdated) {
+                console.log("FOLLOWING STATE UPDATED")
                 setLoading(true)
                 GLOBAL.followingStateUpdated = false;
                 fetchCheckIns();
             }
-            if (route.params?.newCheckInAdded) {
+            if (GLOBAL.checkInsUpdated) {
+                console.log("CHECK INS UPDATED")
                 setLoading(true)
                 fetchCheckIns();
-                route.params.newCheckInAdded = false;
+                GLOBAL.checkInsUpdated = false;
                 if (ref.current) {
                     ref.current.scrollToOffset({ offset: 0, animated: true })
                 }
             }
-            // else {
-            //     if (GLOBAL.allCheckIns) {
-            //         setCheckIns(GLOBAL.allCheckIns);
-            //         setLoading(false)
-            //     }
-            //     else {
-            //         fetchCheckIns();
-            //     }
-            // }
-            // setLoading(false)
         }
     }, [isFocused]);
 
@@ -65,7 +58,6 @@ const HomeScreen = ({ route, navigation }) => {
                         followingCheckIns.push(checkIn)
                     }
                 })
-                setCheckIns(followingCheckIns)
                 GLOBAL.allCheckIns = followingCheckIns
             }
         } catch (error) {
@@ -107,6 +99,17 @@ const HomeScreen = ({ route, navigation }) => {
         }, 250);
     }
 
+    const deleteCheckIn = async (item) => {
+        await deleteSelectedCheckIn(item)
+        await fetchCheckIns();
+        GLOBAL.checkInsUpdated = false;
+        toast.show("Check-in deleted!", {
+            duration: 2000,
+            style: { marginTop: 35, backgroundColor: "green" },
+            textStyle: { fontSize: 20 },
+            placement: "top" // default to bottom
+        });
+    }
 
 
     return (
@@ -114,10 +117,10 @@ const HomeScreen = ({ route, navigation }) => {
             {!loading ?
                 <View style={styles.container}>
                     <View style={styles.checkInList}>
-                        {GLOBAL.allCheckIns && GLOBAL.allCheckIns.length > 0
+                        {GLOBAL.allCheckIns && GLOBAL.allCheckIns?.length > 0
                             ?
                             <FlatList
-                                data={checkIns}
+                                data={GLOBAL.allCheckIns}
                                 ref={ref}
                                 inverted={false}
                                 contentContainerStyle={{ paddingBottom: '50%' }}
@@ -136,7 +139,7 @@ const HomeScreen = ({ route, navigation }) => {
                                         item={item}
                                         getUserProfile={getUserProfile}
                                         displayFullImage={displayFullImage}
-                                        deleteSelectedCheckIn={deleteSelectedCheckIn}
+                                        deleteCheckIn={deleteCheckIn}
                                         viewCheckIn={viewCheckIn}
                                         viewResort={viewResort}
                                     />
@@ -145,12 +148,11 @@ const HomeScreen = ({ route, navigation }) => {
                             </FlatList>
                             :
                             <View style={styles.zeroStateContainer}>
-                                <Text style={styles.zeroStateTitle}>Welcome {GLOBAL.activeUser.username}!</Text>
+                                <Text style={styles.zeroStateTitle}>Welcome {GLOBAL.activeUser?.username ? GLOBAL.activeUser?.username : ""}!</Text>
                                 <Text style={styles.zeroStateText}>No check-ins found.</Text>
                                 <Text style={styles.zeroStateText}>Add one!</Text>
-                                <Entypo style={styles.zeroStateIcon} name="arrow-long-down" size={100} color={colors.secondary} />
                                 <View style={styles.mountainIcon}>
-                                    <FontAwesome5 name="mountain" size={250} color={colors.primaryDark} />
+                                    <FontAwesome5 name="mountain" size={270} color={colors.primaryDark} />
                                 </View>
                             </View>
                         }
@@ -280,7 +282,7 @@ const styles = StyleSheet.create({
     mountainIcon: {
         zIndex: -999,
         // top: 40,
-        bottom: 200,
+        bottom: 0,
         left: 0,
         right: 0,
         position: "absolute",

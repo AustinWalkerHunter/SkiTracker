@@ -47,8 +47,9 @@ export async function deleteSelectedCheckIn(item) {
         try {
             if (GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) {
                 await API.graphql(graphqlOperation(deleteCheckIn, { input: { id: item.id } }));
-                // remove check in from global state here
-
+                GLOBAL.activeUserCheckIns = GLOBAL.activeUserCheckIns.filter(checkIn => checkIn.id != item.id);
+                GLOBAL.allCheckIns = GLOBAL.allCheckIns.filter(checkIn => checkIn.id != item.id);
+                GLOBAL.checkInsUpdated = true;
                 console.log("CheckIn deleted.")
             }
         } catch (error) {
@@ -224,12 +225,4 @@ export const getAllCheckInData = (checkIns) => {
         }
         return data;
     }
-}
-
-export async function getUserCheckInLength(userId) {
-    const queryParams = {
-        type: "CheckIn",
-        filter: { userID: { eq: userId } }
-    };
-    return ((await API.graphql(graphqlOperation(listCheckIns, queryParams))).data.listCheckIns.items).length;
 }

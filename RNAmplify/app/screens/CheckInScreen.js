@@ -73,24 +73,28 @@ const CheckInScreen = ({ route, navigation }) => {
                     //GLOBAL.allCheckIns = { newCheckIn, ...GLOBAL.allCheckIns }
                     let imagePath = await handleImagePicked(newCheckIn.image);
                     const updatedCheckIn = { ...newCheckIn, image: imagePath };
-                    await API.graphql(graphqlOperation(createCheckIn, { input: updatedCheckIn }));
+                    const checkIn = await API.graphql(graphqlOperation(createCheckIn, { input: updatedCheckIn }));
+                    GLOBAL.checkInsUpdated = true;
+                    GLOBAL.allCheckIns.push(checkIn.data.createCheckIn)
+                    GLOBAL.activeUserCheckIns.push(checkIn.data.createCheckIn)
+                    setLoading(false);
                     console.log("Check-in created with photo")
                 }
                 else {
-                    //GLOBAL.allCheckIns = { newCheckIn, ...GLOBAL.allCheckIns }
-                    await API.graphql(graphqlOperation(createCheckIn, { input: newCheckIn }));
+                    const checkIn = await API.graphql(graphqlOperation(createCheckIn, { input: newCheckIn }));
                     toast.show("Check-in created!", {
                         duration: 2000,
                         style: { marginTop: 35, backgroundColor: "green" },
                         textStyle: { fontSize: 20 },
                         placement: "top" // default to bottom
                     });
+                    GLOBAL.checkInsUpdated = true;
+                    GLOBAL.allCheckIns.push(checkIn.data.createCheckIn)
+                    GLOBAL.activeUserCheckIns.push(checkIn.data.createCheckIn)
                     setLoading(false);
                     console.log("Check-in created");
                 }
-                navigation.navigate('HomeScreen', {
-                    newCheckInAdded: true
-                });
+                navigation.navigate('HomeScreen');
 
                 clearForm();
             } catch (error) {
