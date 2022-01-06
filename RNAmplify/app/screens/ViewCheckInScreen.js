@@ -47,7 +47,6 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                 setLikedCount(viewedCheckIn.likes)
                 setCommentCount(viewedCheckIn.comments)
                 setCheckInLiked((GLOBAL.activeUserLikes[viewedCheckIn.id] && GLOBAL.activeUserLikes[viewedCheckIn.id].isLiked) || false)
-                //getCheckInComments(viewedCheckIn.id);
                 fetchComments(viewedCheckIn.id)
                 setAuthor(GLOBAL.allUsers[viewedCheckIn.userID]);
                 if (viewedCheckIn.image) {
@@ -55,9 +54,6 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                     if (cachedImage) {
                         setPostCardImage(cachedImage);
                     }
-                    // else {
-                    //     fetchPostCardImage();
-                    // }
                 }
                 setPageLoading(false);
             }
@@ -106,7 +102,6 @@ const ViewCheckInScreen = ({ route, navigation }) => {
     }
 
     const deleteComment = (commentItem) => {
-        console.log(commentItem)
         deleteSelectedComment(commentItem)
         decreaseCheckInComments(commentItem.checkInID);
         setCommentCount(commentCount - 1)

@@ -10,6 +10,11 @@ import ConfirmationModal from '../components/ConfirmationModal'
 function FriendItem({ user, getUserProfile }) {
     const [following, setFollowing] = useState(GLOBAL.following.includes(user.id))
     const [modalVisible, setModalVisible] = useState(false);
+    useEffect(() => {
+        if (GLOBAL.followingStateUpdated) {
+            setFollowing(GLOBAL.following.includes(user.id))
+        }
+    }, [GLOBAL.followingStateUpdated]);
 
     return (
         <View style={styles.container}>

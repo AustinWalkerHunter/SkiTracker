@@ -67,10 +67,6 @@ const CheckInScreen = ({ route, navigation }) => {
             }
             try {
                 if (newCheckIn.image) {
-                    //store in the global state check in with this image
-                    // that way I can diplay it right away for the user without fetching storage until the next time they log in
-                    //after storing in global, handleImagePicked
-                    //GLOBAL.allCheckIns = { newCheckIn, ...GLOBAL.allCheckIns }
                     let imagePath = await handleImagePicked(newCheckIn.image);
                     const updatedCheckIn = { ...newCheckIn, image: imagePath };
                     const checkIn = await API.graphql(graphqlOperation(createCheckIn, { input: updatedCheckIn }));
@@ -79,6 +75,13 @@ const CheckInScreen = ({ route, navigation }) => {
                     GLOBAL.activeUserCheckIns.push(checkIn.data.createCheckIn)
                     setLoading(false);
                     console.log("Check-in created with photo")
+                    if (imagePath) {
+                        await Storage.get(imagePath)
+                            .then((result) => {
+                                GLOBAL.checkInPhotos[checkIn.data.createCheckIn.id] = result;
+                            })
+                            .catch((err) => console.log(err));
+                    }
                 }
                 else {
                     const checkIn = await API.graphql(graphqlOperation(createCheckIn, { input: newCheckIn }));

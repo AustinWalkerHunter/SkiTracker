@@ -27,8 +27,8 @@ function DatePicker({ iconName, placeholder, textStyle, selectedItem, onSelected
             <Modal visible={modalVisible} transparent={true} animationType="slide">
                 <TouchableOpacity style={styles.modalScreen} onPress={() => setModalVisible(false)} >
 
-                    <View style={styles.modalView}>
-                        <View style={{ marginTop: 100, backgroundColor: colorScheme === 'dark' ? colors.navigation : 'white' }}>
+                    <View style={[styles.modalView, { backgroundColor: colorScheme === 'dark' ? colors.navigation : colors.grey }]}>
+                        <View style={{ marginTop: 10 }}>
                             <DateTimePicker
                                 testID="dateTimePicker"
                                 value={date}
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         borderWidth: 1,
         padding: 15,
-        backgroundColor: 'rgba(224, 224, 224, 0.15)',
+        backgroundColor: colors.primary,
     },
     saveBtn: {
         alignSelf: 'flex-end',
