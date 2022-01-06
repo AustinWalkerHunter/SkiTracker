@@ -77,7 +77,7 @@ const ResortScreen = ({ route, navigation }) => {
                             </View>
                         }
                         <View style={styles.icon}>
-                            <FontAwesome5 name="mountain" size={250} color={colors.primary} />
+                            <FontAwesome5 name="mountain" size={250} color={colors.primaryDark} />
                         </View>
                     </View>
                 </View >
@@ -176,11 +176,11 @@ const styles = StyleSheet.create({
         top: 5,
         left: 0,
         right: 0,
-        bottom: 500,
+        bottom: 600,
         zIndex: -999,
         justifyContent: 'center',
         alignItems: 'center',
-        opacity: 0.2
+        // opacity: 0.2
     }
 })
 

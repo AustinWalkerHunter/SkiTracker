@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Keyboard, useColorScheme } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import colors from '../constants/colors';
+
 
 function DatePicker({ iconName, placeholder, textStyle, selectedItem, onSelectedItem }) {
     const [modalVisible, setModalVisible] = useState(false)
     const [date, setDate] = useState(new Date());
     const [previousDate, setPreviousDate] = useState(new Date());
+    const colorScheme = useColorScheme();
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setDate(currentDate);
@@ -26,14 +28,16 @@ function DatePicker({ iconName, placeholder, textStyle, selectedItem, onSelected
                 <TouchableOpacity style={styles.modalScreen} onPress={() => setModalVisible(false)} >
 
                     <View style={styles.modalView}>
-                        <DateTimePicker
-                            testID="dateTimePicker"
-                            value={date}
-                            mode={'date'}
-                            is24Hour={true}
-                            display="inline"
-                            onChange={onChange}
-                        />
+                        <View style={{ marginTop: 100, backgroundColor: colorScheme === 'dark' ? colors.navigation : 'white' }}>
+                            <DateTimePicker
+                                testID="dateTimePicker"
+                                value={date}
+                                mode={'date'}
+                                is24Hour={true}
+                                display="inline"
+                                onChange={onChange}
+                            />
+                        </View>
                         <TouchableOpacity style={[styles.closeModalButton, styles.cancelBtn]} onPress={() => {
                             setDate(previousDate);
                             setModalVisible(false)

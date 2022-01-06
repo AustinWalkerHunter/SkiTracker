@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   stickyHeader: {
-    paddingTop: 45,
+    paddingTop: 50,
     width: "100%",
     backgroundColor: colors.navigation,
     flexDirection: "row",

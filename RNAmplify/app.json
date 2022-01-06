@@ -16,8 +16,10 @@
     "assetBundlePatterns": [
       "assets/*"
     ],
+    "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "userInterfaceStyle": "automatic"
     },
     "android": {
       "adaptiveIcon": {

@@ -1,6 +1,7 @@
 export default {
     primary: "#262626",
     primaryDark: "#0d1c26",
+    primaryLight: "#347098",
     secondary: "#ff6524",
     primaryText: 'white',
     loginButton: '#00755e',

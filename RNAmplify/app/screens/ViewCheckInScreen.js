@@ -195,7 +195,7 @@ const ViewCheckInScreen = ({ route, navigation }) => {
                             <Text style={styles.pageTitle}>Viewing Check-in</Text>
                             {(GLOBAL.activeUserId == checkIn.userID || GLOBAL.activeUserId == GLOBAL.adminId) &&
                                 <TouchableOpacity style={styles.deleteButton} onPress={() => setModalVisible(true)}>
-                                    <Entypo name="dots-three-horizontal" size={24} color="white" />
+                                    <Entypo name="dots-three-horizontal" size={26} color="white" />
                                 </TouchableOpacity>
                             }
                         </View>
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     },
     backButtonText: {
         color: "white",
-        fontSize: 18,
+        fontSize: 16,
     },
     deleteButton: {
         position: "absolute",
