@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import colors from "./app/constants/colors"
 
 import Amplify, { Auth } from 'aws-amplify';
-import { StyleSheet, View, Image } from 'react-native';
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 
@@ -13,6 +12,11 @@ import { ToastProvider } from 'react-native-fast-toast'
 import AppNavigator from './app/navigation/AppNavigator'
 import AuthenticationNavigator from './app/navigation/AuthenticationNavigator'
 import { fetchAppData } from './app/setUp'
+import { Foundation, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import SafeScreen from './app/components/SafeScreen'
+
+import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
   const [preparingApp, setPreparingApp] = useState(true)
@@ -66,21 +70,32 @@ export default function App() {
 
   if (preparingApp) {
     return (
-      <View
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary }}
-        onLayout={onLayoutRootView}>
-        {/* <Image
-          source={require('./assets/icon.png')}
-          style={{
-            resizeMode: 'contain',
-            width: height / 5,
-            height: width / 5
-          }}
-        /> */}
+      <View style={styles.screen}>
+        <View style={styles.container}>
+          <View style={styles.stickyHeader}>
+            <TouchableOpacity style={styles.headerButton}>
+              <Ionicons name="person-add-outline"
+                size={26}
+                color={colors.secondary}
+              />
+            </TouchableOpacity>
+            <Text style={styles.pageTitle}>SkiTracker</Text>
+            <TouchableOpacity style={styles.headerButton}>
+              <Foundation name="mountains"
+                size={29}
+                color={colors.secondary}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator size="large" color="white" />
+          </View>
+        </View>
+        <StatusBar style="light" />
       </View>
     )
   }
-
+  console.disableYellowBox = true;
   return (
     <ToastProvider>
       <NavigationContainer>
@@ -94,3 +109,41 @@ export default function App() {
     </ToastProvider>
   )
 }
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: colors.navigation,
+  },
+  container: {
+    flex: 1
+  },
+  stickyHeader: {
+    paddingTop: 45,
+    width: "100%",
+    backgroundColor: colors.navigation,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingBottom: 8,
+    paddingHorizontal: 18
+  },
+  pageTitle: {
+    position: "relative",
+    top: 5,
+    color: "white",
+    fontSize: 17,
+    fontWeight: "500",
+  },
+  headerButton: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  stickyFooter: {
+    width: "100%",
+    position: "absolute",
+    backgroundColor: colors.navigation,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    bottom: -7,
+  },
+})

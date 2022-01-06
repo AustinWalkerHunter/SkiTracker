@@ -63,7 +63,7 @@ const UserProfileScreen = ({ route, navigation }) => {
     }
 
     return (
-        <Profile activeUserProfile={false} viewedUser={viewedUser} userProfileImage={userProfileImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} viewResort={viewResort} />
+        <Profile navigation={navigation} activeUserProfile={false} viewedUser={viewedUser} viewedUserId={viewedUserId} userProfileImage={userProfileImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} viewResort={viewResort} />
     );
 }
 

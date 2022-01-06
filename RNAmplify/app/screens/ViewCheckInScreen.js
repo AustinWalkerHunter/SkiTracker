@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     },
     backButtonText: {
         color: "white",
-        fontSize: 15,
+        fontSize: 18,
     },
     deleteButton: {
         position: "absolute",

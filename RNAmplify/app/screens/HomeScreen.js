@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import { useIsFocused, useScrollToTop } from "@react-navigation/native";
-import { MaterialCommunityIcons, Entypo, FontAwesome5 } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Foundation, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { RefreshControl, View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-native';
 import PostCard from "../components/PostCard"
 import SafeScreen from '../components/SafeScreen'
+import Constants from 'react-native'
 import colors from '../constants/colors'
 import { checkInsByDate } from '../../src/graphql/queries'
 import GLOBAL from '../global';
 import { deleteSelectedCheckIn } from "../actions"
 import resorts from '../constants/resortData'
 import { useToast } from 'react-native-fast-toast'
+import { StatusBar } from 'expo-status-bar';
 
 const HomeScreen = ({ navigation }) => {
     const isFocused = useIsFocused();
@@ -114,6 +116,21 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.screen}>
+            <View style={styles.stickyHeader}>
+                <TouchableOpacity style={styles.headerButton}>
+                    <Ionicons name="person-add-outline"
+                        size={26}
+                        color={colors.secondary}
+                        onPress={() => navigation.navigate('AddFriendScreen')} />
+                </TouchableOpacity>
+                <Text style={styles.pageTitle}>SkiTracker</Text>
+                <TouchableOpacity style={styles.headerButton}>
+                    <Foundation name="mountains"
+                        size={29}
+                        color={colors.secondary}
+                        onPress={() => navigation.navigate('MountainSearchScreen')} />
+                </TouchableOpacity>
+            </View>
             {!loading ?
                 <View style={styles.container}>
                     <View style={styles.checkInList}>
@@ -184,7 +201,8 @@ const HomeScreen = ({ navigation }) => {
                     <ActivityIndicator size="large" color="white" />
                 </View>
             }
-        </View >
+            <StatusBar style="light" />
+        </View>
     );
 }
 
@@ -195,6 +213,26 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1
+    },
+    stickyHeader: {
+        paddingTop: 45,
+        width: "100%",
+        backgroundColor: colors.navigation,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingBottom: 8,
+        paddingHorizontal: 18
+    },
+    pageTitle: {
+        position: "relative",
+        top: 5,
+        color: "white",
+        fontSize: 17,
+        fontWeight: "500",
+    },
+    headerButton: {
+        flexDirection: "row",
+        alignItems: "center",
     },
     imageViewerContainer: {
         position: 'absolute',
@@ -237,7 +275,7 @@ const styles = StyleSheet.create({
     },
     checkInButtonContainer: {
         position: "absolute",
-        bottom: 90,
+        bottom: 85,
         right: '3%',
     },
     checkInButton: {

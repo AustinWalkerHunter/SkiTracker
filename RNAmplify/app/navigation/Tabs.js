@@ -62,26 +62,29 @@ const HomeStackScreen = ({ navigation }) => (
             name="HomeScreen"
             component={HomeScreen}
             options={{
-                headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-                headerTitleStyle: { fontSize: 18, color: colors.navigationText },
-                title: 'SkiTracker',
-                headerLeft: () => (
-                    <TouchableOpacity style={{ marginHorizontal: 25 }}>
-                        <Ionicons name="person-add-outline"
-                            size={24}
-                            color={colors.secondary}
-                            onPress={() => navigation.navigate('AddFriendScreen')} />
-                    </TouchableOpacity>
-                ),
-                headerRight: () => (
-                    <TouchableOpacity style={{ marginHorizontal: 25 }}>
-                        <Foundation name="mountains"
-                            size={28}
-                            color={colors.secondary}
-                            onPress={() => navigation.navigate('MountainSearchScreen')} />
-                    </TouchableOpacity>
-                ),
+                headerShown: false,
             }}
+        // options={{
+        //     headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+        //     headerTitleStyle: { fontSize: 18, color: colors.navigationText },
+        //     title: 'SkiTracker',
+        //     headerLeft: () => (
+        //         <TouchableOpacity style={{ marginHorizontal: 25 }}>
+        //             <Ionicons name="person-add-outline"
+        //                 size={24}
+        //                 color={colors.secondary}
+        //                 onPress={() => navigation.navigate('AddFriendScreen')} />
+        //         </TouchableOpacity>
+        //     ),
+        //     headerRight: () => (
+        //         <TouchableOpacity style={{ marginHorizontal: 25 }}>
+        //             <Foundation name="mountains"
+        //                 size={28}
+        //                 color={colors.secondary}
+        //                 onPress={() => navigation.navigate('MountainSearchScreen')} />
+        //         </TouchableOpacity>
+        //     ),
+        // }}
         />
     </HomeStack.Navigator >
 )
@@ -92,27 +95,30 @@ const ProfileStackScreen = ({ navigation }) => (
             name="MyProfileScreen"
             component={MyProfileScreen}
             options={{
-                headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-                headerTitleStyle: { fontSize: 18, color: colors.navigationText },
-                title: false,
-                headerLeft: () => (
-                    <TouchableOpacity style={{ marginHorizontal: 25 }}>
-                        <Ionicons name="notifications-outline"
-                            size={24}
-                            color={colors.secondary}
-                            onPress={() => navigation.navigate('NotificationScreen')}
-                        />
-                    </TouchableOpacity>
-                ),
-                headerRight: () => (
-                    <TouchableOpacity style={{ marginHorizontal: 25 }}>
-                        <Feather name="settings" size={28}
-                            type='font-awesome'
-                            color={colors.secondary}
-                            onPress={() => navigation.navigate('SettingsScreen')} />
-                    </TouchableOpacity>
-                )
+                headerShown: false,
             }}
+        // options={{
+        //     headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+        //     headerTitleStyle: { fontSize: 18, color: colors.navigationText },
+        //     title: false,
+        //     headerLeft: () => (
+        //         <TouchableOpacity style={{ marginHorizontal: 25 }}>
+        //             <Ionicons name="notifications-outline"
+        //                 size={24}
+        //                 color={colors.secondary}
+        //                 onPress={() => navigation.navigate('NotificationScreen')}
+        //             />
+        //         </TouchableOpacity>
+        //     ),
+        //     headerRight: () => (
+        //         <TouchableOpacity style={{ marginHorizontal: 25 }}>
+        //             <Feather name="settings" size={28}
+        //                 type='font-awesome'
+        //                 color={colors.secondary}
+        //                 onPress={() => navigation.navigate('SettingsScreen')} />
+        //         </TouchableOpacity>
+        //     )
+        // }}
         />
     </ProfileStack.Navigator>
 )

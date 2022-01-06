@@ -116,14 +116,17 @@ function AppNavigator({ updateAuthState, navigation }) {
             <Main.Screen
                 name="UserProfileScreen"
                 component={UserProfileScreen}
+                // options={{
+                //     headerShown: true,
+                //     headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
+                //     headerBackTitle: 'Back',
+                //     headerBackTitleStyle: { color: colors.navigationText },
+                //     headerTintColor: colors.secondary,
+                //     headerTitleStyle: { color: colors.navigationText },
+                //     title: false,
+                // }}
                 options={{
-                    headerShown: true,
-                    headerStyle: { backgroundColor: colors.navigation, shadowColor: "transparent" },
-                    headerBackTitle: 'Back',
-                    headerBackTitleStyle: { color: colors.navigationText },
-                    headerTintColor: colors.secondary,
-                    headerTitleStyle: { color: colors.navigationText },
-                    title: false,
+                    headerShown: false,
                 }}
             />
             <Main.Screen

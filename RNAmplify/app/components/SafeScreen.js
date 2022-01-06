@@ -13,7 +13,7 @@ function SafeScreen(props) {
 
 const styles = StyleSheet.create({
     screen: {
-        paddingTop: Constants.statusbarHeight
+        paddingTop: Constants.statusbarHeight,
     }
 })
 

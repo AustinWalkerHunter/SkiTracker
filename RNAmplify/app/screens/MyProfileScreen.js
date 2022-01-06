@@ -148,7 +148,7 @@ const MyProfileScreen = ({ navigation }) => {
 
 
     return (
-        <Profile activeUserProfile={true} userProfileImage={userProfileImage} pickImage={pickImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} viewResort={viewResort} />
+        <Profile navigation={navigation} activeUserProfile={true} userProfileImage={userProfileImage} pickImage={pickImage} userDayCount={userDayCount} pageLoading={pageLoading} userCheckIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} viewResort={viewResort} />
     );
 }
 

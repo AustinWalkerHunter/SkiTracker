@@ -4,18 +4,21 @@ import MyStats from '../components/MyStats'
 import ProfileCheckIns from '../components/ProfileCheckIns'
 import ProfileIcon from '../components/ProfileIcon'
 import { useScrollToTop } from "@react-navigation/native";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons, Entypo, Feather } from '@expo/vector-icons';
 import colors from '../constants/colors';
 import GLOBAL from '../global';
-import { getAllCheckInData } from '../actions'
+import { getAllCheckInData, followUser, unfollowUser } from '../actions'
+
+import ConfirmationModal from '../components/ConfirmationModal'
 
 
-function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn, viewResort }) {
+function Profile({ navigation, activeUserProfile, viewedUser, viewedUserId, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn, viewResort }) {
     const [fullScreenPhoto, setFullScreenPhoto] = useState()
     const [imageLoading, setImageLoading] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false);
+    const [following, setFollowing] = useState(viewedUserId && GLOBAL.following.includes(viewedUserId))
     const ref = React.useRef(null);
     useScrollToTop(ref);
-    // const [showCheckIns, setShowCheckIns] = useState(false)
 
     const displayFullImage = (checkInPhotoUri) => {
         setFullScreenPhoto(checkInPhotoUri);
@@ -25,10 +28,50 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
         }, 250);
     }
 
-
     return (
         <View style={styles.screen}>
             {/* getting a warning for this scroll view because I have lists inside of it, (another scoll view for photos) */}
+            <View style={styles.stickyHeader}>
+                {activeUserProfile ?
+                    <TouchableOpacity style={styles.headerButton}>
+                        <Ionicons name="notifications-outline"
+                            size={24}
+                            color={colors.secondary}
+                            onPress={() => navigation.navigate('NotificationScreen')}
+                        />
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity style={[styles.headerButton, styles.backButton]} onPress={() => navigation.goBack(null)}>
+                        <Ionicons name="chevron-back-outline" size={30} color={colors.secondary} />
+                        <Text style={styles.backButtonText}>Back</Text>
+                    </TouchableOpacity>
+                }
+                {activeUserProfile ?
+                    <TouchableOpacity style={styles.headerButton}>
+                        <Feather name="settings" size={28}
+                            type='font-awesome'
+                            color={colors.secondary}
+                            onPress={() => navigation.navigate('SettingsScreen')} />
+                    </TouchableOpacity>
+                    :
+                    following
+                        ?
+                        <TouchableOpacity style={[styles.headerButton, styles.button, { width: '25%', backgroundColor: colors.secondary }]} onPress={() => {
+                            setModalVisible(true)
+                        }}>
+                            <Text style={styles.text}>Following</Text>
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity style={[styles.headerButton, styles.button, { backgroundColor: colors.primaryBlue }]} onPress={() => {
+                            followUser(viewedUserId)
+                            setFollowing(true)
+                        }}>
+                            <Text style={styles.text}>Follow</Text>
+                        </TouchableOpacity>
+
+
+                }
+            </View>
             <ScrollView ref={ref}>
                 <View style={styles.profileContainer}>
                     <View style={styles.profilePictureContainer}>
@@ -73,9 +116,6 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
                 </View>
                 <View style={styles.userStatsContainer}>
                     <MyStats dayCount={userDayCount} viewResort={viewResort} checkInData={userCheckIns && userCheckIns.length > 0 ? getAllCheckInData(userCheckIns) : null} />
-                    {/* <TouchableOpacity style={styles.showCheckInButton} onPress={() => setShowCheckIns(!showCheckIns)}>
-                        <Text style={styles.showCheckInsText}>{!showCheckIns ? "Show" : "Hide"} Check-ins</Text>
-                    </TouchableOpacity> */}
                     {!pageLoading ?
                         <ProfileCheckIns checkIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} />
                         :
@@ -100,6 +140,16 @@ function Profile({ activeUserProfile, viewedUser, userProfileImage, pickImage, u
                     </View>
                     : null
             }
+            <ConfirmationModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                title={"Are you sure you want to unfollow " + viewedUser?.username + "?"}
+                confirmAction={() => {
+                    unfollowUser(viewedUserId)
+                    setFollowing(false)
+                }}
+                follow={true}
+            />
         </View>
     );
 }
@@ -108,6 +158,26 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         backgroundColor: colors.navigation
+    },
+    stickyHeader: {
+        paddingTop: 50,
+        width: "100%",
+        backgroundColor: colors.navigation,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        // paddingBottom: 8,
+        paddingHorizontal: 15
+    },
+    headerButton: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    backButton: {
+        marginLeft: -10
+    },
+    backButtonText: {
+        color: "white",
+        fontSize: 16,
     },
     profileContainer: {
         bottom: 10
@@ -190,6 +260,21 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
         marginRight: 5
     },
+    button: {
+        marginTop: 5,
+        height: 26,
+        // flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 30,
+        width: '20%'
+    },
+    text: {
+        color: "white",
+        fontSize: 13,
+        textAlign: 'center',
+        fontWeight: '500',
+    }
 })
 
 export default Profile;
