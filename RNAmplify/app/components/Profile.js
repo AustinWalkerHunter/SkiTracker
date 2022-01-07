@@ -81,7 +81,7 @@ function Profile({ navigation, activeUserProfile, viewedUser, viewedUserId, user
                                     userProfileImage ?
                                         <ProfileIcon size={175} image={userProfileImage} isSettingScreen={false} />
                                         :
-                                        <MaterialCommunityIcons name="account-outline" size={175} color="grey" />
+                                        <MaterialCommunityIcons style={{ marginTop: -15, marginBottom: -15 }} name="account-outline" size={175} color="grey" />
                                 }
                             </TouchableOpacity>
                             :
@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginTop: 10,
-        marginBottom: 5
     },
     nameContainer: {
         justifyContent: "center",
@@ -197,7 +196,7 @@ const styles = StyleSheet.create({
         fontSize: 30
     },
     descriptionContainer: {
-        width: "70%",
+        width: "85%",
     },
     userDescription: {
         color: "#a1a1a1",

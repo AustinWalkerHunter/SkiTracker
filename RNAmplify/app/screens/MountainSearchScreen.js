@@ -60,7 +60,9 @@ const MountainSearchScreen = ({ navigation }) => {
                         <FlatList
                             data={searchItems}
                             keyExtractor={(item, index) => String(index)}
-                            renderItem={({ item }) => <PickerItem label={item.resort_name} onPress={() => { viewResort(item.resort_name) }}
+                            renderItem={({ item }) => <PickerItem label={item.resort_name}
+                                onPress={() => { viewResort(item.resort_name) }}
+                                contentContainerStyle={{ paddingBottom: '80%' }}
                             />}
                         />
                     </View>
@@ -78,7 +80,6 @@ const styles = StyleSheet.create({
     },
     searchContainer: {
         width: "100%",
-        paddingBottom: 100
     },
     titleInput: {
         color: "black",
@@ -87,6 +88,12 @@ const styles = StyleSheet.create({
         backgroundColor: "#0d0d0d",
         borderBottomColor: 'transparent',
         borderTopColor: 'transparent'
+    },
+    modalScreen: {
+        height: "100%",
+    },
+    modalView: {
+        height: "100%",
     },
 })
 export default MountainSearchScreen;

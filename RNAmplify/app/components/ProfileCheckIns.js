@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
         left: 5
     },
     zeroStateContainer: {
-        marginTop: 15,
-        paddingVertical: "10%",
+        // marginTop: 15,
+        // paddingVertical: "10%",
     },
     zeroStateText: {
         color: "white",
