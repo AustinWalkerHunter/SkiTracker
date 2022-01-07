@@ -38,11 +38,11 @@ const ViewCheckInScreen = ({ route, navigation }) => {
 
     useEffect(() => {
         if (isFocused) {
+
             var index = GLOBAL.allCheckIns.findIndex((obj => obj.id == checkInId));
             var viewedCheckIn = GLOBAL.allCheckIns[index]
             setObjIndex(index)
             setCheckIn(GLOBAL.allCheckIns[index])
-
             if (viewedCheckIn) {
                 setLikedCount(viewedCheckIn.likes)
                 setCommentCount(viewedCheckIn.comments)

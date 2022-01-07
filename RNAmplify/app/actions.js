@@ -49,6 +49,7 @@ export async function deleteSelectedCheckIn(item) {
                 await API.graphql(graphqlOperation(deleteCheckIn, { input: { id: item.id } }));
                 GLOBAL.activeUserCheckIns = GLOBAL.activeUserCheckIns.filter(checkIn => checkIn.id != item.id);
                 GLOBAL.allCheckIns = GLOBAL.allCheckIns.filter(checkIn => checkIn.id != item.id);
+                GLOBAL.followingCheckIns = GLOBAL.followingCheckIns.filter(checkIn => checkIn.id != item.id);
                 GLOBAL.checkInsUpdated = true;
                 console.log("CheckIn deleted.")
             }

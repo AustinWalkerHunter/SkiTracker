@@ -60,7 +60,7 @@ const HomeScreen = ({ navigation }) => {
                         followingCheckIns.push(checkIn)
                     }
                 })
-                GLOBAL.allCheckIns = followingCheckIns
+                GLOBAL.followingCheckIns = followingCheckIns
             }
         } catch (error) {
             console.log("Error getting user on Home Screen")
@@ -134,10 +134,10 @@ const HomeScreen = ({ navigation }) => {
             {!loading ?
                 <View style={styles.container}>
                     <View style={styles.checkInList}>
-                        {GLOBAL.allCheckIns && GLOBAL.allCheckIns?.length > 0
+                        {GLOBAL.followingCheckIns && GLOBAL.followingCheckIns?.length > 0
                             ?
                             <FlatList
-                                data={GLOBAL.allCheckIns}
+                                data={GLOBAL.followingCheckIns}
                                 ref={ref}
                                 inverted={false}
                                 contentContainerStyle={{ paddingBottom: '50%' }}
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 35,
         alignSelf: 'center',
-        marginBottom: 75,
+        marginBottom: 60,
         fontWeight: '600'
     },
     zeroStateText: {
@@ -314,13 +314,13 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     zeroStateIcon: {
-        marginTop: 120,
+        marginTop: 130,
         alignSelf: "flex-end"
     },
     mountainIcon: {
         zIndex: -999,
         // top: 40,
-        bottom: 0,
+        bottom: -20,
         left: 0,
         right: 0,
         position: "absolute",

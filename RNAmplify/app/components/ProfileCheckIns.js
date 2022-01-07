@@ -66,7 +66,7 @@ function ProfileCheckIns({ checkIns, updateDayCount, viewCheckIn }) {
                                 item={item}
                                 title={item.title}
                                 location={item.location}
-                                date={getDate(item.createdAt)}
+                                date={getDate(item.date)}
                                 sport={item.sport}
                                 updateDayCount={updateDayCount}
                                 viewCheckIn={viewCheckIn}

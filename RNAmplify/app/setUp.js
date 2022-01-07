@@ -129,6 +129,7 @@ const fetchCheckIns = async () => {
     console.log("fetchCheckIns")
     var checkInIdsAndImages = {}
     var checkInCommentCounts = {}
+    var allCheckIns = [];
     var followingCheckIns = [];
     const queryParams = {
         type: "CheckIn",
@@ -141,6 +142,7 @@ const fetchCheckIns = async () => {
             await Promise.all(checkIns.map(async (checkIn) => {
                 var checkInId = checkIn.id;
                 checkInCommentCounts[checkInId] = checkIn.comments;
+                allCheckIns.push(checkIn)
                 if (GLOBAL.following.includes(checkIn.userID) || GLOBAL.activeUserId.includes(checkIn.userID)) {
                     followingCheckIns.push(checkIn)
                 }
@@ -154,7 +156,8 @@ const fetchCheckIns = async () => {
             }));
             GLOBAL.checkInPhotos = checkInIdsAndImages;
             GLOBAL.checkInCommentCounts = checkInCommentCounts;
-            GLOBAL.allCheckIns = followingCheckIns;
+            GLOBAL.followingCheckIns = followingCheckIns;
+            GLOBAL.allCheckIns = allCheckIns;
         }
     }
     catch (error) {

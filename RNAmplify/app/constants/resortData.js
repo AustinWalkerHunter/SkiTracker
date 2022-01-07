@@ -2847,6 +2847,24 @@ export default [
         "lon": -88.79
     },
     {
+        "resort_name": "The Lodge",
+        "state": "",
+        // "summit": ?,
+        // "base": 4500,
+        // "vertical": 1150,
+        // "lifts": 4,
+        // "runs": 34,
+        // "acres": 540,
+        // "green_percent": 0.2,
+        // "green_acres": 108,
+        // "blue_percent": 0.5,
+        // "blue_acres": 270,
+        // "black_percent": 0.3,
+        // "black_acres": 162,
+        // "lat": 47.47,
+        // "lon": -115.69
+    },
+    {
         "resort_name": "Lookout Pass, ID",
         "state": "Idaho",
         "summit": 5650,
@@ -3981,7 +3999,7 @@ export default [
         "lon": -72.72
     },
     {
-        "resort_name": "Olympic Valley, CA",
+        "resort_name": "Palisades Tahoe, CA",
         "state": "California",
         "summit": 9050,
         "base": 6200,

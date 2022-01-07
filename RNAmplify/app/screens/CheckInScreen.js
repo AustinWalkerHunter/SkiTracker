@@ -7,7 +7,7 @@ import RoundedButton from '../components/RoundedButton'
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import colors from '../constants/colors'
 import { createCheckIn } from '../../src/graphql/mutations'
-import * as Permissions from 'expo-permissions';
+// import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker'
 import { Buffer } from "buffer"; // get this via: npm install buffer
 import uuid from 'react-native-uuid';
@@ -126,23 +126,23 @@ const CheckInScreen = ({ route, navigation }) => {
     }
 
     const pickImage = async () => {
-        const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
-        if (granted) {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: 'Images',
-                allowsEditing: true,
-                maxWidth: 500,
-                maxHeight: 500,
-                quality: 0.1
-            });
-            if (result.cancelled) {
-                return;
-            } else {
-                // setPercentage(0);
-                setShowAddPhotoButton(false)
-                setCheckIn({ ...checkIn, image: result.uri })
-            }
+        // const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
+        // if (granted) {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: 'Images',
+            allowsEditing: true,
+            maxWidth: 500,
+            maxHeight: 500,
+            quality: 0.1
+        });
+        if (result.cancelled) {
+            return;
+        } else {
+            // setPercentage(0);
+            setShowAddPhotoButton(false)
+            setCheckIn({ ...checkIn, image: result.uri })
         }
+        // }
     };
 
     const handleImagePicked = async (imageUri) => {

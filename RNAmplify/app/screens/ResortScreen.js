@@ -30,56 +30,58 @@ const ResortScreen = ({ route, navigation }) => {
                         <Text style={styles.subTitle}>{resortData.state}</Text>
 
                     </View>
-                    <View style={styles.content}>
-                        <Text style={styles.statTitle}>Stats</Text>
-                        <View style={styles.stats}>
-                            <View style={styles.statColumn}>
-                                <View style={styles.statRow}>
-                                    <Text style={styles.dataTitle}>Base:</Text>
-                                    <Text style={styles.data}>{resortData.base} ft</Text>
+                    {resortData.resort_name != "The Lodge" &&
+                        <View style={styles.content}>
+                            <Text style={styles.statTitle}>Stats</Text>
+                            <View style={styles.stats}>
+                                <View style={styles.statColumn}>
+                                    <View style={styles.statRow}>
+                                        <Text style={styles.dataTitle}>Base:</Text>
+                                        <Text style={styles.data}>{resortData.base} ft</Text>
+                                    </View>
+                                    <View style={styles.rowLine} />
+                                    <View style={styles.statRow}>
+                                        <Text style={styles.dataTitle}>Acres:</Text>
+                                        <Text style={styles.data}>{resortData.acres}</Text>
+                                    </View>
+                                    <View style={styles.rowLine} />
+                                    <View style={styles.statRow}>
+                                        <Text style={styles.dataTitle}>Runs:</Text>
+                                        <Text style={styles.data}>{resortData.runs}</Text>
+                                    </View>
+                                    <View style={styles.rowLine} />
                                 </View>
-                                <View style={styles.rowLine} />
-                                <View style={styles.statRow}>
-                                    <Text style={styles.dataTitle}>Acres:</Text>
-                                    <Text style={styles.data}>{resortData.acres}</Text>
+                                <View style={styles.statColumn}>
+                                    <View style={styles.statRow}>
+                                        <Text style={styles.dataTitle}>Summit:</Text>
+                                        <Text style={styles.data}>{resortData.summit} ft</Text>
+                                    </View>
+                                    <View style={styles.rowLine} />
+                                    <View style={styles.statRow}>
+                                        <Text style={styles.dataTitle}>Vertical:</Text>
+                                        <Text style={styles.data}>{resortData.vertical} ft</Text>
+                                    </View>
+                                    <View style={styles.rowLine} />
+                                    <View style={styles.statRow}>
+                                        <Text style={styles.dataTitle}>Lifts:</Text>
+                                        <Text style={styles.data}>{resortData.lifts}</Text>
+                                    </View>
+                                    <View style={styles.rowLine} />
                                 </View>
-                                <View style={styles.rowLine} />
-                                <View style={styles.statRow}>
-                                    <Text style={styles.dataTitle}>Runs:</Text>
-                                    <Text style={styles.data}>{resortData.runs}</Text>
-                                </View>
-                                <View style={styles.rowLine} />
                             </View>
-                            <View style={styles.statColumn}>
-                                <View style={styles.statRow}>
-                                    <Text style={styles.dataTitle}>Summit:</Text>
-                                    <Text style={styles.data}>{resortData.summit} ft</Text>
-                                </View>
-                                <View style={styles.rowLine} />
-                                <View style={styles.statRow}>
-                                    <Text style={styles.dataTitle}>Vertical:</Text>
-                                    <Text style={styles.data}>{resortData.vertical} ft</Text>
-                                </View>
-                                <View style={styles.rowLine} />
-                                <View style={styles.statRow}>
-                                    <Text style={styles.dataTitle}>Lifts:</Text>
-                                    <Text style={styles.data}>{resortData.lifts}</Text>
-                                </View>
-                                <View style={styles.rowLine} />
-                            </View>
-                        </View>
-                        {resortData.trail_map &&
-                            <View style={styles.mapContainer}>
-                                <Text style={styles.trailText}
-                                    onPress={() => Linking.openURL(resortData.trail_map)}>
-                                    {resortData.resort_name} Trail Map
+                            {resortData.trail_map &&
+                                <View style={styles.mapContainer}>
+                                    <Text style={styles.trailText}
+                                        onPress={() => Linking.openURL(resortData.trail_map)}>
+                                        {resortData.resort_name} Trail Map
                                 </Text>
+                                </View>
+                            }
+                            <View style={styles.icon}>
+                                <FontAwesome5 name="mountain" size={250} color={colors.primaryDark} />
                             </View>
-                        }
-                        <View style={styles.icon}>
-                            <FontAwesome5 name="mountain" size={250} color={colors.primaryDark} />
                         </View>
-                    </View>
+                    }
                 </View >
                 :
                 <ActivityIndicator size="large" color="white" />
