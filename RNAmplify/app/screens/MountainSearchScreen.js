@@ -45,7 +45,7 @@ const MountainSearchScreen = ({ navigation }) => {
     return (
         <SafeScreen style={styles.screen}>
             <View style={styles.searchContainer}>
-                <TouchableOpacity style={styles.modalScreen} onPress={() => setModalVisible(false)} >
+                <View style={styles.modalScreen} onPress={() => setModalVisible(false)} >
                     <View style={styles.modalView}>
                         <SearchBar
                             placeholder="Type a resort name or state..."
@@ -66,7 +66,7 @@ const MountainSearchScreen = ({ navigation }) => {
                             />}
                         />
                     </View>
-                </TouchableOpacity>
+                </View>
             </View>
         </SafeScreen>
     );

@@ -415,13 +415,13 @@ export default [
         "lon": -75.68
     },
     {
-        "resort_name": "Bear Mountain, CA",
+        "resort_name": "Big Bear Mountain, CA",
         "state": "California",
         "summit": 8805,
         "base": 7140,
         "vertical": 1665,
         "lifts": 12,
-        "runs": null,
+        "runs": 27,
         "acres": 748,
         "green_percent": 0.3,
         "green_acres": 224.4,
@@ -430,7 +430,8 @@ export default [
         "black_percent": 0.3,
         "black_acres": 224.4,
         "lat": 37.1,
-        "lon": -119.1
+        "lon": -119.1,
+        "trail_map": "https://www.bigbearmountainresort.com/mountain-information/trail-maps"
     },
     {
         "resort_name": "Bear Paw, MT",
@@ -6304,6 +6305,17 @@ export default [
         "black_acres": 27.25,
         "lat": 41.33,
         "lon": -75.98
+    },
+    {
+        "resort_name": "Whistler Mountain, BC",
+        "state": "British Columbia",
+        "summit": 7160,
+        "base": 2140,
+        "vertical": 5020,
+        "lifts": 17,
+        "runs": 100,
+        "acres": 8171,
+        "trail_map": "https://www.whistlerblackcomb.com/the-mountain/about-the-mountain/trail-maps.aspx"
     },
     {
         "resort_name": "Wild Mountain, MN",
