@@ -244,8 +244,6 @@ const styles = StyleSheet.create({
         zIndex: 999
     },
     imageDisplay: {
-        // position: 'absolute',
-        // top: "20%",
         width: "100%",
         height: undefined,
         aspectRatio: 1
@@ -299,18 +297,19 @@ const styles = StyleSheet.create({
     },
     zeroStateContainer: {
         width: "100%",
-        marginTop: "30%"
+        marginTop: "30%",
     },
     zeroStateTitle: {
         color: "white",
-        fontSize: 35,
+        fontSize: 32,
         alignSelf: 'center',
         marginBottom: 60,
-        fontWeight: '600'
+        fontWeight: '600',
+        textAlign: 'center'
     },
     zeroStateText: {
         color: "white",
-        fontSize: 25,
+        fontSize: 22,
         alignSelf: 'center',
     },
     zeroStateIcon: {
@@ -319,12 +318,10 @@ const styles = StyleSheet.create({
     },
     mountainIcon: {
         zIndex: -999,
-        // top: 40,
         bottom: -20,
         left: 0,
         right: 0,
         position: "absolute",
-        // justifyContent: 'center',
         alignItems: 'center',
         opacity: 0.4
     }

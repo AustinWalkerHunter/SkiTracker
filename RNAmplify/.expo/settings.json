@@ -3,8 +3,8 @@
   "lanType": "ip",
   "dev": true,
   "minify": false,
-  "urlRandomness": null,
+  "urlRandomness": "bk-4i4",
   "https": false,
-  "scheme": null,
+  "scheme": "exp+skitracker",
   "devClient": false
 }
