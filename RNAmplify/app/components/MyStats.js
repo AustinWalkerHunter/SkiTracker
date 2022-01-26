@@ -41,7 +41,7 @@ function MyStats({ dayCount, viewResort, checkInData }) {
 
                     {/* <View style={styles.statsData}> */}
                     <View style={styles.titleContainer}>
-                        <Text style={styles.dataTitle}>Top Location</Text>
+                        <Text style={styles.dataTitle}>Top Resort</Text>
                     </View>
                     <View style={styles.userData}>
                         <Text style={styles.mountainInfo}>{checkInData ? checkInData.topLocation : "N/A"}</Text>
@@ -49,7 +49,7 @@ function MyStats({ dayCount, viewResort, checkInData }) {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.statsData} onPress={() => { checkInData ? viewResort(checkInData.recentLocation) : null }}>
                     <View style={styles.titleContainer}>
-                        <Text style={styles.dataTitle}>Recent Location</Text>
+                        <Text style={styles.dataTitle}>Most Recent</Text>
                     </View>
                     <View style={styles.userData}>
                         <Text style={styles.mountainInfo}>{checkInData ? checkInData.recentLocation : "N/A"}</Text>

@@ -8,6 +8,7 @@ import { Storage } from 'aws-amplify';
 import GLOBAL from '../global';
 import ConfirmationModal from '../components/ConfirmationModal'
 import { increaseCheckInLikes, decreaseCheckInLikes } from '../actions'
+import { LinearGradient } from 'expo-linear-gradient';
 
 function PostCard({ item, getUserProfile, displayFullImage, deleteCheckIn, viewCheckIn, viewResort }) {
     const [postCardDeleted, setPostCardDeleted] = useState(false);
@@ -52,7 +53,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteCheckIn, viewC
 
     useEffect(() => {
         var index = GLOBAL.allCheckIns.findIndex((obj => obj.id == item.id));
-        getHolidayImage();
+        // getHolidayImage();
         var checkIn = GLOBAL.allCheckIns[index]
         setObjIndex(index)
         setLikedCount(checkIn?.likes || 0)
@@ -132,7 +133,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteCheckIn, viewC
                                         <TouchableWithoutFeedback onPress={() => getUserProfile(item.userID)}>
                                             <View>
                                                 <Text style={styles.authorText}>{username}</Text>
-                                                <Text style={styles.dateText}>{getDate(item.date)}</Text>
+                                                <Text style={styles.dateText}>{getDate(item.createdAt)}</Text>
                                             </View>
                                         </TouchableWithoutFeedback>
                                     </View>
@@ -160,7 +161,10 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteCheckIn, viewC
                         {postCardImage ?
                             <TouchableWithoutFeedback onPress={() => displayFullImage(postCardImage)}>
                                 <View style={styles.imageContainer}>
-                                    <Image style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} />
+                                    <ImageBackground style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} >
+                                    <LinearGradient colors={['transparent', '#1a1a1a']} style={{marginTop: 200, height : 100, width : '100%'}} />
+                                    </ImageBackground>
+
                                     <View style={styles.imageLoading}>
                                         <Ionicons name="image-outline" size={75} color="#a6a6a6" />
                                         <Text style={styles.loadingText}>Loading image...</Text>
@@ -225,7 +229,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteCheckIn, viewC
 
 const styles = StyleSheet.create({
     postBox: {
-        backgroundColor: "#26262688",
+        backgroundColor: "#1a1a1a",
         alignSelf: 'center',
         width: '100%',
         marginBottom: 5,

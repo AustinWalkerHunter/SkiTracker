@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, ScrollView, ActivityIndicator, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
+import { View, ScrollView, ActivityIndicator, TouchableOpacity, Text, StyleSheet, Image, ImageBackground  } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import MyStats from '../components/MyStats'
 import ProfileCheckIns from '../components/ProfileCheckIns'
 import ProfileIcon from '../components/ProfileIcon'
@@ -73,6 +74,11 @@ function Profile({ navigation, activeUserProfile, viewedUser, viewedUserId, user
                 }
             </View>
             <ScrollView ref={ref}>
+                <View style={styles.backgroundContainer}>
+                <ImageBackground  source={userProfileImage && {uri: userProfileImage}} resizeMode="cover" imageStyle={{opacity:0.3}} blurRadius={15} style={styles.backgroundImage}>
+                    <LinearGradient colors={['#00000000', colors.navigation]} style={{height : '100%', width : '100%'}} />
+                </ImageBackground >
+                </View>
                 <View style={styles.profileContainer}>
                     <View style={styles.profilePictureContainer}>
                         {activeUserProfile ?
@@ -114,6 +120,7 @@ function Profile({ navigation, activeUserProfile, viewedUser, viewedUserId, user
                         </View>
                     </View>
                 </View>
+                
                 <View style={styles.userStatsContainer}>
                     <MyStats dayCount={userDayCount} viewResort={viewResort} checkInData={userCheckIns && userCheckIns.length > 0 ? getAllCheckInData(userCheckIns) : null} />
                     {!pageLoading ?
@@ -162,11 +169,22 @@ const styles = StyleSheet.create({
     stickyHeader: {
         paddingTop: 50,
         width: "100%",
-        backgroundColor: colors.navigation,
+        backgroundColor: "transparent",
+        position:"absolute",
         flexDirection: "row",
         justifyContent: "space-between",
-        // paddingBottom: 8,
-        paddingHorizontal: 15
+        paddingHorizontal: 15,
+        zIndex: 999
+    },
+    backgroundContainer:{
+        width: "100%",
+        position:"absolute",
+    },
+    backgroundImage: {
+        width : '100%', 
+        height: 500,
+        justifyContent: "center",
+        paddingTop: 70,
     },
     headerButton: {
         flexDirection: "row",
@@ -180,7 +198,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     profileContainer: {
-        bottom: 10
+        paddingTop: 80,
+        bottom: 10,
     },
     profilePictureContainer: {
         justifyContent: "center",

@@ -56,10 +56,8 @@ function CheckInComments({ comments, getUserProfile, deleteComment }) {
 
 const styles = StyleSheet.create({
     checkInsContainer: {
-        marginHorizontal: 10,
         marginVertical: 10,
-        width: "100%",
-        paddingBottom: 50
+        paddingBottom: 50,
     },
     filter: {
         flexDirection: "row",

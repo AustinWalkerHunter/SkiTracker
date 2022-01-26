@@ -28,6 +28,7 @@ const AddFriendScreen = ({ navigation }) => {
         for (const key in GLOBAL.allUsers) {
             if (GLOBAL.activeUserId != key) allUsers.push(GLOBAL.allUsers[key])
         }
+        allUsers.sort((a, b) => a.username.localeCompare(b.username));
         setUsers(allUsers)
         setSearchItems(allUsers);
         setLoading(false)

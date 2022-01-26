@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
         color: "#b3b3b3",
         fontWeight: "300",
         position: "absolute",
-        top: 0,
+        top: 5,
         right: 10
     },
     deleteIcon: {
