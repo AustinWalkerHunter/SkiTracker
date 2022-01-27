@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
-import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
+import {Ionicons, MaterialCommunityIcons, Entypo} from "@expo/vector-icons";
 import colors from "../constants/colors";
 import {Auth} from "aws-amplify";
 import ConfirmationModal from "../components/ConfirmationModal";
 
-function Header({navigation, title, rightIcon, data, logout, updateAuthState}) {
+function Header({navigation, title, rightIcon, data, logout, updateAuthState, activeUserCheckIn, deleteCheckInModal}) {
 	const [modalVisible, setModalVisible] = useState(false);
 
 	return (
@@ -28,7 +28,12 @@ function Header({navigation, title, rightIcon, data, logout, updateAuthState}) {
 						<View style={styles.emptyView} />
 					</View>
 				)}
-				{!rightIcon && !logout && <View style={styles.emptyView} />}
+				{activeUserCheckIn && (
+					<TouchableOpacity style={styles.headerButton} onPress={() => deleteCheckInModal(true)}>
+						<Entypo name="dots-three-horizontal" size={26} color="white" />
+					</TouchableOpacity>
+				)}
+				{!rightIcon && !logout && !activeUserCheckIn && <View style={styles.emptyView} />}
 			</View>
 			<ConfirmationModal
 				modalVisible={modalVisible}

@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
 	},
 
 	titleLine: {
-		borderWidth: 0.3,
+		borderWidth: 0.5,
 		borderColor: colors.secondary,
 		width: "100%",
 		marginVertical: 5,

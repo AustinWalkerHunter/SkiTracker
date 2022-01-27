@@ -16,6 +16,7 @@ import {increaseCheckInLikes, decreaseCheckInLikes, deleteSelectedCheckIn, delet
 import {commentsByDate} from "../../src/graphql/queries";
 import {createComment} from "../../src/graphql/mutations";
 import {increaseCheckInComments} from "../actions";
+import Header from "../components/Header";
 
 const ViewCheckInScreen = ({route, navigation}) => {
 	const {checkInId, scrollToComments, fromMyProfile} = route.params;
@@ -184,17 +185,12 @@ const ViewCheckInScreen = ({route, navigation}) => {
 			<SafeScreen style={styles.screen}>
 				{!pageLoading && checkIn && author ? (
 					<View style={styles.container}>
-						<View style={styles.stickyHeader}>
-							<TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack(null)}>
-								<Ionicons name="chevron-back-circle-outline" size={35} color={colors.secondary} />
-							</TouchableOpacity>
-							<Text style={styles.pageTitle}>Viewing Check-in</Text>
-							{(GLOBAL.activeUserId == checkIn.userID || GLOBAL.activeUserId == GLOBAL.adminId) && (
-								<TouchableOpacity style={styles.headerButton} onPress={() => setModalVisible(true)}>
-									<Entypo name="dots-three-horizontal" size={26} color="white" />
-								</TouchableOpacity>
-							)}
-						</View>
+						<Header
+							navigation={navigation}
+							title={"Viewing Check-in"}
+							activeUserCheckIn={GLOBAL.activeUserId == checkIn.userID || GLOBAL.activeUserId == GLOBAL.adminId}
+							deleteCheckInModal={setModalVisible}
+						/>
 						<ScrollView
 							ref={ref}
 							onContentSizeChange={() => {

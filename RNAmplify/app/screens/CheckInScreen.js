@@ -191,7 +191,7 @@ const CheckInScreen = ({route, navigation}) => {
 			<View style={styles.titleLine} />
 			{!loading ? (
 				<View style={styles.inputContainer}>
-					<ScrollView contentContainerStyle={{paddingBottom: 110}}>
+					<ScrollView contentContainerStyle={{paddingBottom: 160}}>
 						<View style={styles.activityContainer}>
 							<Text style={styles.activityTitle}>Select your sport</Text>
 							<View style={styles.activityRow}>
@@ -199,13 +199,13 @@ const CheckInScreen = ({route, navigation}) => {
 									style={[styles.activityStyle, {backgroundColor: checkIn.sport === sports[0].label ? colors.secondary : "white"}]}
 									onPress={() => sportSelected(sports[0])}
 								>
-									<FontAwesome5 name="skiing" size={40} color={checkIn.sport === sports[0].label ? "white" : "black"} />
+									<FontAwesome5 name="skiing" size={35} color={checkIn.sport === sports[0].label ? "white" : "black"} />
 								</TouchableOpacity>
 								<TouchableOpacity
 									style={[styles.activityStyle, {backgroundColor: checkIn.sport === sports[1].label ? colors.secondary : "white"}]}
 									onPress={() => sportSelected(sports[1])}
 								>
-									<FontAwesome5 name="snowboarding" size={40} color={checkIn.sport === sports[1].label ? "white" : "black"} />
+									<FontAwesome5 name="snowboarding" size={35} color={checkIn.sport === sports[1].label ? "white" : "black"} />
 								</TouchableOpacity>
 							</View>
 						</View>
@@ -394,8 +394,8 @@ const styles = StyleSheet.create({
 		marginHorizontal: 30,
 		paddingVertical: 13,
 		paddingHorizontal: 11,
-		width: 70,
-		height: 70,
+		width: 65,
+		height: 65,
 		borderWidth: 1,
 		borderRadius: 70 / 2,
 	},
