@@ -109,15 +109,49 @@ function PostCard({item, getUserProfile, displayFullImage, deleteCheckIn, viewCh
 		<View>
 			{!postCardDeleted && (
 				<View style={[styles.postBox]}>
-					{/* Adding this gradient could look kinda chill */}
-					{/* <LinearGradient colors={[colors.navigation, 'transparent']} style={{height : 20, width : '100%'}} /> */}
-					<ImageBackground source={getHolidayImage()} resizeMode="repeat" style={styles.backgroundImage} imageStyle={{opacity: 0.6}}>
+					{postCardImage && (
 						<TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
-							<View>
+							<View style={styles.imageContainer}>
+								<ImageBackground style={styles.image} resizeMode={"cover"} source={{uri: postCardImage}}>
+									<LinearGradient colors={[colors.navigation, "transparent"]} style={{position: "absolute", marginTop: 0, height: 130, width: "100%"}} />
+									<View style={styles.headerContainer}>
+										<TouchableWithoutFeedback onPress={() => getUserProfile(item.userID)}>
+											<View style={styles.profilePictureContainer}>
+												{profileImage ? <ProfileIcon size={70} image={profileImage} /> : <MaterialCommunityIcons name="account-outline" size={45} color="#8c8c8c" />}
+											</View>
+										</TouchableWithoutFeedback>
+										<View style={styles.headerTextContainer}>
+											<TouchableWithoutFeedback onPress={() => getUserProfile(item.userID)}>
+												<View>
+													<Text style={styles.authorText}>{username}</Text>
+													<Text style={styles.dateText}>{getDate(item.createdAt)}</Text>
+												</View>
+											</TouchableWithoutFeedback>
+										</View>
+										{(GLOBAL.activeUserId == item.userID || GLOBAL.activeUserId == GLOBAL.adminId) && (
+											<TouchableOpacity style={styles.deletionContainer} onPress={() => setModalVisible(true)}>
+												<View>
+													<Entypo name="dots-three-horizontal" size={24} color="white" />
+												</View>
+											</TouchableOpacity>
+										)}
+									</View>
+								</ImageBackground>
+
+								<View style={styles.imageLoading}>
+									<Ionicons name="image-outline" size={75} color="#a6a6a6" />
+									<Text style={styles.loadingText}>Loading image...</Text>
+								</View>
+							</View>
+						</TouchableWithoutFeedback>
+					)}
+					<TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
+						<View>
+							{!postCardImage && (
 								<View style={styles.headerContainer}>
 									<TouchableWithoutFeedback onPress={() => getUserProfile(item.userID)}>
 										<View style={styles.profilePictureContainer}>
-											{profileImage ? <ProfileIcon size={70} image={profileImage} /> : <MaterialCommunityIcons name="account-outline" size={40} color="grey" />}
+											{profileImage ? <ProfileIcon size={70} image={profileImage} /> : <MaterialCommunityIcons name="account-outline" size={45} color="#8c8c8c" />}
 										</View>
 									</TouchableWithoutFeedback>
 									<View style={styles.headerTextContainer}>
@@ -136,83 +170,70 @@ function PostCard({item, getUserProfile, displayFullImage, deleteCheckIn, viewCh
 										</TouchableOpacity>
 									)}
 								</View>
-								{!postCardImage && (
-									<View style={styles.icon}>
-										<FontAwesome5 name="mountain" size={145} color={colors.lightGrey} />
-									</View>
-								)}
-								<View style={styles.headerLocationContainer}>
-									<TouchableOpacity
-										onPress={() => {
-											item.location != "Unknown location" ? viewResort(item.location) : null;
-										}}
-									>
-										<Text style={styles.location}>{item.location}</Text>
-									</TouchableOpacity>
+							)}
+							{!postCardImage && (
+								<View style={styles.icon}>
+									<FontAwesome5 name="mountain" size={145} color={colors.lightGrey} />
 								</View>
+							)}
+							<View style={styles.headerLocationContainer}>
+								<TouchableOpacity
+									onPress={() => {
+										item.location != "Unknown location" ? viewResort(item.location) : null;
+									}}
+								>
+									<Text style={styles.location}>{item.location}</Text>
+								</TouchableOpacity>
 							</View>
-						</TouchableWithoutFeedback>
-
-						{postCardImage ? (
-							<TouchableWithoutFeedback onPress={() => displayFullImage(postCardImage)}>
-								<View style={styles.imageContainer}>
-									<ImageBackground style={styles.image} resizeMode={"cover"} source={{uri: postCardImage}}>
-										<LinearGradient colors={["transparent", "#1a1a1a"]} style={{marginTop: 200, height: 100, width: "100%"}} />
-									</ImageBackground>
-
-									<View style={styles.imageLoading}>
-										<Ionicons name="image-outline" size={75} color="#a6a6a6" />
-										<Text style={styles.loadingText}>Loading image...</Text>
+							{!postCardImage && (
+								<TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
+									<View>
+										<View style={styles.sportContainer}>
+											<FontAwesome5 name={item.sport} size={35} color="#ff4d00" />
+										</View>
 									</View>
-								</View>
-							</TouchableWithoutFeedback>
-						) : (
-							<TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
-								<View>
-									<View style={styles.sportContainer}>
-										<FontAwesome5 name={item.sport} size={35} color="#ff4d00" />
-									</View>
-								</View>
-							</TouchableWithoutFeedback>
-						)}
-						<TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
-							<View style={styles.postTitleContainer}>
-								<View style={styles.titleContainer}>
-									<Text style={styles.titleText} ellipsizeMode="tail" numberOfLines={2}>
-										{item.title}
+								</TouchableWithoutFeedback>
+							)}
+						</View>
+					</TouchableWithoutFeedback>
+
+					<TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
+						<View style={styles.postTitleContainer}>
+							<View style={styles.titleContainer}>
+								<Text style={styles.titleText} ellipsizeMode="tail" numberOfLines={2}>
+									{item.title}
+								</Text>
+							</View>
+						</View>
+					</TouchableWithoutFeedback>
+					<TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
+						<View style={styles.footer}>
+							<TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(item)}>
+								<View style={styles.reactionContainer}>
+									<Text style={styles.reactionText}>
+										{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].likes : likedCount}
+										<View style={styles.reactionImage}>
+											<AntDesign
+												name="like1"
+												size={24}
+												color={GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked ? colors.secondary : colors.secondaryWhite}
+											/>
+										</View>
 									</Text>
 								</View>
-							</View>
-						</TouchableWithoutFeedback>
-						<TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
-							<View style={styles.footer}>
-								<TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(item)}>
-									<View style={styles.reactionContainer}>
-										<Text style={styles.reactionText}>
-											{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].likes : likedCount}
-											<View style={styles.reactionImage}>
-												<AntDesign
-													name="like1"
-													size={24}
-													color={GLOBAL.activeUserLikes[item.id] && GLOBAL.activeUserLikes[item.id].isLiked ? colors.secondary : colors.secondaryWhite}
-												/>
-											</View>
-										</Text>
-									</View>
-								</TouchableOpacity>
-								<TouchableOpacity onPress={() => viewCheckIn(item, true)}>
-									<View style={styles.reactionContainer}>
-										<Text style={styles.reactionText}>
-											{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].comments : commentCount}
-											<View style={styles.reactionImage}>
-												<FontAwesome5 style={styles.commentImage} name="comment" size={24} color={colors.primaryBlue} />
-											</View>
-										</Text>
-									</View>
-								</TouchableOpacity>
-							</View>
-						</TouchableWithoutFeedback>
-					</ImageBackground>
+							</TouchableOpacity>
+							<TouchableOpacity onPress={() => viewCheckIn(item, true)}>
+								<View style={styles.reactionContainer}>
+									<Text style={styles.reactionText}>
+										{GLOBAL.allCheckIns[objIndex] ? GLOBAL.allCheckIns[objIndex].comments : commentCount}
+										<View style={styles.reactionImage}>
+											<FontAwesome5 style={styles.commentImage} name="comment" size={24} color={colors.primaryBlue} />
+										</View>
+									</Text>
+								</View>
+							</TouchableOpacity>
+						</View>
+					</TouchableWithoutFeedback>
 				</View>
 			)}
 			<ConfirmationModal
@@ -233,7 +254,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#1a1a1a",
 		alignSelf: "center",
 		width: "100%",
-		marginBottom: 5,
+		marginBottom: 15,
 		borderRadius: 10,
 	},
 	headerContainer: {
@@ -264,9 +285,10 @@ const styles = StyleSheet.create({
 		marginBottom: 8,
 	},
 	location: {
-		color: colors.primaryText,
-		fontSize: 20,
-		fontWeight: "500",
+		color: "#e6f5ff",
+		fontSize: 21,
+		fontWeight: "600",
+		paddingTop: 5,
 	},
 	deletionContainer: {
 		position: "absolute",
@@ -284,8 +306,7 @@ const styles = StyleSheet.create({
 		marginRight: 10,
 	},
 	imageContainer: {
-		height: 300,
-		marginTop: 5,
+		height: 225,
 	},
 	image: {
 		alignSelf: "center",
@@ -312,7 +333,6 @@ const styles = StyleSheet.create({
 	},
 	postTitleContainer: {
 		flexDirection: "row",
-		paddingTop: 5,
 		paddingHorizontal: 8,
 	},
 
@@ -335,14 +355,14 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 	},
 	dateText: {
-		fontSize: 12,
+		fontSize: 13,
 		color: "#b3b3b3",
-		fontWeight: "300",
+		fontWeight: "400",
 	},
 	footer: {
 		flexDirection: "row",
 		borderBottomEndRadius: 10,
-		paddingVertical: 8,
+		paddingBottom: 8,
 		justifyContent: "space-evenly",
 	},
 	reactionContainer: {
