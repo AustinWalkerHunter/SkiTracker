@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     checkInsContainer: {
         marginVertical: 10,
         paddingBottom: 50,
+        paddingLeft: 2
     },
     filter: {
         flexDirection: "row",

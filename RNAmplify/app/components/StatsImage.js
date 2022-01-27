@@ -26,11 +26,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 15,
         marginVertical: 5,
-        width: 300,
+        width: 340,
         textAlign: "center"
     },
     image: {
-        width: 310,
+        width: 340,
         height: 300,
         marginHorizontal: 5
     }

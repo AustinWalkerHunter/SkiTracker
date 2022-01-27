@@ -4,7 +4,7 @@ import { FontAwesome5, AntDesign } from '@expo/vector-icons';
 import GLOBAL from '../global';
 import colors from '../constants/colors';
 
-function MyPostItem({ item, title, location, date, sport, updateDayCount, viewCheckIn }) {
+function MyPostItem({ item, title, location, date, viewCheckIn }) {
     const [postCardDeleted, setPostCardDeleted] = useState(false);
     const [postCardImage, setPostCardImage] = useState(null);
 
@@ -41,8 +41,7 @@ function MyPostItem({ item, title, location, date, sport, updateDayCount, viewCh
             <View style={styles.itemContainer}>
                 <View style={styles.activityIcon}>
                     {item.image ?
-                        // <View >
-                        <Image style={{ width: 75, height: 75 }} resizeMode={'contain'} source={{ uri: postCardImage }} />
+                        <Image style={{ width: 75, height: 75, borderRadius: 5 }}  source={{ uri: postCardImage }} />
                         :
                         <FontAwesome5 style={{ paddingLeft: 5, width: 75 }} name="mountain" size={50} color="#595959" />
                     }

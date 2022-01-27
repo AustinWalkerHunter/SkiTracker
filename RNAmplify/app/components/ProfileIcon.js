@@ -3,14 +3,20 @@ import { View, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import colors from "../constants/colors"
 import color from 'color';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 
 function ProfileIcon({ size, image, isSettingScreen }) {
     return (
         <View>
             {!isSettingScreen ?
-                <View>
-                    <Image style={{ width: size, height: size, borderRadius: size / 2 }} source={{ uri: image }} />
+                <View style={{ width: size, height: size }}>
+                     {image ?
+                        <Image style={{ width: size, height: size, borderRadius: size / 2 }} source={{ uri: image }} />
+                         :
+                         <MaterialCommunityIcons name="account-outline" size={size+10} color="grey" style={{right: 5, bottom: 5 }}/>
+                        }
                 </View>
                 :
                 <View>

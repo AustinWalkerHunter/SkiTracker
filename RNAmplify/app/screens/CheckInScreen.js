@@ -196,7 +196,7 @@ const CheckInScreen = ({ route, navigation }) => {
             <View style={styles.titleLine} />
             {!loading ?
                 <View style={styles.inputContainer}>
-                    <ScrollView>
+                    <ScrollView contentContainerStyle={{paddingBottom: 110}}>
                         <View style={styles.activityContainer}>
                             <Text style={styles.activityTitle}>Select your sport</Text>
                             <View style={styles.activityRow}>
@@ -241,23 +241,25 @@ const CheckInScreen = ({ route, navigation }) => {
                                 textStyle={styles.inputTitle}
                             />
                         </View>
-                        {showAddPhotoButton ?
-                            <View style={styles.buttonContainer}>
-                                <TouchableOpacity style={styles.addPhoto} onPress={() => pickImage()}>
-                                    <MaterialIcons style={{ marginLeft: 2 }} name="add-photo-alternate" size={48} color="#00b300" />
-                                    <Text style={styles.addPhotoText}>Attach photo</Text>
-                                </TouchableOpacity>
-                            </View>
-                            :
-                            <View style={styles.photoContainer}>
-                                <TouchableOpacity style={styles.removePhotoContainer} onPress={() => removePhoto()}>
-                                    <Text style={styles.removePhotoText}>Remove photo</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => pickImage()}>
-                                    <Image style={styles.image} source={{ uri: checkIn.image }} />
-                                </TouchableOpacity>
-                            </View>
-                        }
+                        <View >
+                            {showAddPhotoButton ?
+                                <View style={styles.buttonContainer}>
+                                    <TouchableOpacity style={styles.addPhoto} onPress={() => pickImage()}>
+                                        <MaterialIcons style={{ marginLeft: 2 }} name="add-photo-alternate" size={48} color="#00b300" />
+                                        <Text style={styles.addPhotoText}>Attach photo</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                :
+                                <View style={styles.photoContainer}>
+                                    <TouchableOpacity style={styles.removePhotoContainer} onPress={() => removePhoto()}>
+                                        <Text style={styles.removePhotoText}>Remove photo</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => pickImage()}>
+                                        <Image style={styles.image} source={{ uri: checkIn.image }} />
+                                    </TouchableOpacity>
+                                </View>
+                            }
+                        </View>
                     </ScrollView>
                 </View>
                 :

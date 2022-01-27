@@ -15,7 +15,6 @@ import ConfirmationModal from '../components/ConfirmationModal'
 
 function Profile({ navigation, activeUserProfile, viewedUser, viewedUserId, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn, viewResort }) {
     const [fullScreenPhoto, setFullScreenPhoto] = useState()
-    const [imageLoading, setImageLoading] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
     const [following, setFollowing] = useState(viewedUserId && GLOBAL.following.includes(viewedUserId))
     const ref = React.useRef(null);
@@ -23,61 +22,57 @@ function Profile({ navigation, activeUserProfile, viewedUser, viewedUserId, user
 
     const displayFullImage = (checkInPhotoUri) => {
         setFullScreenPhoto(checkInPhotoUri);
-        setImageLoading(true)
-        setTimeout(function () {
-            setImageLoading(false)
-        }, 250);
     }
 
     return (
         <View style={styles.screen}>
             {/* getting a warning for this scroll view because I have lists inside of it, (another scoll view for photos) */}
-            <View style={styles.stickyHeader}>
-                {activeUserProfile ?
-                    <TouchableOpacity style={styles.headerButton}>
-                        <Ionicons name="notifications-outline"
-                            size={24}
-                            color={colors.secondary}
-                            onPress={() => navigation.navigate('NotificationScreen')}
-                        />
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity style={[styles.headerButton, styles.backButton]} onPress={() => navigation.goBack(null)}>
-                        <Ionicons name="chevron-back-outline" size={30} color={colors.secondary} />
-                        <Text style={styles.backButtonText}>Back</Text>
-                    </TouchableOpacity>
-                }
-                {activeUserProfile ?
-                    <TouchableOpacity style={styles.headerButton}>
-                        <Feather name="settings" size={28}
-                            type='font-awesome'
-                            color={colors.secondary}
-                            onPress={() => navigation.navigate('SettingsScreen')} />
-                    </TouchableOpacity>
-                    :
-                    following
-                        ?
-                        <TouchableOpacity style={[styles.headerButton, styles.button, { width: '25%', backgroundColor: colors.secondary }]} onPress={() => {
-                            setModalVisible(true)
-                        }}>
-                            <Text style={styles.text}>Following</Text>
+            <ScrollView ref={ref}>
+                <View style={styles.stickyHeader}>
+                    {activeUserProfile ?
+                        <TouchableOpacity style={styles.headerButton}>
+                            <Ionicons name="notifications-outline"
+                                size={24}
+                                color={colors.secondary}
+                                onPress={() => navigation.navigate('NotificationScreen')}
+                            />
                         </TouchableOpacity>
                         :
-                        <TouchableOpacity style={[styles.headerButton, styles.button, { backgroundColor: colors.primaryBlue }]} onPress={() => {
-                            followUser(viewedUserId)
-                            setFollowing(true)
-                        }}>
-                            <Text style={styles.text}>Follow</Text>
+                        <TouchableOpacity style={[styles.headerButton, styles.backButton]} onPress={() => navigation.goBack(null)}>
+                            <Ionicons name="chevron-back-outline" size={30} color={colors.secondary} />
+                            <Text style={styles.backButtonText}>Back</Text>
                         </TouchableOpacity>
+                    }
+                    {activeUserProfile ?
+                        <TouchableOpacity style={styles.headerButton}>
+                            <Feather name="settings" size={28}
+                                type='font-awesome'
+                                color={colors.secondary}
+                                onPress={() => navigation.navigate('SettingsScreen')} />
+                        </TouchableOpacity>
+                        :
+                        following
+                            ?
+                            <TouchableOpacity style={[styles.headerButton, styles.button, { width: '25%', backgroundColor: colors.secondary }]} onPress={() => {
+                                setModalVisible(true)
+                            }}>
+                                <Text style={styles.text}>Following</Text>
+                            </TouchableOpacity>
+                            :
+                            <TouchableOpacity style={[styles.headerButton, styles.button, { backgroundColor: colors.primaryBlue }]} onPress={() => {
+                                followUser(viewedUserId)
+                                setFollowing(true)
+                            }}>
+                                <Text style={styles.text}>Follow</Text>
+                            </TouchableOpacity>
 
 
-                }
-            </View>
-            <ScrollView ref={ref}>
+                    }
+                </View>
                 <View style={styles.backgroundContainer}>
-                <ImageBackground  source={userProfileImage && {uri: userProfileImage}} resizeMode="cover" imageStyle={{opacity:0.3}} blurRadius={15} style={styles.backgroundImage}>
-                    <LinearGradient colors={['#00000000', colors.navigation]} style={{height : '100%', width : '100%'}} />
-                </ImageBackground >
+                    <ImageBackground  source={userProfileImage && {uri: userProfileImage}} imageStyle={{opacity:0.3}} blurRadius={15} style={styles.backgroundImage}>
+                        <LinearGradient colors={['#00000000', colors.navigation]} style={{height : '100%', width : '100%'}} />
+                    </ImageBackground >
                 </View>
                 <View style={styles.profileContainer}>
                     <View style={styles.profilePictureContainer}>
@@ -85,7 +80,7 @@ function Profile({ navigation, activeUserProfile, viewedUser, viewedUserId, user
                             <TouchableOpacity onPress={() => pickImage()}>
                                 {
                                     userProfileImage ?
-                                        <ProfileIcon size={175} image={userProfileImage} isSettingScreen={false} />
+                                        <ProfileIcon size={200} image={userProfileImage} isSettingScreen={false} />
                                         :
                                         <MaterialCommunityIcons style={{ marginTop: -15, marginBottom: -15 }} name="account-outline" size={175} color="grey" />
                                 }
@@ -96,7 +91,7 @@ function Profile({ navigation, activeUserProfile, viewedUser, viewedUserId, user
                                     viewedUser.image ?
                                         <ProfileIcon size={200} image={viewedUser.image} />
                                         :
-                                        <MaterialCommunityIcons name="account-outline" size={200} color="grey" />
+                                        <MaterialCommunityIcons name="account-outline" size={180} color="grey" />
                                 }
                             </TouchableOpacity>
                         }
@@ -137,12 +132,7 @@ function Profile({ navigation, activeUserProfile, viewedUser, viewedUserId, user
                             <Text style={styles.closeButtonText}>Close</Text>
                         </TouchableOpacity>
                         <View style={styles.imageDisplay}>
-                            {
-                                imageLoading ?
-                                    <ActivityIndicator style={styles.image} size="large" color="white" />
-                                    :
-                                    <Image style={styles.image} resizeMode={'contain'} source={{ uri: fullScreenPhoto }} />
-                            }
+                            <Image style={styles.image} resizeMode={'contain'} source={{ uri: fullScreenPhoto }} />
                         </View>
                     </View>
                     : null
@@ -182,8 +172,7 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         width : '100%', 
-        height: 500,
-        justifyContent: "center",
+        height: 600,
         paddingTop: 70,
     },
     headerButton: {

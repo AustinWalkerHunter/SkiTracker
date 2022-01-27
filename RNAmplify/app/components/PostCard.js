@@ -118,6 +118,8 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteCheckIn, viewC
         <View>
             {(!postCardDeleted &&
                 <View style={[styles.postBox]}>
+                    {/* Adding this gradient could look kinda chill */}
+                     {/* <LinearGradient colors={[colors.navigation, 'transparent']} style={{height : 20, width : '100%'}} /> */}
                     <ImageBackground source={getHolidayImage()} resizeMode='repeat' style={styles.backgroundImage} imageStyle={{ opacity: 0.6 }}>
                         <TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
                             <View>
@@ -162,7 +164,7 @@ function PostCard({ item, getUserProfile, displayFullImage, deleteCheckIn, viewC
                             <TouchableWithoutFeedback onPress={() => displayFullImage(postCardImage)}>
                                 <View style={styles.imageContainer}>
                                     <ImageBackground style={styles.image} resizeMode={'cover'} source={{ uri: postCardImage }} >
-                                    <LinearGradient colors={['transparent', '#1a1a1a']} style={{marginTop: 200, height : 100, width : '100%'}} />
+                                        <LinearGradient colors={['transparent', '#1a1a1a']} style={{marginTop: 200, height : 100, width : '100%'}} />
                                     </ImageBackground>
 
                                     <View style={styles.imageLoading}>

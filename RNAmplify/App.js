@@ -13,7 +13,7 @@ import AppNavigator from './app/navigation/AppNavigator'
 import AuthenticationNavigator from './app/navigation/AuthenticationNavigator'
 import { fetchAppData } from './app/setUp'
 import { Foundation, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
 import SafeScreen from './app/components/SafeScreen'
 
 import { StatusBar } from 'expo-status-bar';
@@ -71,8 +71,10 @@ export default function App() {
   if (preparingApp) {
     return (
       <View style={styles.screen}>
-        <View style={styles.container}>
-          <View style={styles.stickyHeader}>
+        {/* <SafeAreaView style={styles.container}> */}
+          {/* I want to use safeareaview here but when I do it glitches for a second and looks weird */}
+          {/* it looks good without safeareaview, but looks bad on smaller devices, trade offs... */}
+          <SafeAreaView style={styles.stickyHeader}>
             <TouchableOpacity style={styles.headerButton}>
               <Ionicons name="person-add-outline"
                 size={26}
@@ -86,11 +88,11 @@ export default function App() {
                 color={colors.secondary}
               />
             </TouchableOpacity>
-          </View>
+          </SafeAreaView>
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <ActivityIndicator size="large" color="white" />
           </View>
-        </View>
+        {/* </SafeAreaView> */}
         <StatusBar style="light" />
       </View>
     )
@@ -119,13 +121,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   stickyHeader: {
-    paddingTop: 50,
-    width: "100%",
+    marginBottom: 5,
+    width: "95%",
     backgroundColor: colors.navigation,
     flexDirection: "row",
+    alignSelf:"center",
     justifyContent: "space-between",
-    paddingBottom: 8,
-    paddingHorizontal: 18
   },
   pageTitle: {
     position: "relative",

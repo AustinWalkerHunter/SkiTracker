@@ -51,15 +51,16 @@ export default function SignUpScreen({ navigation }) {
                         value={username}
                         onChangeText={text => setUsername(text)}
                         leftIcon="account"
-                        placeholder="Enter Username"
+                        placeholder="Create Username"
                         autoCapitalize="none"
                         textContentType="username"
+                        maxLength={15}
                     />
                     <LogInInput
                         value={password}
                         onChangeText={text => setPassword(text)}
                         leftIcon="lock"
-                        placeholder="Enter Password"
+                        placeholder="Add Password"
                         autoCapitalize="none"
                         autoCorrect={false}
                         secureTextEntry

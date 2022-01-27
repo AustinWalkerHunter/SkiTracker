@@ -41,9 +41,6 @@ function ProfileCheckIns({ checkIns, updateDayCount, viewCheckIn }) {
                 <TouchableOpacity style={styles.filterButton} onPress={() => setShowPhotos(false)}>
                     <Text style={styles.filterText}>All</Text>
                 </TouchableOpacity>
-                {/* <TouchableOpacity style={styles.filterButton} onPress={() => setShowPhotos(false)}>
-                    <Text style={styles.filterText}>Mountains</Text>
-                </TouchableOpacity> */}
                 <TouchableOpacity style={styles.filterButton} onPress={() => setShowPhotos(true)}>
                     <Text style={styles.filterText}>Photos</Text>
                 </TouchableOpacity>
@@ -77,8 +74,7 @@ function ProfileCheckIns({ checkIns, updateDayCount, viewCheckIn }) {
                     :
                     <View style={styles.zeroStateContainer}>
                         <View style={styles.zeroStateRow}>
-                            <Text style={styles.zeroStateText}>No check-ins found</Text>
-                            <Entypo name="emoji-sad" size={40} color="white" />
+                            <Text style={styles.zeroStateText}>No check-ins</Text>
                         </View>
                     </View>
                 :
@@ -89,12 +85,6 @@ function ProfileCheckIns({ checkIns, updateDayCount, viewCheckIn }) {
                             horizontal={true}
                             inverted={false}
                             keyExtractor={checkIns => checkIns.id.toString()}
-                            refreshControl={<RefreshControl
-                                tintColor={"white"}
-                                refreshing={refreshing}
-                                onRefresh={() => console.log("refreshing")}
-                            />
-                            }
                             renderItem={({ item }) =>
                                 <StatsImage
                                     checkIn={item}
@@ -145,8 +135,7 @@ const styles = StyleSheet.create({
         left: 5
     },
     zeroStateContainer: {
-        // marginTop: 15,
-        // paddingVertical: "10%",
+        marginTop: 25,
     },
     zeroStateText: {
         color: "white",

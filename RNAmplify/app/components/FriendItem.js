@@ -22,16 +22,15 @@ function FriendItem({ user, getUserProfile }) {
                 <View style={styles.profileContainer}>
                     <View style={styles.profilePictureContainer}>
                         <View>
-                            {
-                                user.image ?
-                                    <ProfileIcon size={60} image={user.image} />
-                                    :
-                                    <MaterialCommunityIcons name="account-outline" size={60} color="grey" />
-                            }
+                            
+                                    <ProfileIcon size={65} image={user?.image ? user.image : null} />
+                                    
+                                     {/* <MaterialCommunityIcons name="account-outline" size={50} color="grey" /> */}
+                            
                         </View>
                     </View>
                     <View style={styles.nameContainer}>
-                        <Text style={styles.userName}>{user.username}</Text>
+                        <Text style={styles.userName} ellipsizeMode='tail' numberOfLines={1}>{user.username}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -68,10 +67,8 @@ function FriendItem({ user, getUserProfile }) {
 
 const styles = StyleSheet.create({
     container: {
-        // padding: 5,
         alignItems: 'center',
         textAlignVertical: 'center',
-        marginBottom: 7
     },
     profileContainer: {
         bottom: 5
@@ -80,7 +77,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginVertical: 20,
-        marginBottom: 5
+        marginBottom: 3
     },
     nameContainer: {
         justifyContent: "center",
@@ -88,7 +85,8 @@ const styles = StyleSheet.create({
     },
     userName: {
         color: "white",
-        fontSize: 13
+        fontSize: 13,
+        fontWeight: '400'
     },
     followContainer: {
         alignItems: 'center',

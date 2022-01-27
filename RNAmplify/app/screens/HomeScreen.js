@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import { useIsFocused, useScrollToTop } from "@react-navigation/native";
 import { MaterialCommunityIcons, Foundation, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { RefreshControl, View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-native';
+import { RefreshControl, View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image, SafeAreaView } from 'react-native';
 import PostCard from "../components/PostCard"
 import SafeScreen from '../components/SafeScreen'
 import Constants from 'react-native'
@@ -19,7 +19,6 @@ const HomeScreen = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [fullScreenCheckInPhoto, setFullScreenCheckInPhoto] = useState()
-    const [imageLoading, setImageLoading] = useState(false)
     const toast = useToast()
 
     const ref = React.useRef(null);
@@ -95,10 +94,6 @@ const HomeScreen = ({ navigation }) => {
 
     const displayFullImage = (checkInPhotoUri) => {
         setFullScreenCheckInPhoto(checkInPhotoUri);
-        setImageLoading(true)
-        setTimeout(function () {
-            setImageLoading(false)
-        }, 250);
     }
 
     const deleteCheckIn = async (item) => {
@@ -116,7 +111,8 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.screen}>
-            <View style={styles.stickyHeader}>
+            {!fullScreenCheckInPhoto &&
+            <SafeAreaView style={styles.stickyHeader}>
                 <TouchableOpacity style={styles.headerButton}>
                     <Ionicons name="person-add-outline"
                         size={26}
@@ -130,7 +126,8 @@ const HomeScreen = ({ navigation }) => {
                         color={colors.secondary}
                         onPress={() => navigation.navigate('MountainSearchScreen')} />
                 </TouchableOpacity>
-            </View>
+            </SafeAreaView>
+            }       
             {!loading ?
                 <View style={styles.container}>
                     <View style={styles.checkInList}>
@@ -165,9 +162,10 @@ const HomeScreen = ({ navigation }) => {
                             </FlatList>
                             :
                             <View style={styles.zeroStateContainer}>
-                                <Text style={styles.zeroStateTitle}>Welcome {GLOBAL.activeUser?.username ? GLOBAL.activeUser?.username : ""}!</Text>
+                                {/* <Text style={styles.zeroStateTitle}>Hello {GLOBAL.activeUser?.username ? GLOBAL.activeUser?.username : ""}!</Text> */}
+                                <Text style={styles.zeroStateTitle}>Welcome to SkiTracker  {GLOBAL.activeUser?.username ? GLOBAL.activeUser?.username : ""}!</Text>
                                 <Text style={styles.zeroStateText}>No check-ins found.</Text>
-                                <Text style={styles.zeroStateText}>Add one!</Text>
+                                <Text style={styles.zeroStateText}>Create one!</Text>
                                 <View style={styles.mountainIcon}>
                                     <FontAwesome5 name="mountain" size={270} color={colors.primaryDark} />
                                 </View>
@@ -180,12 +178,8 @@ const HomeScreen = ({ navigation }) => {
                                 <TouchableOpacity style={styles.closeImageViewer} onPress={() => setFullScreenCheckInPhoto('')} >
                                     <Text style={styles.closeButtonText}>Close</Text>
                                 </TouchableOpacity>
-                                <View style={styles.imageDisplay}>{
-                                    imageLoading ?
-                                        <ActivityIndicator style={styles.image} size="large" color="white" />
-                                        :
-                                        <Image style={styles.image} resizeMode={'contain'} source={{ uri: fullScreenCheckInPhoto }} />
-                                }
+                                <View style={styles.imageDisplay}>
+                                    <Image style={styles.image} resizeMode={'contain'} source={{ uri: fullScreenCheckInPhoto }} />
                                 </View>
                             </View>
                             : null
@@ -215,13 +209,12 @@ const styles = StyleSheet.create({
         flex: 1
     },
     stickyHeader: {
-        paddingTop: 50,
-        width: "100%",
+        marginBottom: 5,
+        width: "95%",
         backgroundColor: colors.navigation,
         flexDirection: "row",
+        alignSelf:"center",
         justifyContent: "space-between",
-        paddingBottom: 8,
-        paddingHorizontal: 18
     },
     pageTitle: {
         position: "relative",
@@ -297,13 +290,14 @@ const styles = StyleSheet.create({
     },
     zeroStateContainer: {
         width: "100%",
+        paddingHorizontal: 5,
         marginTop: "30%",
     },
     zeroStateTitle: {
         color: "white",
-        fontSize: 32,
+        fontSize: 30,
         alignSelf: 'center',
-        marginBottom: 60,
+        marginBottom: 50,
         fontWeight: '600',
         textAlign: 'center'
     },
