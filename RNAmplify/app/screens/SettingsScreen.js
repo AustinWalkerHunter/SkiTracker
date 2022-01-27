@@ -15,9 +15,9 @@ import GLOBAL from "../global";
 import RoundedButton from "../components/RoundedButton";
 import {useToast} from "react-native-fast-toast";
 import {updateUsersProfilePicture} from "../actions";
-import {AntDesign} from "@expo/vector-icons";
+import Header from "../components/Header";
 
-const SettingsScreen = ({navigation}) => {
+const SettingsScreen = ({navigation, route}) => {
 	const isFocused = useIsFocused();
 	const [userInfo, setUserInfo] = useState();
 	const [pageLoading, setPageLoading] = useState(true);
@@ -135,6 +135,7 @@ const SettingsScreen = ({navigation}) => {
 		<SafeScreen style={styles.screen}>
 			{!pageLoading ? (
 				<View>
+					<Header navigation={navigation} title={"Edit Profile"} logout={true} updateAuthState={route.params.updateAuthState} />
 					<View style={styles.container}>
 						<View style={styles.profileContainer}>
 							<View style={styles.profilePictureContainer}>
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		top: 10,
-		height: "100%",
+		height: "95%",
 	},
 	profileContainer: {
 		bottom: 10,

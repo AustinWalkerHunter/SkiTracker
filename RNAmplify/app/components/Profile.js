@@ -30,12 +30,11 @@ function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userP
 				<View style={styles.stickyHeader}>
 					{activeUserProfile ? (
 						<TouchableOpacity style={styles.headerButton}>
-							<Ionicons name="notifications-outline" size={24} color={colors.secondary} onPress={() => navigation.navigate("NotificationScreen")} />
+							<Ionicons name="notifications-outline" size={30} color={colors.secondary} onPress={() => navigation.navigate("NotificationScreen")} />
 						</TouchableOpacity>
 					) : (
-						<TouchableOpacity style={[styles.headerButton, styles.backButton]} onPress={() => navigation.goBack(null)}>
-							<Ionicons name="chevron-back-outline" size={30} color={colors.secondary} />
-							<Text style={styles.backButtonText}>Back</Text>
+						<TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack(null)}>
+							<Ionicons name="chevron-back-circle-outline" size={35} color={colors.secondary} />
 						</TouchableOpacity>
 					)}
 					{activeUserProfile ? (
@@ -148,9 +147,6 @@ const styles = StyleSheet.create({
 	headerButton: {
 		flexDirection: "row",
 		alignItems: "center",
-	},
-	backButton: {
-		marginLeft: -10,
 	},
 	backButtonText: {
 		color: "white",

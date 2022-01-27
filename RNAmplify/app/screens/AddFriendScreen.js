@@ -7,6 +7,7 @@ import GLOBAL from "../global";
 import FriendItem from "../components/FriendItem";
 import colors from "../constants/colors";
 import {SearchBar} from "react-native-elements";
+import Header from "../components/Header";
 
 const AddFriendScreen = ({navigation}) => {
 	const [users, setUsers] = useState([]);
@@ -62,6 +63,7 @@ const AddFriendScreen = ({navigation}) => {
 		<SafeScreen style={styles.screen}>
 			{!loading ? (
 				<View style={styles.usersContainer}>
+					<Header navigation={navigation} title={"Find Friends"} />
 					{users.length > 1 ? (
 						<View style={styles.usersContainer}>
 							<SearchBar placeholder="Start typing a name..." onChangeText={input => filterUsers(input)} value={searchText} containerStyle={styles.searchStyles} />
@@ -109,7 +111,6 @@ const styles = StyleSheet.create({
 	usersContainer: {
 		width: "100%",
 		height: "100%",
-		justifyContent: "space-around",
 	},
 	friendItem: {
 		width: "33%",

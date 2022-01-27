@@ -14,7 +14,7 @@ import colors from "../constants/colors";
 import Tabs from "./Tabs";
 import {createStackNavigator} from "@react-navigation/stack";
 
-function AppNavigator({updateAuthState, navigation}) {
+function AppNavigator({updateAuthState}) {
 	const Main = createStackNavigator();
 	return (
 		<Main.Navigator>
@@ -23,63 +23,29 @@ function AppNavigator({updateAuthState, navigation}) {
 				name="SettingsScreen"
 				component={SettingsScreen}
 				options={{
-					headerStyle: {backgroundColor: colors.navigation, shadowColor: "transparent"},
-					headerBackTitle: "Back",
-					headerBackTitleStyle: {color: colors.navigationText},
-					headerTintColor: colors.secondary,
-					headerTitleStyle: {color: colors.navigationText},
-					title: "Edit Profile",
-					headerRight: () => (
-						<TouchableOpacity
-							style={{marginRight: 8, alignItems: "center", justifyContent: "center", flexDirection: "row"}}
-							onPress={() => {
-								Auth.signOut();
-								updateAuthState(false);
-							}}
-						>
-							<Text style={{fontSize: 15, color: colors.navigationText, marginRight: 3}}>Log Out</Text>
-							<MaterialIcons name="logout" size={24} color={colors.secondary} />
-						</TouchableOpacity>
-					),
+					headerShown: false,
 				}}
+				initialParams={{updateAuthState: updateAuthState}}
 			/>
 			<Main.Screen
 				name="AddFriendScreen"
 				component={AddFriendScreen}
 				options={{
-					headerShown: true,
-					headerStyle: {backgroundColor: colors.navigation, shadowColor: "transparent"},
-					headerBackTitle: "Back",
-					headerBackTitleStyle: {color: colors.navigationText},
-					headerTintColor: colors.secondary,
-					headerTitleStyle: {color: colors.navigationText},
-					title: "Find Friends",
+					headerShown: false,
 				}}
 			/>
 			<Main.Screen
 				name="MountainSearchScreen"
 				component={MountainSearchScreen}
 				options={{
-					headerShown: true,
-					headerStyle: {backgroundColor: colors.navigation, shadowColor: "transparent"},
-					headerBackTitle: "Back",
-					headerBackTitleStyle: {color: colors.navigationText},
-					headerTintColor: colors.secondary,
-					headerTitleStyle: {color: colors.navigationText},
-					title: "Ski Resorts",
+					headerShown: false,
 				}}
 			/>
 			<Main.Screen
 				name="NotificationScreen"
 				component={NotificationScreen}
 				options={{
-					headerShown: true,
-					headerStyle: {backgroundColor: colors.navigation, shadowColor: "transparent"},
-					headerBackTitle: "Back",
-					headerBackTitleStyle: {color: colors.navigationText},
-					headerTintColor: colors.secondary,
-					headerTitleStyle: {color: colors.navigationText},
-					title: "Notifications",
+					headerShown: false,
 				}}
 			/>
 			<Main.Screen
@@ -107,14 +73,7 @@ function AppNavigator({updateAuthState, navigation}) {
 				name="CheckInScreen"
 				component={CheckInScreen}
 				options={{
-					headerStyle: {backgroundColor: colors.navigation, shadowColor: "transparent"},
-					headerTitleStyle: {fontSize: 18, color: colors.navigationText},
-					title: "Check-in",
-					headerShown: true,
-					headerBackTitle: "Back",
-					headerBackTitleStyle: {color: colors.navigationText},
-					headerTintColor: colors.secondary,
-					headerTitleStyle: {color: colors.navigationText},
+					headerShown: false,
 				}}
 			/>
 		</Main.Navigator>

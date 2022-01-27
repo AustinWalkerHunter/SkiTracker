@@ -20,9 +20,10 @@ const ResortScreen = ({route, navigation}) => {
 	return (
 		<SafeScreen style={styles.screen}>
 			{!pageLoading && resortData ? (
-				<View style={styles.container}>
-					<Header navigation={navigation} title={"Resort"} rightText={"Check-in"} rightIcon={"map-marker-check"} data={resortData.resort_name} />
-					<View style={styles.header}>
+				<View>
+					<Header navigation={navigation} title={"Resort"} rightIcon={"map-marker-check"} data={resortData.resort_name} />
+					<View style={styles.titleLine} />
+					<View style={styles.titleContainer}>
 						<Text style={styles.title}>{resortData.resort_name}</Text>
 						<Text style={styles.subTitle}>{resortData.state}</Text>
 					</View>
@@ -91,8 +92,13 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.navigation,
 	},
 
-	container: {},
-	header: {
+	titleLine: {
+		borderWidth: 0.3,
+		borderColor: colors.secondary,
+		width: "100%",
+		marginVertical: 5,
+	},
+	titleContainer: {
 		paddingVertical: 15,
 		width: "100%",
 		backgroundColor: colors.navigation,

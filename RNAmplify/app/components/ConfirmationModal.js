@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import {Alert, Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import colors from "../constants/colors";
 
-function ConfirmationModal({modalVisible, setModalVisible, title, confirmAction, follow = false}) {
+function ConfirmationModal({modalVisible, setModalVisible, title, confirmAction, follow = false, logout = false}) {
 	return (
 		<Modal
 			animationType="none"
@@ -27,13 +27,13 @@ function ConfirmationModal({modalVisible, setModalVisible, title, confirmAction,
 							<Text style={styles.textStyle}>Cancel</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={[styles.button, {backgroundColor: follow ? colors.primaryBlue : "red"}]}
+							style={[styles.button, {backgroundColor: follow || logout ? colors.primaryBlue : "red"}]}
 							onPress={() => {
 								confirmAction();
 								setModalVisible(false);
 							}}
 						>
-							<Text style={styles.textStyle}>{follow ? "Unfollow" : "Delete"}</Text>
+							{logout ? <Text style={styles.textStyle}>{"Sign out"}</Text> : <Text style={styles.textStyle}>{follow ? "Unfollow" : "Delete"}</Text>}
 						</TouchableOpacity>
 					</View>
 				</View>

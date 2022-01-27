@@ -18,6 +18,7 @@ import resortData from "../constants/resortData";
 import {useIsFocused} from "@react-navigation/native";
 import DatePicker from "../components/DatePicker";
 import Moment from "moment";
+import Header from "../components/Header";
 
 const CheckInScreen = ({route, navigation}) => {
 	const {viewedLocation} = route.params;
@@ -186,6 +187,7 @@ const CheckInScreen = ({route, navigation}) => {
 
 	return (
 		<SafeScreen style={styles.screen}>
+			<Header navigation={navigation} title={"Check-in"} />
 			<View style={styles.titleLine} />
 			{!loading ? (
 				<View style={styles.inputContainer}>

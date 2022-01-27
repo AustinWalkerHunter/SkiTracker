@@ -185,13 +185,12 @@ const ViewCheckInScreen = ({route, navigation}) => {
 				{!pageLoading && checkIn && author ? (
 					<View style={styles.container}>
 						<View style={styles.stickyHeader}>
-							<TouchableOpacity style={styles.backButtonContainer} onPress={() => navigation.goBack(null)}>
-								<Ionicons name="chevron-back-outline" size={30} color={colors.secondary} />
-								<Text style={styles.backButtonText}>Back</Text>
+							<TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack(null)}>
+								<Ionicons name="chevron-back-circle-outline" size={35} color={colors.secondary} />
 							</TouchableOpacity>
 							<Text style={styles.pageTitle}>Viewing Check-in</Text>
 							{(GLOBAL.activeUserId == checkIn.userID || GLOBAL.activeUserId == GLOBAL.adminId) && (
-								<TouchableOpacity style={styles.deleteButton} onPress={() => setModalVisible(true)}>
+								<TouchableOpacity style={styles.headerButton} onPress={() => setModalVisible(true)}>
 									<Entypo name="dots-three-horizontal" size={26} color="white" />
 								</TouchableOpacity>
 							)}
@@ -250,7 +249,7 @@ const ViewCheckInScreen = ({route, navigation}) => {
 								<Text style={styles.title}>{checkIn.title}</Text>
 								<View style={styles.reactionContainer}>
 									<LinearGradient
-										colors={["transparent", "#a6a6a611"]}
+										colors={["transparent", "#a6a6a605"]}
 										style={{
 											marginBottom: 0,
 											height: 50,
@@ -351,17 +350,23 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	stickyHeader: {
-		width: "100%",
-		height: 40,
+		marginBottom: 5,
+		width: "93%",
 		backgroundColor: colors.navigation,
 		flexDirection: "row",
-		justifyContent: "space-evenly",
+		alignSelf: "center",
+		justifyContent: "space-between",
 	},
 	pageTitle: {
-		top: "2%",
+		position: "relative",
+		top: 5,
 		color: "white",
-		fontSize: 15,
+		fontSize: 17,
 		fontWeight: "500",
+	},
+	headerButton: {
+		flexDirection: "row",
+		alignItems: "center",
 	},
 	backButtonContainer: {
 		flexDirection: "row",

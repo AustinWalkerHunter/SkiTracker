@@ -1,69 +1,86 @@
-import React from "react";
+import React, {useState} from "react";
 import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
 import colors from "../constants/colors";
+import {Auth} from "aws-amplify";
+import ConfirmationModal from "../components/ConfirmationModal";
 
-function Header({navigation, title, rightText, rightIcon, data}) {
+function Header({navigation, title, rightIcon, data, logout, updateAuthState}) {
+	const [modalVisible, setModalVisible] = useState(false);
+
 	return (
 		<View>
-			<View style={styles.container}>
-				<View style={{flex: 1, alignItems: "flex-start"}}>
-					<TouchableOpacity style={styles.leftContainer} onPress={() => navigation.goBack(null)}>
-						<Ionicons name="chevron-back-outline" size={30} color={colors.secondary} />
-						<Text style={styles.text}>Back</Text>
+			<View style={styles.stickyHeader}>
+				<TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack(null)}>
+					<Ionicons name="chevron-back-circle-outline" size={35} color={colors.secondary} />
+				</TouchableOpacity>
+				<Text style={styles.pageTitle}>{title}</Text>
+				{rightIcon && (
+					<TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate("CheckInScreen", {viewedLocation: data})}>
+						<MaterialCommunityIcons name={rightIcon} size={35} color={colors.secondary} />
 					</TouchableOpacity>
-				</View>
-				<View style={{flex: 1}}>
-					<Text style={styles.pageTitle}>{title}</Text>
-				</View>
-				<View style={{flex: 1, alignItems: "flex-end"}}>
-					<TouchableOpacity style={styles.rightContainer} onPress={() => navigation.navigate("CheckInScreen", {viewedLocation: data})}>
-						<Text style={styles.text}>{rightText}</Text>
-						<MaterialCommunityIcons name={rightIcon} size={25} color={colors.secondary} />
-					</TouchableOpacity>
-				</View>
+				)}
+				{logout && (
+					<View>
+						<TouchableOpacity style={[styles.logoutButton, {backgroundColor: colors.primaryBlue}]} onPress={() => setModalVisible(true)}>
+							<Text style={styles.text}>Sign out</Text>
+						</TouchableOpacity>
+						<View style={styles.emptyView} />
+					</View>
+				)}
+				{!rightIcon && !logout && <View style={styles.emptyView} />}
 			</View>
-			<View style={styles.titleLine} />
+			<ConfirmationModal
+				modalVisible={modalVisible}
+				setModalVisible={setModalVisible}
+				title={"Are you sure you want to sign out?"}
+				confirmAction={async () => {
+					Auth.signOut();
+					updateAuthState(false);
+				}}
+				logout={true}
+			/>
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flexDirection: "row",
-		alignItems: "center",
+	stickyHeader: {
+		marginBottom: 5,
+		width: "95%",
 		backgroundColor: colors.navigation,
-	},
-	leftContainer: {
 		flexDirection: "row",
-		alignItems: "center",
-	},
-	text: {
-		color: "white",
-		fontSize: 15,
+		alignSelf: "center",
+		justifyContent: "space-between",
 	},
 	pageTitle: {
-		justifyContent: "center",
+		position: "relative",
+		top: 10,
 		color: "white",
-		fontSize: 20,
+		fontSize: 17,
 		fontWeight: "500",
-		textAlign: "center",
 	},
-	rightContainer: {
+	headerButton: {
 		flexDirection: "row",
 		alignItems: "center",
-		marginRight: 2,
+	},
+	logoutButton: {
+		top: 8,
+		position: "absolute",
+		height: 28,
+		justifyContent: "center",
+		borderRadius: 30,
+		width: 75,
+		right: 2,
 	},
 	text: {
-		fontSize: 15,
-		color: colors.navigationText,
+		color: "white",
+		fontSize: 14,
+		textAlign: "center",
+		fontWeight: "500",
 	},
-	titleLine: {
-		borderWidth: 0.7,
-		borderColor: "white",
-		width: "100%",
-		borderColor: colors.secondary,
-		marginVertical: 10,
+	emptyView: {
+		width: 35,
 	},
 });
 

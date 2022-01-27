@@ -1,21 +1,10 @@
 import React, {useState, useEffect} from "react";
-import {Auth, API, graphqlOperation, Storage} from "aws-amplify";
 import {useIsFocused} from "@react-navigation/native";
-import {TouchableOpacity, StyleSheet, Text, Image, View, TextInput, ActivityIndicator} from "react-native";
+import {StyleSheet, Text, Image, View, TextInput, ActivityIndicator} from "react-native";
 import {FontAwesome5} from "@expo/vector-icons";
 import colors from "../constants/colors";
 import SafeScreen from "../components/SafeScreen";
-import {updateUser} from "../../src/graphql/mutations";
-import ProfileIcon from "../components/ProfileIcon";
-import * as ImagePicker from "expo-image-picker";
-import * as Permissions from "expo-permissions";
-import {Buffer} from "buffer"; // get this via: npm install buffer
-import uuid from "react-native-uuid";
-import * as FileSystem from "expo-file-system";
-import GLOBAL from "../global";
-import RoundedButton from "../components/RoundedButton";
-import {useToast} from "react-native-fast-toast";
-import {updateUsersProfilePicture} from "../actions";
+import Header from "../components/Header";
 
 const NotificationScreen = ({navigation}) => {
 	const isFocused = useIsFocused();
@@ -31,6 +20,7 @@ const NotificationScreen = ({navigation}) => {
 		<SafeScreen style={styles.screen}>
 			{!pageLoading ? (
 				<View>
+					<Header navigation={navigation} title={"Notifications"} />
 					<View style={styles.container}>
 						<View style={styles.icons}>
 							<FontAwesome5 name="snowplow" size={70} color={colors.secondary} />
@@ -54,8 +44,7 @@ const styles = StyleSheet.create({
 	container: {
 		justifyContent: "center",
 		alignItems: "center",
-		height: "100%",
-		top: -50,
+		height: "80%",
 	},
 	icons: {
 		flexDirection: "row",

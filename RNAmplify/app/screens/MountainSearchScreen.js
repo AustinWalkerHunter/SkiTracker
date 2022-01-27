@@ -7,6 +7,7 @@ import colors from "../constants/colors";
 import {SearchBar} from "react-native-elements";
 import resortData from "../constants/resortData";
 import PickerItem from "../components/PickerItem";
+import Header from "../components/Header";
 
 const MountainSearchScreen = ({navigation}) => {
 	const isFocused = useIsFocused();
@@ -44,6 +45,7 @@ const MountainSearchScreen = ({navigation}) => {
 	return (
 		<SafeScreen style={styles.screen}>
 			<View style={styles.searchContainer}>
+				<Header navigation={navigation} title={"Ski Resorts"} />
 				<View style={styles.modalScreen} onPress={() => setModalVisible(false)}>
 					<View style={styles.modalView}>
 						<SearchBar
