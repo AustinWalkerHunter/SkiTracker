@@ -72,7 +72,7 @@ export default function SignInScreen({route, navigation, updateAuthState, fetchA
 		<SafeAreaView style={styles.safeAreaContainer}>
 			<View style={styles.container}>
 				<View style={styles.headerContainer}>
-					<TouchableOpacity onPress={() => updateTapCounter()}>
+					<TouchableOpacity style={styles.icon} onPress={() => updateTapCounter()}>
 						{skiing ? <FontAwesome5 name="skiing" size={75} color={colors.secondary} /> : <FontAwesome5 name="snowboarding" size={75} color={colors.blue} />}
 					</TouchableOpacity>
 					<Text style={styles.header}>{skiing ? "SkiTracker" : "BoardTracker?"}</Text>
@@ -146,10 +146,20 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		marginBottom: 20,
 	},
+	icon: {
+		shadowColor: colors.navigation,
+		shadowOffset: {width: -1, height: 3},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
+	},
 	header: {
 		fontSize: 40,
 		color: "white",
 		fontWeight: "700",
+		textShadowColor: "black",
+		textShadowOffset: {width: -2, height: 2},
+		textShadowRadius: 2,
 	},
 	subHeader: {
 		fontSize: 18,
@@ -168,6 +178,11 @@ const styles = StyleSheet.create({
 	logInButton: {
 		paddingVertical: 5,
 		width: "75%",
+		shadowColor: colors.navigation,
+		shadowOffset: {width: -1, height: 3},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
 	},
 	footerButtonContainer: {
 		paddingVertical: 20,

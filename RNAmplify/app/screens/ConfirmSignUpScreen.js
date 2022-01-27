@@ -36,7 +36,9 @@ export default function ConfirmSignUpScreen({navigation}) {
 		<SafeAreaView style={styles.safeAreaContainer}>
 			<View style={styles.container}>
 				<View style={styles.headerContainer}>
-					<MaterialCommunityIcons name="robot" size={75} color={colors.secondary} />
+					<View style={styles.icon}>
+						<MaterialCommunityIcons name="robot" size={75} color={colors.secondary} />
+					</View>
 					<Text style={styles.header}>Confirm verification code</Text>
 					<View style={styles.subHeaderContainer}>
 						<Text style={styles.subHeader}>Check your email for the code!</Text>
@@ -83,12 +85,21 @@ const styles = StyleSheet.create({
 	},
 	headerContainer: {
 		alignItems: "center",
-		// marginBottom: 25
+	},
+	icon: {
+		shadowColor: colors.navigation,
+		shadowOffset: {width: -1, height: 3},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
 	},
 	header: {
 		fontSize: 26,
 		color: "white",
 		fontWeight: "700",
+		textShadowColor: "black",
+		textShadowOffset: {width: -2, height: 2},
+		textShadowRadius: 2,
 	},
 	subHeaderContainer: {
 		width: "80%",
@@ -99,6 +110,10 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		color: colors.secondary,
 		fontWeight: "400",
+		fontWeight: "700",
+		textShadowColor: "black",
+		textShadowOffset: {width: -1, height: 1},
+		textShadowRadius: 1,
 	},
 	title: {
 		fontSize: 20,
@@ -112,6 +127,11 @@ const styles = StyleSheet.create({
 	logInButton: {
 		paddingVertical: 5,
 		width: "75%",
+		shadowColor: colors.navigation,
+		shadowOffset: {width: -1, height: 3},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
 	},
 	footerButtonContainer: {
 		paddingVertical: 15,

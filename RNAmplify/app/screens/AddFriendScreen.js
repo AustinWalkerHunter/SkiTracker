@@ -69,6 +69,7 @@ const AddFriendScreen = ({navigation}) => {
 							<SearchBar placeholder="Start typing a name..." onChangeText={input => filterUsers(input)} value={searchText} containerStyle={styles.searchStyles} />
 							<FlatList
 								numColumns={3}
+								contentContainerStyle={{paddingBottom: 100}}
 								showsVerticalScrollIndicator={false}
 								showsHorizontalScrollIndicator={false}
 								data={searchItems}

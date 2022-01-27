@@ -11,6 +11,7 @@ import GLOBAL from "../global";
 import {getAllCheckInData, followUser, unfollowUser} from "../actions";
 
 import ConfirmationModal from "../components/ConfirmationModal";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn, viewResort}) {
 	const [fullScreenPhoto, setFullScreenPhoto] = useState();
@@ -24,9 +25,20 @@ function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userP
 	};
 
 	return (
-		<View style={styles.screen}>
+		<SafeAreaView style={styles.screen}>
 			{/* getting a warning for this scroll view because I have lists inside of it, (another scoll view for photos) */}
-			<ScrollView ref={ref}>
+			<View style={styles.container}>
+				<View style={styles.backgroundContainer}>
+					{userProfileImage ? (
+						<ImageBackground source={userProfileImage && {uri: userProfileImage}} imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.backgroundImage}>
+							<LinearGradient colors={["#00000000", colors.navigation]} style={{height: "100%", width: "100%"}} />
+						</ImageBackground>
+					) : (
+						<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
+							<LinearGradient colors={["#00000000", colors.navigation]} style={{height: "100%", width: "100%"}} />
+						</View>
+					)}
+				</View>
 				<View style={styles.stickyHeader}>
 					{activeUserProfile ? (
 						<TouchableOpacity style={styles.headerButton}>
@@ -62,46 +74,37 @@ function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userP
 						</TouchableOpacity>
 					)}
 				</View>
-				<View style={styles.backgroundContainer}>
-					{userProfileImage ? (
-						<ImageBackground source={userProfileImage && {uri: userProfileImage}} imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.backgroundImage}>
-							<LinearGradient colors={["#00000000", colors.navigation]} style={{height: "100%", width: "100%"}} />
-						</ImageBackground>
-					) : (
-						<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
-							<LinearGradient colors={["#00000000", colors.navigation]} style={{height: "100%", width: "100%"}} />
+				<ScrollView ref={ref}>
+					<View style={styles.profileContainer}>
+						<View style={styles.profilePictureContainer}>
+							{activeUserProfile ? (
+								<TouchableOpacity onPress={() => pickImage()}>
+									{userProfileImage ? (
+										<ProfileIcon size={200} image={userProfileImage} isSettingScreen={false} />
+									) : (
+										<MaterialCommunityIcons style={{marginTop: -15, marginBottom: -15}} name="account-outline" size={175} color="grey" />
+									)}
+								</TouchableOpacity>
+							) : (
+								<TouchableOpacity onPress={() => displayFullImage(viewedUser.image)}>
+									{viewedUser.image ? <ProfileIcon size={200} image={viewedUser.image} /> : <MaterialCommunityIcons name="account-outline" size={180} color="grey" />}
+								</TouchableOpacity>
+							)}
 						</View>
-					)}
-				</View>
-				<View style={styles.profileContainer}>
-					<View style={styles.profilePictureContainer}>
-						{activeUserProfile ? (
-							<TouchableOpacity onPress={() => pickImage()}>
-								{userProfileImage ? (
-									<ProfileIcon size={200} image={userProfileImage} isSettingScreen={false} />
-								) : (
-									<MaterialCommunityIcons style={{marginTop: -15, marginBottom: -15}} name="account-outline" size={175} color="grey" />
-								)}
-							</TouchableOpacity>
-						) : (
-							<TouchableOpacity onPress={() => displayFullImage(viewedUser.image)}>
-								{viewedUser.image ? <ProfileIcon size={200} image={viewedUser.image} /> : <MaterialCommunityIcons name="account-outline" size={180} color="grey" />}
-							</TouchableOpacity>
-						)}
-					</View>
-					<View style={styles.nameContainer}>
-						<Text style={styles.userName}>{activeUserProfile ? GLOBAL.allUsers[GLOBAL.activeUserId].username : viewedUser.username}</Text>
-						<View style={styles.descriptionContainer}>
-							<Text style={styles.userDescription}>{activeUserProfile ? GLOBAL.allUsers[GLOBAL.activeUserId].description : viewedUser.description}</Text>
+						<View style={styles.nameContainer}>
+							<Text style={styles.userName}>{activeUserProfile ? GLOBAL.allUsers[GLOBAL.activeUserId].username : viewedUser.username}</Text>
+							<View style={styles.descriptionContainer}>
+								<Text style={styles.userDescription}>{activeUserProfile ? GLOBAL.allUsers[GLOBAL.activeUserId].description : viewedUser.description}</Text>
+							</View>
 						</View>
 					</View>
-				</View>
 
-				<View style={styles.userStatsContainer}>
-					<MyStats dayCount={userDayCount} viewResort={viewResort} checkInData={userCheckIns && userCheckIns.length > 0 ? getAllCheckInData(userCheckIns) : null} />
-					{!pageLoading ? <ProfileCheckIns checkIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} /> : <ActivityIndicator size="large" color="white" />}
-				</View>
-			</ScrollView>
+					<View style={styles.userStatsContainer}>
+						<MyStats dayCount={userDayCount} viewResort={viewResort} checkInData={userCheckIns && userCheckIns.length > 0 ? getAllCheckInData(userCheckIns) : null} />
+						{!pageLoading ? <ProfileCheckIns checkIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} /> : <ActivityIndicator size="large" color="white" />}
+					</View>
+				</ScrollView>
+			</View>
 			{fullScreenPhoto ? (
 				<View style={styles.imageViewerContainer}>
 					<TouchableOpacity style={styles.closeImageViewer} onPress={() => setFullScreenPhoto("")}>
@@ -122,7 +125,7 @@ function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userP
 				}}
 				follow={true}
 			/>
-		</View>
+		</SafeAreaView>
 	);
 }
 
@@ -131,11 +134,12 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: colors.navigation,
 	},
+	container: {
+		flex: 1,
+	},
 	stickyHeader: {
-		paddingTop: 50,
 		width: "100%",
 		backgroundColor: "transparent",
-		position: "absolute",
 		flexDirection: "row",
 		justifyContent: "space-between",
 		paddingHorizontal: 15,
@@ -144,6 +148,7 @@ const styles = StyleSheet.create({
 	backgroundContainer: {
 		width: "100%",
 		position: "absolute",
+		marginTop: -50,
 	},
 	backgroundImage: {
 		width: "100%",
@@ -165,7 +170,6 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 	profileContainer: {
-		paddingTop: 80,
 		bottom: 10,
 	},
 	profilePictureContainer: {
@@ -242,7 +246,6 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		alignSelf: "center",
 		bottom: "20%",
-		//bottom: "36%",
 		borderRadius: 25,
 		borderWidth: 1,
 		borderColor: "white",
@@ -259,7 +262,6 @@ const styles = StyleSheet.create({
 	button: {
 		marginTop: 5,
 		height: 26,
-		// flexDirection: 'row',
 		alignItems: "center",
 		justifyContent: "center",
 		borderRadius: 30,

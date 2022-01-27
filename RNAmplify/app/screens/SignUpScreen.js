@@ -40,7 +40,9 @@ export default function SignUpScreen({navigation}) {
 		<SafeAreaView style={styles.safeAreaContainer}>
 			<View style={styles.container}>
 				<View style={styles.headerContainer}>
-					<AntDesign name="adduser" size={75} color={colors.secondary} />
+					<View style={styles.icon}>
+						<AntDesign name="adduser" size={75} color={colors.secondary} />
+					</View>
 					<Text style={styles.header}>Create a new account</Text>
 				</View>
 				<View style={styles.inputContainer}>
@@ -86,6 +88,11 @@ export default function SignUpScreen({navigation}) {
 							<Text style={styles.forgotPasswordButtonText}>Already have an account? Sign In</Text>
 						</TouchableOpacity>
 					</View>
+					<View style={styles.footerButtonContainer}>
+						<TouchableOpacity onPress={() => navigation.navigate("ConfirmSignUpScreen")}>
+							<Text style={styles.forgotPasswordButtonText}>Have a verification code?</Text>
+						</TouchableOpacity>
+					</View>
 					{errorMessage && (
 						<View style={styles.errorContainer}>
 							<Text style={styles.errorText}>{errorMessage}</Text>
@@ -111,10 +118,20 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		marginBottom: 25,
 	},
+	icon: {
+		shadowColor: colors.navigation,
+		shadowOffset: {width: -1, height: 3},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
+	},
 	header: {
 		fontSize: 25,
 		color: "white",
 		fontWeight: "700",
+		textShadowColor: "black",
+		textShadowOffset: {width: -2, height: 2},
+		textShadowRadius: 2,
 	},
 	subHeader: {
 		fontSize: 18,
@@ -133,12 +150,17 @@ const styles = StyleSheet.create({
 	logInButton: {
 		paddingVertical: 5,
 		width: "75%",
+		shadowColor: colors.navigation,
+		shadowOffset: {width: -1, height: 3},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
 	},
 	footerButtonContainer: {
 		paddingVertical: 20,
 		justifyContent: "center",
 		alignItems: "center",
-		marginBottom: 20,
+		// marginBottom: 20,
 	},
 	forgotPasswordButtonText: {
 		color: "white",

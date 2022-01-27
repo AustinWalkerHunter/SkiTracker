@@ -17,6 +17,7 @@ import {commentsByDate} from "../../src/graphql/queries";
 import {createComment} from "../../src/graphql/mutations";
 import {increaseCheckInComments} from "../actions";
 import Header from "../components/Header";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const ViewCheckInScreen = ({route, navigation}) => {
 	const {checkInId, scrollToComments, fromMyProfile} = route.params;
@@ -181,8 +182,8 @@ const ViewCheckInScreen = ({route, navigation}) => {
 	};
 
 	return (
-		<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={{flex: 1}}>
-			<View style={styles.screen}>
+		<SafeAreaView style={styles.screen}>
+			<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={{flex: 1}}>
 				{!pageLoading && checkIn && author ? (
 					<View style={styles.container}>
 						<View style={styles.backgroundContainer}>
@@ -276,6 +277,7 @@ const ViewCheckInScreen = ({route, navigation}) => {
 										</View>
 									</View>
 								</LinearGradient>
+								<View style={styles.titleLine} />
 								<View style={styles.commentListContainer}>
 									{!commentsLoading ? (
 										<CheckInComments comments={comments} getUserProfile={getUserProfile} deleteComment={deleteComment} />
@@ -336,8 +338,8 @@ const ViewCheckInScreen = ({route, navigation}) => {
 					</View>
 				) : null}
 				<ConfirmationModal modalVisible={modalVisible} setModalVisible={setModalVisible} title={"Do you want to delete this check-in?"} confirmAction={() => deleteCheckIn()} />
-			</View>
-		</KeyboardAvoidingView>
+			</KeyboardAvoidingView>
+		</SafeAreaView>
 	);
 };
 
@@ -348,11 +350,11 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		flex: 1,
-		paddingTop: 50,
 	},
 	backgroundContainer: {
 		width: "100%",
 		position: "absolute",
+		marginTop: -50,
 	},
 	defaultBackgroundImage: {
 		width: "100%",
@@ -425,12 +427,6 @@ const styles = StyleSheet.create({
 		color: "white",
 		fontSize: 15,
 		fontWeight: "200",
-	},
-	titleLine: {
-		borderWidth: 0.7,
-		borderColor: "white",
-		width: "100%",
-		borderColor: colors.secondary,
 	},
 	content: {
 		flex: 0.8,
@@ -536,6 +532,12 @@ const styles = StyleSheet.create({
 	},
 	reactionImage: {
 		paddingLeft: 10,
+	},
+	titleLine: {
+		borderWidth: 0.5,
+		borderColor: colors.secondary,
+		opacity: 0.3,
+		width: "100%",
 	},
 	commentListContainer: {
 		width: "100%",
