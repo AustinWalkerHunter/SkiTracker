@@ -63,9 +63,15 @@ function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userP
 					)}
 				</View>
 				<View style={styles.backgroundContainer}>
-					<ImageBackground source={userProfileImage && {uri: userProfileImage}} imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.backgroundImage}>
-						<LinearGradient colors={["#00000000", colors.navigation]} style={{height: "100%", width: "100%"}} />
-					</ImageBackground>
+					{userProfileImage ? (
+						<ImageBackground source={userProfileImage && {uri: userProfileImage}} imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.backgroundImage}>
+							<LinearGradient colors={["#00000000", colors.navigation]} style={{height: "100%", width: "100%"}} />
+						</ImageBackground>
+					) : (
+						<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
+							<LinearGradient colors={["#00000000", colors.navigation]} style={{height: "100%", width: "100%"}} />
+						</View>
+					)}
 				</View>
 				<View style={styles.profileContainer}>
 					<View style={styles.profilePictureContainer}>
@@ -144,6 +150,12 @@ const styles = StyleSheet.create({
 		height: 600,
 		paddingTop: 70,
 	},
+	defaultBackgroundImage: {
+		width: "100%",
+		height: 600,
+		paddingTop: 70,
+		backgroundColor: colors.primary,
+	},
 	headerButton: {
 		flexDirection: "row",
 		alignItems: "center",
@@ -160,6 +172,11 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		marginTop: 10,
+		shadowColor: colors.navigation,
+		shadowOffset: {width: -1, height: 3},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
 	},
 	nameContainer: {
 		justifyContent: "center",
@@ -168,6 +185,9 @@ const styles = StyleSheet.create({
 	userName: {
 		color: "white",
 		fontSize: 30,
+		textShadowColor: "black",
+		textShadowOffset: {width: -1, height: 1},
+		textShadowRadius: 2,
 	},
 	descriptionContainer: {
 		width: "85%",
@@ -176,6 +196,9 @@ const styles = StyleSheet.create({
 		color: "#a1a1a1",
 		fontSize: 18,
 		textAlign: "center",
+		textShadowColor: "black",
+		textShadowOffset: {width: -1, height: 1},
+		textShadowRadius: 5,
 	},
 	userStatsContainer: {
 		alignItems: "center",

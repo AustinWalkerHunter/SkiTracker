@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 	stickyHeader: {
 		marginBottom: 5,
 		width: "95%",
-		backgroundColor: colors.navigation,
+		backgroundColor: "transparent",
 		flexDirection: "row",
 		alignSelf: "center",
 		justifyContent: "space-between",

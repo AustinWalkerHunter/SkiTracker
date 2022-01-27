@@ -39,7 +39,8 @@ function InputPicker({iconName, placeholder, items, textStyle, selectedItem, onS
 				<Text style={styles.requiredIcon}>*required</Text>
 			</TouchableOpacity>
 			<Modal visible={modalVisible} transparent={true} animationType="slide">
-				<TouchableOpacity style={styles.modalScreen} onPress={() => setModalVisible(false)}>
+				<View style={styles.modalScreen}>
+					<TouchableOpacity style={styles.clearButton} onPress={() => setModalVisible(false)} />
 					<View style={styles.modalView}>
 						<SearchBar
 							placeholder="Where did you go?"
@@ -77,7 +78,7 @@ function InputPicker({iconName, placeholder, items, textStyle, selectedItem, onS
 							)}
 						/>
 					</View>
-				</TouchableOpacity>
+				</View>
 			</Modal>
 		</React.Fragment>
 	);
@@ -103,13 +104,18 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "flex-end",
 	},
+	clearButton: {
+		backgroundColor: "transparent",
+		flex: 1,
+		justifyContent: "flex-end",
+	},
 	modalView: {
-		backgroundColor: "#0d0d0d",
+		backgroundColor: colors.primary,
 		height: "70%",
 		paddingBottom: 20,
 	},
 	searchStyles: {
-		backgroundColor: "#0d0d0d",
+		backgroundColor: colors.primary,
 		borderBottomColor: "transparent",
 		borderTopColor: "transparent",
 	},

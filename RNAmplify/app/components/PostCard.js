@@ -113,11 +113,11 @@ function PostCard({item, getUserProfile, displayFullImage, deleteCheckIn, viewCh
 						<TouchableWithoutFeedback onPress={() => viewCheckIn(item)}>
 							<View style={styles.imageContainer}>
 								<ImageBackground style={styles.image} resizeMode={"cover"} source={{uri: postCardImage}}>
-									<LinearGradient colors={[colors.navigation, "transparent"]} style={{position: "absolute", marginTop: 0, height: 100, width: "100%"}} />
+									<LinearGradient colors={[colors.navigation, "transparent"]} style={{position: "absolute", marginTop: 0, height: 50, width: "100%"}} />
 									<View style={styles.headerContainer}>
 										<TouchableWithoutFeedback onPress={() => getUserProfile(item.userID)}>
 											<View style={styles.profilePictureContainer}>
-												{profileImage ? <ProfileIcon size={70} image={profileImage} /> : <MaterialCommunityIcons name="account-outline" size={45} color="#8c8c8c" />}
+												{profileImage ? <ProfileIcon size={70} image={profileImage} /> : <MaterialCommunityIcons name="account-outline" size={50} color="#8c8c8c" />}
 											</View>
 										</TouchableWithoutFeedback>
 										<View style={styles.headerTextContainer}>
@@ -268,12 +268,27 @@ const styles = StyleSheet.create({
 	},
 	profilePictureContainer: {
 		paddingHorizontal: 10,
+		shadowColor: colors.navigation,
+		shadowOffset: {width: -1, height: 3},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
 	},
 	authorText: {
 		color: colors.primaryText,
-		fontSize: 17,
+		fontSize: 20,
+		fontWeight: "500",
+		textShadowColor: "black",
+		textShadowOffset: {width: -1, height: 1},
+		textShadowRadius: 2,
+	},
+	dateText: {
+		fontSize: 14,
+		color: "white",
 		fontWeight: "400",
-		paddingRight: 30,
+		textShadowColor: "black",
+		textShadowOffset: {width: -1, height: 1},
+		textShadowRadius: 2,
 	},
 	titleLine: {
 		borderWidth: 0.5,
@@ -347,17 +362,6 @@ const styles = StyleSheet.create({
 		fontSize: 15,
 		width: "100%",
 		marginBottom: 5,
-	},
-	dateContainer: {
-		position: "absolute",
-		bottom: 20,
-		right: 10,
-		flexDirection: "row",
-	},
-	dateText: {
-		fontSize: 13,
-		color: "white",
-		fontWeight: "300",
 	},
 	footer: {
 		flexDirection: "row",

@@ -17,7 +17,7 @@ const MountainSearchScreen = ({navigation}) => {
 
 	useEffect(() => {
 		if (isFocused) {
-			setSearchText("");
+			// setSearchText("");
 		}
 	}, [isFocused]);
 
@@ -60,6 +60,7 @@ const MountainSearchScreen = ({navigation}) => {
 						/>
 						<FlatList
 							data={searchItems}
+							contentContainerStyle={{paddingBottom: 100}}
 							keyExtractor={(item, index) => String(index)}
 							renderItem={({item}) => (
 								<PickerItem
@@ -67,7 +68,6 @@ const MountainSearchScreen = ({navigation}) => {
 									onPress={() => {
 										viewResort(item.resort_name);
 									}}
-									contentContainerStyle={{paddingBottom: "80%"}}
 								/>
 							)}
 						/>

@@ -182,9 +182,14 @@ const ViewCheckInScreen = ({route, navigation}) => {
 
 	return (
 		<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={{flex: 1}}>
-			<SafeScreen style={styles.screen}>
+			<View style={styles.screen}>
 				{!pageLoading && checkIn && author ? (
 					<View style={styles.container}>
+						<View style={styles.backgroundContainer}>
+							<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
+								<LinearGradient colors={["#00000000", colors.navigation]} style={{height: "100%", width: "100%"}} />
+							</View>
+						</View>
 						<Header
 							navigation={navigation}
 							title={"Viewing Check-in"}
@@ -242,16 +247,15 @@ const ViewCheckInScreen = ({route, navigation}) => {
 										<FontAwesome5 name="mountain" size={145} color={colors.lightGrey} />
 									</View>
 								)}
-								<Text style={styles.title}>{checkIn.title}</Text>
-								<View style={styles.reactionContainer}>
-									<LinearGradient
-										colors={["transparent", "#a6a6a605"]}
-										style={{
-											marginBottom: 0,
-											height: 50,
-											width: "100%",
-										}}
-									>
+								<LinearGradient
+									colors={["transparent", "#a6a6a605"]}
+									style={{
+										height: 85,
+										width: "100%",
+									}}
+								>
+									<Text style={styles.title}>{checkIn.title}</Text>
+									<View style={styles.reactionContainer}>
 										<View style={styles.reactionHeader}>
 											<TouchableOpacity disabled={likeDisabled} onPress={() => updateReactionCount(checkIn)}>
 												<Text style={styles.reactionText}>
@@ -270,14 +274,14 @@ const ViewCheckInScreen = ({route, navigation}) => {
 												</Text>
 											</View>
 										</View>
-									</LinearGradient>
-									<View style={styles.commentListContainer}>
-										{!commentsLoading ? (
-											<CheckInComments comments={comments} getUserProfile={getUserProfile} deleteComment={deleteComment} />
-										) : (
-											<ActivityIndicator style={{marginTop: 20}} size="large" color="white" />
-										)}
 									</View>
+								</LinearGradient>
+								<View style={styles.commentListContainer}>
+									{!commentsLoading ? (
+										<CheckInComments comments={comments} getUserProfile={getUserProfile} deleteComment={deleteComment} />
+									) : (
+										<ActivityIndicator style={{marginTop: 20}} size="large" color="white" />
+									)}
 								</View>
 							</View>
 						</ScrollView>
@@ -332,7 +336,7 @@ const ViewCheckInScreen = ({route, navigation}) => {
 					</View>
 				) : null}
 				<ConfirmationModal modalVisible={modalVisible} setModalVisible={setModalVisible} title={"Do you want to delete this check-in?"} confirmAction={() => deleteCheckIn()} />
-			</SafeScreen>
+			</View>
 		</KeyboardAvoidingView>
 	);
 };
@@ -344,14 +348,17 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		flex: 1,
+		paddingTop: 50,
 	},
-	stickyHeader: {
-		marginBottom: 5,
-		width: "93%",
-		backgroundColor: colors.navigation,
-		flexDirection: "row",
-		alignSelf: "center",
-		justifyContent: "space-between",
+	backgroundContainer: {
+		width: "100%",
+		position: "absolute",
+	},
+	defaultBackgroundImage: {
+		width: "100%",
+		height: 400,
+		paddingTop: 70,
+		backgroundColor: colors.primary,
 	},
 	pageTitle: {
 		position: "relative",
@@ -427,7 +434,6 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		flex: 0.8,
-		backgroundColor: colors.navigation,
 	},
 	locationContainer: {
 		alignSelf: "center",
@@ -481,6 +487,7 @@ const styles = StyleSheet.create({
 		marginBottom: 5,
 	},
 	imageViewerContainer: {
+		top: -50,
 		backgroundColor: colors.navigation,
 		width: "100%",
 		height: "100%",
