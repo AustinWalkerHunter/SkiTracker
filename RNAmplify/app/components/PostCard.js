@@ -151,7 +151,7 @@ function PostCard({item, getUserProfile, displayFullImage, deleteCheckIn, viewCh
 								<View style={styles.headerContainer}>
 									<TouchableWithoutFeedback onPress={() => getUserProfile(item.userID)}>
 										<View style={styles.profilePictureContainer}>
-											{profileImage ? <ProfileIcon size={70} image={profileImage} /> : <MaterialCommunityIcons name="account-outline" size={45} color="#8c8c8c" />}
+											{profileImage ? <ProfileIcon size={70} image={profileImage} /> : <MaterialCommunityIcons name="account-outline" size={50} color="#8c8c8c" />}
 										</View>
 									</TouchableWithoutFeedback>
 									<View style={styles.headerTextContainer}>
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
 	profilePictureContainer: {
 		paddingHorizontal: 10,
 		shadowColor: colors.navigation,
-		shadowOffset: {width: -1, height: 3},
+		shadowOffset: {width: -3, height: 3},
 		shadowOpacity: 0.9,
 		shadowRadius: 2,
 		elevation: 5,
@@ -289,15 +289,6 @@ const styles = StyleSheet.create({
 		textShadowColor: "black",
 		textShadowOffset: {width: -1, height: 1},
 		textShadowRadius: 2,
-	},
-	titleLine: {
-		borderWidth: 0.5,
-		alignSelf: "center",
-		borderColor: "white",
-		width: "95%",
-		borderColor: colors.grey,
-		marginTop: 2,
-		marginBottom: 8,
 	},
 	location: {
 		color: "#e6f5ff",
@@ -327,8 +318,6 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		height: "100%",
 		width: "100%",
-		borderBottomColor: colors.primary,
-		borderBottomWidth: 1,
 	},
 	imageLoading: {
 		position: "absolute",
@@ -352,7 +341,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		paddingHorizontal: 8,
 	},
-
 	titleContainer: {
 		marginTop: 5,
 		marginLeft: 5,
@@ -394,6 +382,11 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		opacity: 0.1,
+		shadowColor: "black",
+		shadowOffset: {width: -10, height: 10},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
 	},
 });
 

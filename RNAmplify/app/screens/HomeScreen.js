@@ -112,11 +112,11 @@ const HomeScreen = ({navigation}) => {
 			{!fullScreenCheckInPhoto && (
 				<SafeAreaView style={styles.stickyHeader}>
 					<TouchableOpacity style={styles.headerButton}>
-						<Ionicons name="person-add-outline" size={26} color={colors.secondary} onPress={() => navigation.navigate("AddFriendScreen")} />
+						<Ionicons name="person-add-outline" size={30} color={colors.secondary} onPress={() => navigation.navigate("AddFriendScreen")} />
 					</TouchableOpacity>
 					<Text style={styles.pageTitle}>SkiTracker</Text>
 					<TouchableOpacity style={styles.headerButton}>
-						<Foundation name="mountains" size={29} color={colors.secondary} onPress={() => navigation.navigate("MountainSearchScreen")} />
+						<Foundation name="mountains" size={32} color={colors.secondary} onPress={() => navigation.navigate("MountainSearchScreen")} />
 					</TouchableOpacity>
 				</SafeAreaView>
 			)}
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
 	},
 	stickyHeader: {
 		marginBottom: 5,
-		width: "95%",
+		width: "92%",
 		backgroundColor: colors.navigation,
 		flexDirection: "row",
 		alignSelf: "center",

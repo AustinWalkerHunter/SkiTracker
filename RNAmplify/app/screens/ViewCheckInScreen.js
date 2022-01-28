@@ -5,7 +5,6 @@ import {Keyboard, TouchableOpacity, StyleSheet, Text, Image, View, ScrollView, A
 import {LinearGradient} from "expo-linear-gradient";
 import {MaterialCommunityIcons, FontAwesome5, AntDesign, Entypo, Ionicons} from "@expo/vector-icons";
 import colors from "../constants/colors";
-import SafeScreen from "../components/SafeScreen";
 import ProfileIcon from "../components/ProfileIcon";
 import GLOBAL from "../global";
 import resorts from "../constants/resortData";
@@ -244,9 +243,14 @@ const ViewCheckInScreen = ({route, navigation}) => {
 										</View>
 									</TouchableWithoutFeedback>
 								) : (
-									<View style={styles.icon}>
+									<TouchableOpacity
+										style={styles.icon}
+										onPress={() => {
+											checkIn.location != "Unknown location" ? viewResort(checkIn.location) : null;
+										}}
+									>
 										<FontAwesome5 name="mountain" size={145} color={colors.lightGrey} />
-									</View>
+									</TouchableOpacity>
 								)}
 								<LinearGradient
 									colors={["transparent", "#a6a6a605"]}
@@ -398,6 +402,11 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		flexDirection: "row",
 		alignContent: "center",
+		shadowColor: colors.navigation,
+		shadowOffset: {width: -3, height: 3},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
 	},
 	authorTextContainer: {
 		paddingHorizontal: 10,
@@ -436,7 +445,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: colors.secondary,
 		borderRadius: 10,
-		backgroundColor: colors.primary,
+		backgroundColor: "#ff652415",
 		marginBottom: 10,
 	},
 	location: {
@@ -474,6 +483,11 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		opacity: 0.2,
 		paddingVertical: 25,
+		shadowColor: "black",
+		shadowOffset: {width: -10, height: 5},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
 	},
 	loadingText: {
 		color: colors.primaryText,
@@ -534,7 +548,7 @@ const styles = StyleSheet.create({
 	},
 	titleLine: {
 		borderWidth: 0.5,
-		borderColor: colors.secondary,
+		borderColor: colors.grey,
 		opacity: 0.3,
 		width: "100%",
 	},

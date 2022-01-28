@@ -6,6 +6,8 @@ import colors from "../constants/colors";
 import SafeScreen from "../components/SafeScreen";
 import {Linking} from "react-native";
 import Header from "../components/Header";
+import {LinearGradient} from "expo-linear-gradient";
+
 const ResortScreen = ({route, navigation}) => {
 	const {resortData} = route.params;
 	const isFocused = useIsFocused();
@@ -21,6 +23,11 @@ const ResortScreen = ({route, navigation}) => {
 		<SafeScreen style={styles.screen}>
 			{!pageLoading && resortData ? (
 				<View>
+					<View style={styles.backgroundContainer}>
+						<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
+							<LinearGradient colors={["#262626", colors.navigation]} style={{height: "100%", width: "100%"}} />
+						</View>
+					</View>
 					<Header navigation={navigation} title={"Resort"} rightIcon={"map-marker-check"} data={resortData.resort_name} />
 					<View style={styles.titleLine} />
 					<View style={styles.titleContainer}>
@@ -91,7 +98,15 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: colors.navigation,
 	},
-
+	backgroundContainer: {
+		width: "100%",
+		position: "absolute",
+		marginTop: -50,
+	},
+	defaultBackgroundImage: {
+		width: "100%",
+		height: 500,
+	},
 	titleLine: {
 		borderWidth: 0.5,
 		borderColor: colors.secondary,
@@ -101,19 +116,24 @@ const styles = StyleSheet.create({
 	titleContainer: {
 		paddingVertical: 15,
 		width: "100%",
-		backgroundColor: colors.navigation,
 		justifyContent: "center",
 		alignItems: "center",
 		paddingHorizontal: 2,
 	},
 	title: {
 		color: "white",
-		fontSize: 23,
+		fontSize: 25,
+		textShadowColor: "black",
+		textShadowOffset: {width: -2, height: 2},
+		textShadowRadius: 2,
 	},
 	subTitle: {
 		color: "white",
 		fontSize: 15,
 		fontWeight: "200",
+		textShadowColor: "black",
+		textShadowOffset: {width: -2, height: 2},
+		textShadowRadius: 2,
 	},
 	statTitle: {
 		fontSize: 25,
@@ -121,6 +141,9 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		marginBottom: 10,
 		fontWeight: "300",
+		textShadowColor: "black",
+		textShadowOffset: {width: -2, height: 2},
+		textShadowRadius: 2,
 	},
 	content: {
 		height: "100%",
@@ -166,6 +189,11 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		backgroundColor: colors.secondary,
 		marginBottom: 10,
+		shadowColor: colors.navigation,
+		shadowOffset: {width: -1, height: 3},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
 	},
 	trailText: {
 		color: "white",
@@ -180,7 +208,11 @@ const styles = StyleSheet.create({
 		zIndex: -999,
 		justifyContent: "center",
 		alignItems: "center",
-		// opacity: 0.2
+		shadowColor: "black",
+		shadowOffset: {width: -4, height: 4},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
+		elevation: 5,
 	},
 });
 

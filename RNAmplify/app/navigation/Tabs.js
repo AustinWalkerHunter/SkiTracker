@@ -21,9 +21,12 @@ const Tabs = () => (
 		tabBarPosition="bottom"
 		screenOptions={{swipeEnabled: false}}
 		tabBarOptions={{
+			tabStyle: {
+				marginBottom: 5,
+			},
 			iconStyle: {
-				width: 40,
-				height: 55,
+				width: "auto",
+				height: "auto",
 			},
 			tabBarVisible: true,
 			inactiveTintColor: "grey",
@@ -44,14 +47,14 @@ const Tabs = () => (
 			name="Home"
 			component={HomeStackScreen}
 			options={{
-				tabBarIcon: ({color}) => <Ionicons name="ios-home-outline" size={35} color={color} />,
+				tabBarIcon: ({color}) => <Ionicons name="ios-home-outline" size={40} color={color} />,
 			}}
 		/>
 		<Tab.Screen
 			name="Profile"
 			component={ProfileStackScreen}
 			options={{
-				tabBarIcon: ({color}) => <MaterialCommunityIcons name="account-outline" size={40} color={color} />,
+				tabBarIcon: ({color}) => <MaterialCommunityIcons name="account-outline" size={50} color={color} />,
 			}}
 		/>
 	</Tab.Navigator>

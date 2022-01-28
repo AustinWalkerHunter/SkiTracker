@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		marginTop: 10,
 		shadowColor: colors.navigation,
-		shadowOffset: {width: -1, height: 3},
+		shadowOffset: {width: -3, height: 3},
 		shadowOpacity: 0.9,
 		shadowRadius: 2,
 		elevation: 5,

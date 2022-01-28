@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "transparent",
 		flexDirection: "row",
 		justifyContent: "space-between",
-		paddingHorizontal: 15,
+		paddingHorizontal: 10,
 		zIndex: 999,
 	},
 	headerButton: {
