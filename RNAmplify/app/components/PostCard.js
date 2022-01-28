@@ -327,6 +327,8 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		height: "100%",
 		width: "100%",
+		borderBottomColor: colors.primary,
+		borderBottomWidth: 1,
 	},
 	imageLoading: {
 		position: "absolute",

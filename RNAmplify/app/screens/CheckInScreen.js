@@ -36,9 +36,11 @@ const CheckInScreen = ({route, navigation}) => {
 	const isFocused = useIsFocused();
 
 	const setSelectedDate = date => {
-		Moment.locale("en");
-		const selectedDate = Moment(date).format("MMM D, YYYY");
-		setCheckIn({...checkIn, date: selectedDate});
+		if (date <= new Date()) {
+			Moment.locale("en");
+			const selectedDate = Moment(date).format("MMM D, YYYY");
+			setCheckIn({...checkIn, date: selectedDate});
+		}
 	};
 
 	useEffect(() => {
@@ -54,7 +56,7 @@ const CheckInScreen = ({route, navigation}) => {
 	};
 
 	const submit = async () => {
-		if (checkIn.sport && checkIn.location) {
+		if (checkIn.sport && checkIn.location && checkIn.date) {
 			const newCheckIn = {
 				title: checkIn.title ? checkIn.title : "Checked in " + checkIn.sport,
 				location: checkIn.location ? checkIn.location : "Unknown location",

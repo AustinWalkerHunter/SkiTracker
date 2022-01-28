@@ -30,7 +30,7 @@ function DatePicker({iconName, placeholder, textStyle, selectedItem, onSelectedI
 				<TouchableOpacity style={styles.modalScreen} onPress={() => setModalVisible(false)}>
 					<View style={[styles.modalView, {backgroundColor: colorScheme === "dark" ? colors.navigation : colors.grey}]}>
 						<View style={{marginTop: 10}}>
-							<DateTimePicker testID="dateTimePicker" value={date} mode={"date"} is24Hour={true} display="inline" onChange={onChange} />
+							<DateTimePicker testID="dateTimePicker" value={date} mode={"date"} is24Hour={true} maximumDate={new Date()} display="inline" onChange={onChange} />
 						</View>
 						<TouchableOpacity
 							style={[styles.closeModalButton, styles.cancelBtn]}
@@ -60,7 +60,6 @@ function DatePicker({iconName, placeholder, textStyle, selectedItem, onSelectedI
 
 const styles = StyleSheet.create({
 	container: {
-		// padding: 10,
 		flexDirection: "row",
 		alignItems: "center",
 	},

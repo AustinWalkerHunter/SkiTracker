@@ -188,7 +188,7 @@ const ViewCheckInScreen = ({route, navigation}) => {
 					<View style={styles.container}>
 						<View style={styles.backgroundContainer}>
 							<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
-								<LinearGradient colors={["#00000000", colors.navigation]} style={{height: "100%", width: "100%"}} />
+								<LinearGradient colors={["#262626", colors.navigation]} style={{height: "100%", width: "100%"}} />
 							</View>
 						</View>
 						<Header
@@ -358,9 +358,7 @@ const styles = StyleSheet.create({
 	},
 	defaultBackgroundImage: {
 		width: "100%",
-		height: 400,
-		paddingTop: 70,
-		backgroundColor: colors.primary,
+		height: 500,
 	},
 	pageTitle: {
 		position: "relative",
@@ -450,7 +448,7 @@ const styles = StyleSheet.create({
 	title: {
 		color: "white",
 		fontSize: 17,
-		paddingLeft: 5,
+		paddingLeft: 8,
 		paddingTop: 10,
 	},
 	imageContainer: {
@@ -474,7 +472,8 @@ const styles = StyleSheet.create({
 	icon: {
 		justifyContent: "center",
 		alignItems: "center",
-		opacity: 0.1,
+		opacity: 0.2,
+		paddingVertical: 25,
 	},
 	loadingText: {
 		color: colors.primaryText,

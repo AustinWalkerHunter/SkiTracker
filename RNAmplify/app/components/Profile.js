@@ -31,11 +31,11 @@ function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userP
 				<View style={styles.backgroundContainer}>
 					{userProfileImage ? (
 						<ImageBackground source={userProfileImage && {uri: userProfileImage}} imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.backgroundImage}>
-							<LinearGradient colors={["#00000000", colors.navigation]} style={{height: "100%", width: "100%"}} />
+							<LinearGradient colors={["transparent", colors.navigation]} style={{height: "100%", width: "100%"}} />
 						</ImageBackground>
 					) : (
-						<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
-							<LinearGradient colors={["#00000000", colors.navigation]} style={{height: "100%", width: "100%"}} />
+						<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.backgroundImage}>
+							<LinearGradient colors={[colors.primary, colors.navigation]} style={{height: "100%", width: "100%"}} />
 						</View>
 					)}
 				</View>
@@ -153,13 +153,6 @@ const styles = StyleSheet.create({
 	backgroundImage: {
 		width: "100%",
 		height: 600,
-		paddingTop: 70,
-	},
-	defaultBackgroundImage: {
-		width: "100%",
-		height: 600,
-		paddingTop: 70,
-		backgroundColor: colors.primary,
 	},
 	headerButton: {
 		flexDirection: "row",

@@ -75,7 +75,8 @@ const AddFriendScreen = ({navigation}) => {
 								data={searchItems}
 								inverted={false}
 								keyExtractor={users => users.id.toString()}
-								refreshControl={<RefreshControl tintColor={"white"} refreshing={refreshing} onRefresh={() => console.log("refreshing")} />}
+								// Do I really want to allow the user to refresh for new users?
+								// refreshControl={<RefreshControl tintColor={"white"} refreshing={refreshing} onRefresh={() => console.log("refreshing")} />}
 								renderItem={({item}) => (
 									<View style={styles.friendItem}>
 										<FriendItem user={item} getUserProfile={getUserProfile} />
