@@ -47,11 +47,12 @@ function ProfileCheckIns({checkIns, updateDayCount, viewCheckIn}) {
 			{!showPhotos ? (
 				checkIns && checkIns.length > 0 ? (
 					<FlatList
+						scrollEnabled={false}
 						data={checkIns}
 						inverted={false}
 						keyExtractor={checkIns => checkIns.id.toString()}
 						contentContainerStyle={{paddingBottom: 30}}
-						refreshControl={<RefreshControl tintColor={"white"} refreshing={refreshing} onRefresh={() => console.log("refreshing")} />}
+						// refreshControl={<RefreshControl tintColor={"white"} refreshing={refreshing} onRefresh={() => console.log("refreshing")} />}
 						renderItem={({item}) => (
 							<MyPostItem
 								item={item}
@@ -75,6 +76,7 @@ function ProfileCheckIns({checkIns, updateDayCount, viewCheckIn}) {
 				<View>
 					{hasPhotos ? (
 						<FlatList
+							scrollEnabled={false}
 							data={checkIns}
 							horizontal={true}
 							inverted={false}

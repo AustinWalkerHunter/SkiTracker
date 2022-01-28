@@ -8,8 +8,8 @@ import {useScrollToTop} from "@react-navigation/native";
 import {MaterialCommunityIcons, Ionicons, Entypo, Feather} from "@expo/vector-icons";
 import colors from "../constants/colors";
 import GLOBAL from "../global";
-import {getAllCheckInData, followUser, unfollowUser} from "../actions";
-
+import {getAllCheckInData, unfollowUser} from "../actions";
+import ProfileHeader from "../components/ProfileHeader";
 import ConfirmationModal from "../components/ConfirmationModal";
 import {SafeAreaView} from "react-native-safe-area-context";
 
@@ -26,7 +26,7 @@ function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userP
 
 	return (
 		<SafeAreaView style={styles.screen}>
-			{/* getting a warning for this scroll view because I have lists inside of it, (another scoll view for photos) */}
+			{/* getting a warning for the Flatlist inside the ProfileCheckIns component since I have a scroll view here and the two conflict */}
 			<View style={styles.container}>
 				<View style={styles.backgroundContainer}>
 					{userProfileImage ? (
@@ -39,41 +39,14 @@ function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userP
 						</View>
 					)}
 				</View>
-				<View style={styles.stickyHeader}>
-					{activeUserProfile ? (
-						<TouchableOpacity style={styles.headerButton}>
-							<Ionicons name="notifications-outline" size={30} color={colors.secondary} onPress={() => navigation.navigate("NotificationScreen")} />
-						</TouchableOpacity>
-					) : (
-						<TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack(null)}>
-							<Ionicons name="chevron-back-circle-outline" size={35} color={colors.secondary} />
-						</TouchableOpacity>
-					)}
-					{activeUserProfile ? (
-						<TouchableOpacity style={styles.headerButton}>
-							<Feather name="settings" size={28} type="font-awesome" color={colors.secondary} onPress={() => navigation.navigate("SettingsScreen")} />
-						</TouchableOpacity>
-					) : following ? (
-						<TouchableOpacity
-							style={[styles.headerButton, styles.button, {width: "25%", backgroundColor: colors.secondary}]}
-							onPress={() => {
-								setModalVisible(true);
-							}}
-						>
-							<Text style={styles.text}>Following</Text>
-						</TouchableOpacity>
-					) : (
-						<TouchableOpacity
-							style={[styles.headerButton, styles.button, {backgroundColor: colors.primaryBlue}]}
-							onPress={() => {
-								followUser(viewedUserId);
-								setFollowing(true);
-							}}
-						>
-							<Text style={styles.text}>Follow</Text>
-						</TouchableOpacity>
-					)}
-				</View>
+				<ProfileHeader
+					navigation={navigation}
+					activeUserProfile={activeUserProfile}
+					following={following}
+					setModalVisible={setModalVisible}
+					viewedUserId={viewedUserId}
+					setFollowing={setFollowing}
+				/>
 				<ScrollView ref={ref}>
 					<View style={styles.profileContainer}>
 						<View style={styles.profilePictureContainer}>
@@ -137,14 +110,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
-	stickyHeader: {
-		width: "100%",
-		backgroundColor: "transparent",
-		flexDirection: "row",
-		justifyContent: "space-between",
-		paddingHorizontal: 15,
-		zIndex: 999,
-	},
+
 	backgroundContainer: {
 		width: "100%",
 		position: "absolute",
@@ -153,14 +119,6 @@ const styles = StyleSheet.create({
 	backgroundImage: {
 		width: "100%",
 		height: 600,
-	},
-	headerButton: {
-		flexDirection: "row",
-		alignItems: "center",
-	},
-	backButtonText: {
-		color: "white",
-		fontSize: 16,
 	},
 	profileContainer: {
 		bottom: 10,
@@ -251,20 +209,6 @@ const styles = StyleSheet.create({
 		fontSize: 25,
 		paddingLeft: 5,
 		marginRight: 5,
-	},
-	button: {
-		marginTop: 5,
-		height: 26,
-		alignItems: "center",
-		justifyContent: "center",
-		borderRadius: 30,
-		width: "20%",
-	},
-	text: {
-		color: "white",
-		fontSize: 13,
-		textAlign: "center",
-		fontWeight: "500",
 	},
 });
 
