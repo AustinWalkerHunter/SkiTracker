@@ -13,11 +13,10 @@ const styles = StyleSheet.create({
 	container: {
 		padding: "5%",
 		alignItems: "center",
-		textAlignVertical: "center",
 	},
 	label: {
 		color: "white",
-		fontSize: 25,
+		fontSize: 22,
 	},
 });
 export default PickerItem;

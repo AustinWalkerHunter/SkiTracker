@@ -441,7 +441,8 @@ const styles = StyleSheet.create({
 	locationContainer: {
 		alignSelf: "center",
 		padding: 10,
-		width: "80%",
+		minWidth: "75%",
+		width: "auto",
 		borderWidth: 1,
 		borderColor: colors.secondary,
 		borderRadius: 10,

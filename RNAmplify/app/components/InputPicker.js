@@ -36,7 +36,7 @@ function InputPicker({iconName, placeholder, items, textStyle, selectedItem, onS
 			>
 				<Ionicons name={iconName} size={45} color={colors.secondary} />
 				<Text style={textStyle}>{selectedItem ? selectedItem : placeholder}</Text>
-				<Text style={styles.requiredIcon}>*required</Text>
+				{!selectedItem && <Text style={styles.requiredIcon}>*required</Text>}
 			</TouchableOpacity>
 			<Modal visible={modalVisible} transparent={true} animationType="slide">
 				<View style={styles.modalScreen}>

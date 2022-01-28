@@ -10,6 +10,7 @@ import {LinearGradient} from "expo-linear-gradient";
 
 const ResortScreen = ({route, navigation}) => {
 	const {resortData} = route.params;
+	const resortName = resortData.resort_name.slice(0, -4);
 	const isFocused = useIsFocused();
 	const [pageLoading, setPageLoading] = useState(true);
 
@@ -31,7 +32,7 @@ const ResortScreen = ({route, navigation}) => {
 					<Header navigation={navigation} title={"Resort"} rightIcon={"map-marker-check"} data={resortData.resort_name} />
 					<View style={styles.titleLine} />
 					<View style={styles.titleContainer}>
-						<Text style={styles.title}>{resortData.resort_name}</Text>
+						<Text style={styles.title}>{resortName}</Text>
 						<Text style={styles.subTitle}>{resortData.state}</Text>
 					</View>
 					{resortData.resort_name != "The Lodge" && (
@@ -76,7 +77,7 @@ const ResortScreen = ({route, navigation}) => {
 							{resortData.trail_map && (
 								<View style={styles.mapContainer}>
 									<Text style={styles.trailText} onPress={() => Linking.openURL(resortData.trail_map)}>
-										{resortData.resort_name} Trail Map
+										{resortName} Trail Map
 									</Text>
 								</View>
 							)}
