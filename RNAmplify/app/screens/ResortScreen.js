@@ -82,7 +82,7 @@ const ResortScreen = ({route, navigation}) => {
 								</View>
 							)}
 							<View style={styles.icon}>
-								<FontAwesome5 name="mountain" size={250} color={colors.primaryDark} />
+								<FontAwesome5 name="mountain" size={250} color={colors.lightGrey} />
 							</View>
 						</View>
 					)}
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
 	},
 	defaultBackgroundImage: {
 		width: "100%",
-		height: 500,
+		height: 600,
 	},
 	titleLine: {
 		borderWidth: 0.5,
@@ -207,10 +207,11 @@ const styles = StyleSheet.create({
 		right: 0,
 		bottom: 600,
 		zIndex: -999,
+		opacity: 0.1,
 		justifyContent: "center",
 		alignItems: "center",
 		shadowColor: "black",
-		shadowOffset: {width: -4, height: 4},
+		shadowOffset: {width: -10, height: 5},
 		shadowOpacity: 0.9,
 		shadowRadius: 2,
 		elevation: 5,

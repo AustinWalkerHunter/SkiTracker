@@ -16,6 +16,7 @@ import RoundedButton from "../components/RoundedButton";
 import {useToast} from "react-native-fast-toast";
 import {updateUsersProfilePicture} from "../actions";
 import Header from "../components/Header";
+import {LinearGradient} from "expo-linear-gradient";
 
 const SettingsScreen = ({navigation, route}) => {
 	const isFocused = useIsFocused();
@@ -135,6 +136,11 @@ const SettingsScreen = ({navigation, route}) => {
 		<SafeScreen style={styles.screen}>
 			{!pageLoading ? (
 				<View>
+					<View style={styles.backgroundContainer}>
+						<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
+							<LinearGradient colors={["#262626", colors.navigation]} style={{height: "100%", width: "100%"}} />
+						</View>
+					</View>
 					<Header navigation={navigation} title={"Edit Profile"} logout={true} updateAuthState={route.params.updateAuthState} />
 					<View style={styles.container}>
 						<View style={styles.profileContainer}>
@@ -204,6 +210,15 @@ const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
 		backgroundColor: colors.navigation,
+	},
+	backgroundContainer: {
+		width: "100%",
+		position: "absolute",
+		marginTop: -50,
+	},
+	defaultBackgroundImage: {
+		width: "100%",
+		height: 500,
 	},
 	container: {
 		top: 10,

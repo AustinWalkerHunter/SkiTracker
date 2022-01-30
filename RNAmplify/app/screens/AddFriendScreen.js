@@ -8,6 +8,7 @@ import FriendItem from "../components/FriendItem";
 import colors from "../constants/colors";
 import {SearchBar} from "react-native-elements";
 import Header from "../components/Header";
+import {LinearGradient} from "expo-linear-gradient";
 
 const AddFriendScreen = ({navigation}) => {
 	const [users, setUsers] = useState([]);
@@ -63,6 +64,11 @@ const AddFriendScreen = ({navigation}) => {
 		<SafeScreen style={styles.screen}>
 			{!loading ? (
 				<View style={styles.usersContainer}>
+					<View style={styles.backgroundContainer}>
+						<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
+							<LinearGradient colors={["#80260022", colors.navigation]} style={{height: "100%", width: "100%"}} />
+						</View>
+					</View>
 					<Header navigation={navigation} title={"Find Friends"} />
 					{users.length > 1 ? (
 						<View style={styles.usersContainer}>
@@ -105,8 +111,18 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		backgroundColor: colors.navigation,
 	},
+	backgroundContainer: {
+		width: "100%",
+		position: "absolute",
+		marginTop: -50,
+	},
+	defaultBackgroundImage: {
+		width: "100%",
+		height: 1000,
+		opacity: 0.8,
+	},
 	searchStyles: {
-		backgroundColor: colors.navigation,
+		backgroundColor: "transparent",
 		borderBottomColor: "transparent",
 		borderTopColor: "transparent",
 	},

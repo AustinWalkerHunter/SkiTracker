@@ -19,6 +19,7 @@ import {useIsFocused} from "@react-navigation/native";
 import DatePicker from "../components/DatePicker";
 import Moment from "moment";
 import Header from "../components/Header";
+import {LinearGradient} from "expo-linear-gradient";
 
 const CheckInScreen = ({route, navigation}) => {
 	const {viewedLocation} = route.params;
@@ -189,6 +190,11 @@ const CheckInScreen = ({route, navigation}) => {
 
 	return (
 		<SafeScreen style={styles.screen}>
+			<View style={styles.backgroundContainer}>
+				<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
+					<LinearGradient colors={["#262626", colors.navigation]} style={{height: "100%", width: "100%"}} />
+				</View>
+			</View>
 			<Header navigation={navigation} title={"Check-in"} />
 			<View style={styles.titleLine} />
 			{!loading ? (
@@ -291,6 +297,15 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: colors.navigation,
 		padding: 5,
+	},
+	backgroundContainer: {
+		width: "100%",
+		position: "absolute",
+		marginTop: -50,
+	},
+	defaultBackgroundImage: {
+		width: "100%",
+		height: 500,
 	},
 	loadingSpinner: {
 		top: "50%",

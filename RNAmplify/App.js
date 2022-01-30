@@ -15,6 +15,7 @@ import {fetchAppData} from "./app/setUp";
 import {Foundation, Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
 import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, SafeAreaView} from "react-native";
 import SafeScreen from "./app/components/SafeScreen";
+import {LinearGradient} from "expo-linear-gradient";
 
 import {StatusBar} from "expo-status-bar";
 
@@ -71,16 +72,21 @@ export default function App() {
 	if (preparingApp) {
 		return (
 			<View style={styles.screen}>
+				<View style={styles.backgroundContainer}>
+					<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
+						<LinearGradient colors={["#070e13", colors.navigation]} style={{height: "100%", width: "100%"}} />
+					</View>
+				</View>
 				{/* <SafeAreaView style={styles.container}> */}
 				{/* I want to use safeareaview here but when I do it glitches for a second and looks weird */}
 				{/* it looks good without safeareaview, but looks bad on smaller devices, trade offs... */}
 				<SafeAreaView style={styles.stickyHeader}>
 					<TouchableOpacity style={styles.headerButton}>
-						<Ionicons name="person-add-outline" size={26} color={colors.secondary} />
+						<Ionicons name="person-add-outline" size={30} color={colors.secondary} />
 					</TouchableOpacity>
 					<Text style={styles.pageTitle}>SkiTracker</Text>
 					<TouchableOpacity style={styles.headerButton}>
-						<Foundation name="mountains" size={29} color={colors.secondary} />
+						<Foundation name="mountains" size={32} color={colors.secondary} />
 					</TouchableOpacity>
 				</SafeAreaView>
 				<View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
@@ -106,13 +112,21 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: colors.navigation,
 	},
+	backgroundContainer: {
+		width: "100%",
+		position: "absolute",
+		marginTop: -50,
+	},
+	defaultBackgroundImage: {
+		width: "100%",
+		height: 800,
+	},
 	container: {
 		flex: 1,
 	},
 	stickyHeader: {
 		marginBottom: 5,
-		width: "95%",
-		backgroundColor: colors.navigation,
+		width: "92%",
 		flexDirection: "row",
 		alignSelf: "center",
 		justifyContent: "space-between",

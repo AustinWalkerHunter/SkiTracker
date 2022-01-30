@@ -13,6 +13,7 @@ import {deleteSelectedCheckIn} from "../actions";
 import resorts from "../constants/resortData";
 import {useToast} from "react-native-fast-toast";
 import {StatusBar} from "expo-status-bar";
+import {LinearGradient} from "expo-linear-gradient";
 
 const HomeScreen = ({navigation}) => {
 	const isFocused = useIsFocused();
@@ -109,6 +110,11 @@ const HomeScreen = ({navigation}) => {
 
 	return (
 		<View style={styles.screen}>
+			<View style={styles.backgroundContainer}>
+				<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
+					<LinearGradient colors={["#070e13", colors.navigation]} style={{height: "100%", width: "100%"}} />
+				</View>
+			</View>
 			{!fullScreenCheckInPhoto && (
 				<SafeAreaView style={styles.stickyHeader}>
 					<TouchableOpacity style={styles.headerButton}>
@@ -158,7 +164,7 @@ const HomeScreen = ({navigation}) => {
 								<Text style={styles.zeroStateText}>No check-ins found.</Text>
 								<Text style={styles.zeroStateText}>Create one!</Text>
 								<View style={styles.mountainIcon}>
-									<FontAwesome5 name="mountain" size={270} color={colors.primaryDark} />
+									<FontAwesome5 name="mountain" size={270} color={"#59595966"} />
 								</View>
 							</View>
 						)}
@@ -194,13 +200,21 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: colors.navigation,
 	},
+	backgroundContainer: {
+		width: "100%",
+		position: "absolute",
+		marginTop: -50,
+	},
+	defaultBackgroundImage: {
+		width: "100%",
+		height: 800,
+	},
 	container: {
 		flex: 1,
 	},
 	stickyHeader: {
 		marginBottom: 5,
 		width: "92%",
-		backgroundColor: colors.navigation,
 		flexDirection: "row",
 		alignSelf: "center",
 		justifyContent: "space-between",
