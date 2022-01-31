@@ -89,12 +89,12 @@ const MyProfileScreen = ({navigation}) => {
 				updateUsersProfilePicture(updatedUser);
 				setActiveUser({...activeUser, image: uploadUrl});
 				GLOBAL.activeUser.image = uploadUrl;
-				toast.show("Profile image updated!", {
-					duration: 2000,
-					style: {marginTop: 50, backgroundColor: "green"},
-					textStyle: {fontSize: 20},
-					placement: "top", // default to bottom
-				});
+				// toast.show("Profile image updated!", {
+				// 	duration: 2000,
+				// 	style: {marginTop: 50, backgroundColor: "green"},
+				// 	textStyle: {fontSize: 20},
+				// 	placement: "top", // default to bottom
+				// });
 			}
 		} catch (e) {
 			console.log(e);
@@ -148,7 +148,6 @@ const MyProfileScreen = ({navigation}) => {
 			activeUserProfile={true}
 			activeUser={activeUser}
 			viewedUserId={GLOBAL.activeUserId}
-			userProfileImage={GLOBAL.allUsers[GLOBAL.activeUserId].image}
 			pickImage={pickImage}
 			userDayCount={userDayCount}
 			pageLoading={pageLoading}

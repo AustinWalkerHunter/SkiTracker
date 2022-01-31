@@ -19,7 +19,7 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 	const [fullScreenPhoto, setFullScreenPhoto] = useState();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [profileModalVisible, setProfileModalVisible] = useState(false);
-	const [userProfileImage, setUserProfileImage] = useState(GLOBAL.allUsers[viewedUserId].image);
+	const [userProfileImage, setUserProfileImage] = useState(GLOBAL.allUsers[viewedUserId]?.image);
 	const [following, setFollowing] = useState(viewedUserId && GLOBAL.following.includes(viewedUserId));
 	const ref = React.useRef(null);
 	useScrollToTop(ref);
@@ -27,7 +27,11 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 
 	useEffect(() => {
 		if (isFocused) {
-			setUserProfileImage(GLOBAL.allUsers[GLOBAL.activeUserId].image);
+			setUserProfileImage(GLOBAL.allUsers[viewedUserId]?.image);
+		} else {
+			if (fullScreenPhoto) {
+				setFullScreenPhoto(false);
+			}
 		}
 	}, [isFocused]);
 
@@ -207,7 +211,7 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		backgroundColor: colors.navigation,
 		width: "100%",
-		height: "100%",
+		height: "110%",
 		justifyContent: "center",
 		alignItems: "center",
 		zIndex: 999,
@@ -224,8 +228,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	closeImageViewer: {
-		alignSelf: "center",
-		top: "40%",
+		marginTop: "90%",
 		borderRadius: 25,
 		borderWidth: 1,
 		borderColor: "white",

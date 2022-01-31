@@ -26,18 +26,19 @@ function ProfilePictureModal({profileModalVisible, setProfileModalVisible, hasPr
 					>
 						<FontAwesome name="remove" size={30} color="white" />
 					</TouchableOpacity>
-					{hasProfilePicture && (
-						<TouchableOpacity
-							style={[styles.button, styles.buttonView]}
-							onPress={() => {
-								viewAction();
-								setProfileModalVisible(false);
-							}}
-						>
-							<Text style={styles.textStyle}>View</Text>
-						</TouchableOpacity>
-					)}
+
 					<View style={styles.buttonsContainer}>
+						{hasProfilePicture && (
+							<TouchableOpacity
+								style={[styles.button, styles.buttonView]}
+								onPress={() => {
+									viewAction();
+									setProfileModalVisible(false);
+								}}
+							>
+								<Text style={styles.textStyle}>View</Text>
+							</TouchableOpacity>
+						)}
 						<TouchableOpacity
 							style={[styles.button, styles.buttonChange]}
 							onPress={() => {
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "#000000cc",
-		height: "110%",
+		height: "100%",
 	},
 	modalView: {
 		backgroundColor: "#22272b",
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.25,
 		shadowRadius: 4,
 		elevation: 5,
-		width: "80%",
+		width: "75%",
 	},
 	modalText: {
 		color: "white",
@@ -95,23 +96,24 @@ const styles = StyleSheet.create({
 	},
 	closeModalContainer: {
 		position: "absolute",
-		right: 15,
+		right: 12,
 		top: 10,
 		zIndex: 999,
 	},
 	buttonsContainer: {
-		flexDirection: "row",
+		flexDirection: "column",
+		justifyContent: "space-between",
+		width: "100%",
 	},
 	button: {
-		marginHorizontal: 15,
+		width: "100%",
+		marginVertical: 10,
 		borderRadius: 20,
 		paddingVertical: 12,
 		elevation: 2,
-		width: 100,
 	},
 	buttonView: {
 		backgroundColor: colors.grey,
-		marginBottom: 15,
 	},
 	buttonRemove: {
 		backgroundColor: "red",

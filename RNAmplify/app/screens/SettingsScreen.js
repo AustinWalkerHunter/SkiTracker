@@ -383,11 +383,10 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	closeImageViewer: {
-		alignSelf: "center",
+		marginBottom: "70%",
 		borderRadius: 25,
 		borderWidth: 1,
 		borderColor: "white",
-		marginBottom: 50,
 		padding: 5,
 		backgroundColor: "rgba(224, 224, 224, 0.15)",
 		zIndex: 999,

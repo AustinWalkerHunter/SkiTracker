@@ -67,7 +67,6 @@ const UserProfileScreen = ({route, navigation}) => {
 			activeUserProfile={false}
 			viewedUser={viewedUser}
 			viewedUserId={viewedUserId}
-			userProfileImage={GLOBAL.allUsers[viewedUserId].image}
 			userDayCount={userDayCount}
 			pageLoading={pageLoading}
 			userCheckIns={userCheckIns}
