@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {View, ScrollView, ActivityIndicator, TouchableOpacity, Text, StyleSheet, Image, ImageBackground} from "react-native";
 import {LinearGradient} from "expo-linear-gradient";
 import MyStats from "../components/MyStats";
@@ -8,21 +8,39 @@ import {useScrollToTop} from "@react-navigation/native";
 import {MaterialCommunityIcons, Ionicons, Entypo, Feather} from "@expo/vector-icons";
 import colors from "../constants/colors";
 import GLOBAL from "../global";
-import {getAllCheckInData, unfollowUser} from "../actions";
+import {getAllCheckInData, unfollowUser, removeProfilePicture} from "../actions";
 import ProfileHeader from "../components/ProfileHeader";
 import ConfirmationModal from "../components/ConfirmationModal";
 import {SafeAreaView} from "react-native-safe-area-context";
+import ProfilePictureModal from "./ProfilePictureModal";
+import {useIsFocused} from "@react-navigation/native";
 
-function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userProfileImage, pickImage, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn, viewResort}) {
+function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedUserId, pickImage, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn, viewResort}) {
 	const [fullScreenPhoto, setFullScreenPhoto] = useState();
 	const [modalVisible, setModalVisible] = useState(false);
+	const [profileModalVisible, setProfileModalVisible] = useState(false);
+	const [userProfileImage, setUserProfileImage] = useState(GLOBAL.allUsers[viewedUserId].image);
 	const [following, setFollowing] = useState(viewedUserId && GLOBAL.following.includes(viewedUserId));
 	const ref = React.useRef(null);
 	useScrollToTop(ref);
+	const isFocused = useIsFocused();
+
+	useEffect(() => {
+		if (isFocused) {
+			setUserProfileImage(GLOBAL.allUsers[GLOBAL.activeUserId].image);
+		}
+	}, [isFocused]);
 
 	const displayFullImage = checkInPhotoUri => {
 		setFullScreenPhoto(checkInPhotoUri);
 	};
+
+	async function removeUserProfilePicture() {
+		await removeProfilePicture(activeUser);
+		GLOBAL.activeUser.image = null;
+		GLOBAL.allUsers[GLOBAL.activeUserId].image = null;
+		setUserProfileImage(null);
+	}
 
 	return (
 		<SafeAreaView style={styles.screen}>
@@ -51,7 +69,7 @@ function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userP
 					<View style={styles.profileContainer}>
 						<View style={styles.profilePictureContainer}>
 							{activeUserProfile ? (
-								<TouchableOpacity onPress={() => pickImage()}>
+								<TouchableOpacity onPress={() => setProfileModalVisible(true)}>
 									{userProfileImage ? (
 										<ProfileIcon size={200} image={userProfileImage} isSettingScreen={false} />
 									) : (
@@ -59,8 +77,8 @@ function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userP
 									)}
 								</TouchableOpacity>
 							) : (
-								<TouchableOpacity onPress={() => displayFullImage(viewedUser.image)}>
-									{viewedUser.image ? <ProfileIcon size={200} image={viewedUser.image} /> : <MaterialCommunityIcons name="account-outline" size={180} color="grey" />}
+								<TouchableOpacity onPress={() => displayFullImage(userProfileImage)}>
+									{userProfileImage ? <ProfileIcon size={200} image={userProfileImage} /> : <MaterialCommunityIcons name="account-outline" size={180} color="grey" />}
 								</TouchableOpacity>
 							)}
 						</View>
@@ -97,6 +115,18 @@ function Profile({navigation, activeUserProfile, viewedUser, viewedUserId, userP
 					setFollowing(false);
 				}}
 				follow={true}
+			/>
+			<ProfilePictureModal
+				profileModalVisible={profileModalVisible}
+				setProfileModalVisible={setProfileModalVisible}
+				hasProfilePicture={userProfileImage}
+				viewAction={() => displayFullImage(userProfileImage)}
+				changeAction={async () => {
+					await pickImage();
+					setUserProfileImage(GLOBAL.allUsers[viewedUserId].image);
+					setProfileModalVisible(false);
+				}}
+				removeAction={() => removeUserProfilePicture()}
 			/>
 		</SafeAreaView>
 	);
@@ -194,9 +224,8 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	closeImageViewer: {
-		position: "absolute",
 		alignSelf: "center",
-		bottom: "20%",
+		top: "40%",
 		borderRadius: 25,
 		borderWidth: 1,
 		borderColor: "white",

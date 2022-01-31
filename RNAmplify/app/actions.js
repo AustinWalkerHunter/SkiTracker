@@ -1,4 +1,4 @@
-import {API, graphqlOperation} from "aws-amplify";
+import {API, graphqlOperation, Storage} from "aws-amplify";
 import {deleteFollowing, deleteCheckIn, updateUser, updateCheckIn, createLike, deleteLike, deleteComment, createFollowing} from "../src/graphql/mutations";
 import {listCheckIns, getCheckIn, listFollowings} from "../src/graphql/queries";
 import GLOBAL from "./global";
@@ -77,6 +77,18 @@ export async function updateUsersProfilePicture(user) {
 		console.log("Profile pictured updated");
 	} catch (error) {
 		console.log("Error updating users profile picture in db");
+	}
+}
+
+export async function removeProfilePicture(user) {
+	if (user.image) {
+		try {
+			const updatedUser = {...user, image: null};
+			updateUsersProfilePicture(updatedUser);
+			await Storage.remove(user.image);
+		} catch (error) {
+			console.log(error);
+		}
 	}
 }
 

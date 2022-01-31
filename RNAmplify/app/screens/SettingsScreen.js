@@ -17,15 +17,20 @@ import {useToast} from "react-native-fast-toast";
 import {updateUsersProfilePicture} from "../actions";
 import Header from "../components/Header";
 import {LinearGradient} from "expo-linear-gradient";
+import ProfilePictureModal from "../components/ProfilePictureModal";
+import {removeProfilePicture} from "../actions";
+import {FontAwesome5} from "@expo/vector-icons";
 
 const SettingsScreen = ({navigation, route}) => {
 	const isFocused = useIsFocused();
 	const [userInfo, setUserInfo] = useState();
+	const [profileModalVisible, setProfileModalVisible] = useState(false);
 	const [pageLoading, setPageLoading] = useState(true);
 	const [activeUser, setActiveUser] = useState({username: GLOBAL.activeUser.username, id: GLOBAL.activeUser.id, description: GLOBAL.activeUser.description, image: GLOBAL.activeUser.image});
-	const [userProfileImage, setUserProfileImage] = useState();
+	const [userProfileImage, setUserProfileImage] = useState(GLOBAL.allUsers[GLOBAL.activeUserId].image);
 	const toast = useToast();
 	const [isUserInputDifferent, setUserInputDifferent] = useState(false);
+	const [fullScreenPhoto, setFullScreenPhoto] = useState();
 
 	useEffect(() => {
 		if (isFocused) {
@@ -38,6 +43,10 @@ const SettingsScreen = ({navigation, route}) => {
 		const userInfo = await Auth.currentAuthenticatedUser();
 		setUserInfo(userInfo);
 		setPageLoading(false);
+	};
+
+	const displayFullImage = checkInPhotoUri => {
+		setFullScreenPhoto(checkInPhotoUri);
 	};
 
 	const checkUserInput = (username, description) => {
@@ -95,7 +104,10 @@ const SettingsScreen = ({navigation, route}) => {
 				const fileName = uuid.v4() + "_" + activeUser.username + "_profilePic.jpg";
 				const uploadUrl = await uploadImage(fileName, img);
 				const updatedUser = {...activeUser, image: uploadUrl};
-				updateUsersProfilePicture(updatedUser);
+				await updateUsersProfilePicture(updatedUser);
+				setActiveUser({...activeUser, image: uploadUrl});
+				GLOBAL.activeUser.image = uploadUrl;
+
 				toast.show("Profile image updated!", {
 					duration: 2000,
 					style: {marginTop: 50, backgroundColor: "green"},
@@ -132,6 +144,14 @@ const SettingsScreen = ({navigation, route}) => {
 		return blob;
 	}
 
+	async function removeUserProfilePicture() {
+		await removeProfilePicture(activeUser);
+		setActiveUser({...activeUser, image: null});
+		setUserProfileImage(null);
+		GLOBAL.activeUser.image = null;
+		GLOBAL.allUsers[GLOBAL.activeUserId].image = null;
+	}
+
 	return (
 		<SafeScreen style={styles.screen}>
 			{!pageLoading ? (
@@ -145,7 +165,46 @@ const SettingsScreen = ({navigation, route}) => {
 					<View style={styles.container}>
 						<View style={styles.profileContainer}>
 							<View style={styles.profilePictureContainer}>
-								<TouchableOpacity onPress={pickImage}>{<ProfileIcon size={150} image={userProfileImage} isSettingScreen={true} />}</TouchableOpacity>
+								<TouchableOpacity onPress={() => setProfileModalVisible(true)}>
+									{/* <ProfileIcon size={150} image={GLOBAL.allUsers[GLOBAL.activeUserId].image} isSettingScreen={true} /> */}
+									<View>
+										<View>
+											{userProfileImage ? (
+												<Image
+													style={{
+														width: 150,
+														height: 150,
+														borderRadius: 150 / 2,
+														opacity: 0.4,
+													}}
+													source={{uri: userProfileImage}}
+												/>
+											) : (
+												<View
+													style={{
+														width: 150,
+														height: 150,
+														borderRadius: 150 / 2,
+														borderWidth: 1.5,
+														borderColor: colors.secondary,
+														backgroundColor: colors.navigation,
+													}}
+												/>
+											)}
+											<FontAwesome5
+												name="user-edit"
+												size={45}
+												color="white"
+												style={{
+													position: "absolute",
+													marginLeft: "36%",
+													marginTop: "35%",
+													zIndex: 999,
+												}}
+											/>
+										</View>
+									</View>
+								</TouchableOpacity>
 							</View>
 						</View>
 						{/* user since   "createdAt": "2021-08-20T19:36:48.602Z", off the global user */}
@@ -202,6 +261,27 @@ const SettingsScreen = ({navigation, route}) => {
 			) : (
 				<ActivityIndicator size="large" color="white" />
 			)}
+			{fullScreenPhoto ? (
+				<View style={styles.imageViewerContainer}>
+					<TouchableOpacity style={styles.closeImageViewer} onPress={() => setFullScreenPhoto("")}>
+						<Text style={styles.closeButtonText}>Close</Text>
+					</TouchableOpacity>
+					<View style={styles.imageDisplay}>
+						<Image style={styles.image} resizeMode={"contain"} source={{uri: fullScreenPhoto}} />
+					</View>
+				</View>
+			) : null}
+			<ProfilePictureModal
+				profileModalVisible={profileModalVisible}
+				setProfileModalVisible={setProfileModalVisible}
+				hasProfilePicture={userProfileImage}
+				viewAction={() => displayFullImage(userProfileImage)}
+				changeAction={async () => {
+					await pickImage();
+					setProfileModalVisible(false);
+				}}
+				removeAction={() => removeUserProfilePicture()}
+			/>
 		</SafeScreen>
 	);
 };
@@ -281,6 +361,42 @@ const styles = StyleSheet.create({
 		color: "#e62e00",
 		fontSize: 18,
 		fontWeight: "500",
+	},
+	imageViewerContainer: {
+		position: "absolute",
+		backgroundColor: colors.navigation,
+		width: "100%",
+		height: "200%",
+		justifyContent: "center",
+		alignItems: "center",
+		zIndex: 999,
+	},
+	imageDisplay: {
+		position: "absolute",
+		bottom: "30%",
+		width: "100%",
+		height: "100%",
+	},
+	image: {
+		alignSelf: "center",
+		height: "100%",
+		width: "100%",
+	},
+	closeImageViewer: {
+		alignSelf: "center",
+		borderRadius: 25,
+		borderWidth: 1,
+		borderColor: "white",
+		marginBottom: 50,
+		padding: 5,
+		backgroundColor: "rgba(224, 224, 224, 0.15)",
+		zIndex: 999,
+	},
+	closeButtonText: {
+		color: "white",
+		fontSize: 25,
+		paddingLeft: 5,
+		marginRight: 5,
 	},
 });
 

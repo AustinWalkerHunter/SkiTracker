@@ -9,6 +9,7 @@ import colors from "../constants/colors";
 import {SearchBar} from "react-native-elements";
 import Header from "../components/Header";
 import {LinearGradient} from "expo-linear-gradient";
+import {listUsers} from "../../src/graphql/queries";
 
 const AddFriendScreen = ({navigation}) => {
 	const [users, setUsers] = useState([]);
@@ -25,16 +26,39 @@ const AddFriendScreen = ({navigation}) => {
 		}
 	}, [isFocused]);
 
-	function getAllUsers() {
+	// function getAllUsers() {
+	// 	var allUsers = [];
+	// 	for (const key in GLOBAL.allUsers) {
+	// 		if (GLOBAL.activeUserId != key) allUsers.push(GLOBAL.allUsers[key]);
+	// 	}
+	// 	allUsers.sort((a, b) => a.username.localeCompare(b.username));
+	// 	setUsers(allUsers);
+	// 	setSearchItems(allUsers);
+	// 	setLoading(false);
+	// }
+
+	const getAllUsers = async () => {
+		console.log("fetchAllUsers");
 		var allUsers = [];
-		for (const key in GLOBAL.allUsers) {
-			if (GLOBAL.activeUserId != key) allUsers.push(GLOBAL.allUsers[key]);
+		var usersById = {};
+		try {
+			const allUserData = (await API.graphql(graphqlOperation(listUsers))).data.listUsers.items;
+			allUserData.forEach(user => {
+				var userId = user.id;
+				usersById[userId] = {username: user.username, id: user.id, description: user.description, image: user.image};
+			});
+			for (const key in usersById) {
+				if (GLOBAL.activeUserId != key) allUsers.push(usersById[key]);
+			}
+			allUsers.sort((a, b) => a.username.localeCompare(b.username));
+			setUsers(allUsers);
+			setSearchItems(allUsers);
+			setLoading(false);
+		} catch (error) {
+			console.log("Error getting user from db");
+			setLoading(false);
 		}
-		allUsers.sort((a, b) => a.username.localeCompare(b.username));
-		setUsers(allUsers);
-		setSearchItems(allUsers);
-		setLoading(false);
-	}
+	};
 
 	const filterUsers = input => {
 		setSearchText(input);

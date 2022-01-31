@@ -81,11 +81,6 @@ const styles = StyleSheet.create({
 	},
 	buttonClose: {
 		backgroundColor: colors.grey,
-		// paddingHorizontal: 25
-	},
-	buttonConfirm: {
-		// backgroundColor: "red",
-		// paddingHorizontal: 25,
 	},
 	textStyle: {
 		color: "white",

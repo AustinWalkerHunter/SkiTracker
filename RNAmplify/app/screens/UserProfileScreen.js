@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {API, graphqlOperation, Storage} from "aws-amplify";
+import {API, graphqlOperation} from "aws-amplify";
 import {useIsFocused} from "@react-navigation/native";
 import Profile from "../components/Profile";
 import {getUser, checkInsByDate} from "../../src/graphql/queries";
@@ -32,7 +32,7 @@ const UserProfileScreen = ({route, navigation}) => {
 		try {
 			const userData = await API.graphql(graphqlOperation(getUser, {id: viewedUserId}));
 			const viewedUser = userData.data.getUser;
-			const userImage = GLOBAL.allUsers[viewedUserId].image;
+			const userImage = viewedUser.image ? GLOBAL.allUsers[viewedUserId].image : null;
 			setViewedUser({username: viewedUser.username, id: viewedUser.id, description: viewedUser.description, image: userImage});
 			const queryParams = {
 				type: "CheckIn",
@@ -67,7 +67,7 @@ const UserProfileScreen = ({route, navigation}) => {
 			activeUserProfile={false}
 			viewedUser={viewedUser}
 			viewedUserId={viewedUserId}
-			userProfileImage={userProfileImage}
+			userProfileImage={GLOBAL.allUsers[viewedUserId].image}
 			userDayCount={userDayCount}
 			pageLoading={pageLoading}
 			userCheckIns={userCheckIns}

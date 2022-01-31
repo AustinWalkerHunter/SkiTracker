@@ -82,12 +82,13 @@ const MyProfileScreen = ({navigation}) => {
 				const imageUri = pickerResult.uri;
 				setUserProfileImage(imageUri);
 				GLOBAL.allUsers[GLOBAL.activeUserId].image = imageUri;
-				GLOBAL.activeUser = {...activeUser, image: imageUri};
 				const img = await fetchImageFromUri(imageUri);
 				const fileName = uuid.v4() + "_" + activeUser.username + "_profilePic.jpg";
 				const uploadUrl = await uploadImage(fileName, img);
 				const updatedUser = {...activeUser, image: uploadUrl};
 				updateUsersProfilePicture(updatedUser);
+				setActiveUser({...activeUser, image: uploadUrl});
+				GLOBAL.activeUser.image = uploadUrl;
 				toast.show("Profile image updated!", {
 					duration: 2000,
 					style: {marginTop: 50, backgroundColor: "green"},
@@ -145,7 +146,9 @@ const MyProfileScreen = ({navigation}) => {
 		<Profile
 			navigation={navigation}
 			activeUserProfile={true}
-			userProfileImage={userProfileImage}
+			activeUser={activeUser}
+			viewedUserId={GLOBAL.activeUserId}
+			userProfileImage={GLOBAL.allUsers[GLOBAL.activeUserId].image}
 			pickImage={pickImage}
 			userDayCount={userDayCount}
 			pageLoading={pageLoading}

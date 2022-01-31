@@ -22,7 +22,7 @@ function FriendItem({user, getUserProfile}) {
 				<View style={styles.profileContainer}>
 					<View style={styles.profilePictureContainer}>
 						<View>
-							<ProfileIcon size={65} image={user?.image ? user.image : null} />
+							<ProfileIcon size={65} image={GLOBAL.allUsers[user.id].image ? GLOBAL.allUsers[user.id].image : null} />
 
 							{/* <MaterialCommunityIcons name="account-outline" size={50} color="grey" /> */}
 						</View>

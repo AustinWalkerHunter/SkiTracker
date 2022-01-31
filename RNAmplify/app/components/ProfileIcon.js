@@ -4,6 +4,7 @@ import {FontAwesome5} from "@expo/vector-icons";
 import colors from "../constants/colors";
 import color from "color";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
+import GLOBAL from "../global";
 
 function ProfileIcon({size, image, isSettingScreen}) {
 	return (
@@ -26,7 +27,7 @@ function ProfileIcon({size, image, isSettingScreen}) {
 			) : (
 				<View>
 					<View>
-						{image ? (
+						{GLOBAL.allUsers[GLOBAL.activeUserId].image ? (
 							<Image
 								style={{
 									width: size,
@@ -34,7 +35,7 @@ function ProfileIcon({size, image, isSettingScreen}) {
 									borderRadius: size / 2,
 									opacity: 0.4,
 								}}
-								source={{uri: image}}
+								source={{uri: GLOBAL.allUsers[GLOBAL.activeUserId].image}}
 							/>
 						) : (
 							<Image
