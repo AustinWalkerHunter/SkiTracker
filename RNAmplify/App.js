@@ -72,11 +72,6 @@ export default function App() {
 	if (preparingApp) {
 		return (
 			<View style={styles.screen}>
-				<View style={styles.backgroundContainer}>
-					<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
-						<LinearGradient colors={["#070e13", colors.navigation]} style={{height: "100%", width: "100%"}} />
-					</View>
-				</View>
 				{/* <SafeAreaView style={styles.container}> */}
 				{/* I want to use safeareaview here but when I do it glitches for a second and looks weird */}
 				{/* it looks good without safeareaview, but looks bad on smaller devices, trade offs... */}

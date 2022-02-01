@@ -110,11 +110,7 @@ const HomeScreen = ({navigation}) => {
 
 	return (
 		<View style={styles.screen}>
-			<View style={styles.backgroundContainer}>
-				<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
-					<LinearGradient colors={["#070e13", colors.navigation]} style={{height: "100%", width: "100%"}} />
-				</View>
-			</View>
+			<View style={styles.backgroundContainer}></View>
 			{!fullScreenCheckInPhoto && (
 				<SafeAreaView style={styles.stickyHeader}>
 					<TouchableOpacity style={styles.headerButton}>

@@ -86,8 +86,9 @@ export async function removeProfilePicture(user) {
 			const updatedUser = {...user, image: null};
 			updateUsersProfilePicture(updatedUser);
 			await Storage.remove(user.image);
+			console.log("Profile pictured deleted");
 		} catch (error) {
-			console.log(error);
+			console.log("Error deleting users profile picture in db");
 		}
 	}
 }

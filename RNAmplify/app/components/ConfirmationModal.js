@@ -27,7 +27,7 @@ function ConfirmationModal({modalVisible, setModalVisible, title, confirmAction,
 							<Text style={styles.textStyle}>Cancel</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={[styles.button, {backgroundColor: follow || logout ? colors.primaryBlue : "red"}]}
+							style={[styles.button, {backgroundColor: follow || logout ? colors.primaryBlue : colors.red}]}
 							onPress={() => {
 								confirmAction();
 								setModalVisible(false);

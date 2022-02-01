@@ -172,13 +172,13 @@ const styles = StyleSheet.create({
 	},
 	errorText: {
 		textAlign: "center",
-		color: "red",
+		color: colors.red,
 		fontSize: 18,
 		fontWeight: "500",
 	},
 	largeErrorText: {
 		textAlign: "center",
-		color: "red",
+		color: colors.red,
 		fontSize: 35,
 		fontWeight: "500",
 	},

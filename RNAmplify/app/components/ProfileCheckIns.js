@@ -76,7 +76,7 @@ function ProfileCheckIns({checkIns, updateDayCount, viewCheckIn}) {
 				<View>
 					{hasPhotos ? (
 						<FlatList
-							scrollEnabled={false}
+							scrollEnabled={true}
 							data={checkIns}
 							horizontal={true}
 							inverted={false}

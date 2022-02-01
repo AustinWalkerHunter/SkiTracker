@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {View, ScrollView, ActivityIndicator, TouchableOpacity, Text, StyleSheet, Image, ImageBackground} from "react-native";
+import {View, ScrollView, ActivityIndicator, TouchableOpacity, Text, StyleSheet, Image, ImageBackground, TouchableWithoutFeedback} from "react-native";
 import {LinearGradient} from "expo-linear-gradient";
 import MyStats from "../components/MyStats";
 import ProfileCheckIns from "../components/ProfileCheckIns";
@@ -14,8 +14,9 @@ import ConfirmationModal from "../components/ConfirmationModal";
 import {SafeAreaView} from "react-native-safe-area-context";
 import ProfilePictureModal from "./ProfilePictureModal";
 import {useIsFocused} from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 
-function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedUserId, pickImage, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn, viewResort}) {
+function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedUserId, handleImagePicked, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn, viewResort}) {
 	const [fullScreenPhoto, setFullScreenPhoto] = useState();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [profileModalVisible, setProfileModalVisible] = useState(false);
@@ -46,6 +47,27 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 		setUserProfileImage(null);
 	}
 
+	const pickImage = async () => {
+		// const {granted} = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+		// if (granted) {
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: "Images",
+			allowsEditing: true,
+			maxWidth: 500,
+			maxHeight: 500,
+			quality: 0.1,
+		});
+		if (result.cancelled) {
+			return;
+		} else {
+			if (userProfileImage) await removeUserProfilePicture();
+			setProfileModalVisible(false);
+			setUserProfileImage(result.uri);
+			return await handleImagePicked(result);
+		}
+		// }
+	};
+
 	return (
 		<SafeAreaView style={styles.screen}>
 			{/* getting a warning for the Flatlist inside the ProfileCheckIns component since I have a scroll view here and the two conflict */}
@@ -73,17 +95,19 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 					<View style={styles.profileContainer}>
 						<View style={styles.profilePictureContainer}>
 							{activeUserProfile ? (
-								<TouchableOpacity onPress={() => setProfileModalVisible(true)}>
-									{userProfileImage ? (
-										<ProfileIcon size={200} image={userProfileImage} isSettingScreen={false} />
-									) : (
-										<MaterialCommunityIcons style={{marginTop: -15, marginBottom: -15}} name="account-outline" size={175} color="grey" />
-									)}
-								</TouchableOpacity>
+								<TouchableWithoutFeedback onPress={() => setProfileModalVisible(true)}>
+									<View>
+										{userProfileImage ? (
+											<ProfileIcon size={200} image={userProfileImage} isSettingScreen={false} />
+										) : (
+											<MaterialCommunityIcons style={{marginTop: -15, marginBottom: -15}} name="account-outline" size={175} color="grey" />
+										)}
+									</View>
+								</TouchableWithoutFeedback>
 							) : (
-								<TouchableOpacity onPress={() => displayFullImage(userProfileImage)}>
-									{userProfileImage ? <ProfileIcon size={200} image={userProfileImage} /> : <MaterialCommunityIcons name="account-outline" size={180} color="grey" />}
-								</TouchableOpacity>
+								<TouchableWithoutFeedback onPress={() => displayFullImage(userProfileImage)}>
+									<View>{userProfileImage ? <ProfileIcon size={200} image={userProfileImage} /> : <MaterialCommunityIcons name="account-outline" size={180} color="grey" />}</View>
+								</TouchableWithoutFeedback>
 							)}
 						</View>
 						<View style={styles.nameContainer}>
@@ -125,11 +149,7 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 				setProfileModalVisible={setProfileModalVisible}
 				hasProfilePicture={userProfileImage}
 				viewAction={() => displayFullImage(userProfileImage)}
-				changeAction={async () => {
-					await pickImage();
-					setUserProfileImage(GLOBAL.allUsers[viewedUserId].image);
-					setProfileModalVisible(false);
-				}}
+				changeAction={async () => await pickImage()}
 				removeAction={() => removeUserProfilePicture()}
 			/>
 		</SafeAreaView>
@@ -165,7 +185,6 @@ const styles = StyleSheet.create({
 		shadowOffset: {width: -3, height: 3},
 		shadowOpacity: 0.9,
 		shadowRadius: 2,
-		elevation: 5,
 	},
 	nameContainer: {
 		justifyContent: "center",

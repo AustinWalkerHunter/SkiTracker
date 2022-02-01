@@ -9,8 +9,9 @@ export default {
 	grey: "#8c8c8c",
 	lightGrey: "#cccccc",
 	blue: "#1489b3",
-	primaryBlue: "#006bb3",
+	primaryBlue: "#005c99",
 	secondaryWhite: "#fff0e6",
 	navigation: "#0d0d0d",
 	navigationText: "white",
+	red: "#cc0000",
 };

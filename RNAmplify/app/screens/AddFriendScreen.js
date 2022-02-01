@@ -90,7 +90,7 @@ const AddFriendScreen = ({navigation}) => {
 				<View style={styles.usersContainer}>
 					<View style={styles.backgroundContainer}>
 						<View imageStyle={{opacity: 0.3}} blurRadius={15} style={styles.defaultBackgroundImage}>
-							<LinearGradient colors={["#80260022", colors.navigation]} style={{height: "100%", width: "100%"}} />
+							<LinearGradient colors={["#262626", colors.navigation]} style={{height: "100%", width: "100%"}} />
 						</View>
 					</View>
 					<Header navigation={navigation} title={"Find Friends"} />
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
 	},
 	defaultBackgroundImage: {
 		width: "100%",
-		height: 1000,
+		height: 600,
 		opacity: 0.8,
 	},
 	searchStyles: {

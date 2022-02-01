@@ -3,7 +3,6 @@ import {Auth, API, graphqlOperation, Storage} from "aws-amplify";
 import {useIsFocused} from "@react-navigation/native";
 import Profile from "../components/Profile";
 import {checkInsByDate} from "../../src/graphql/queries";
-import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 import {Buffer} from "buffer"; // get this via: npm install buffer
 import uuid from "react-native-uuid";
@@ -59,24 +58,10 @@ const MyProfileScreen = ({navigation}) => {
 		setPageLoading(false);
 	}
 
-	const pickImage = async () => {
-		const {granted} = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
-		if (granted) {
-			let result = await ImagePicker.launchImageLibraryAsync({
-				mediaTypes: "Images",
-				allowsEditing: true,
-				maxWidth: 500,
-				maxHeight: 500,
-				quality: 0.1,
-			});
-			handleImagePicked(result);
-		}
-	};
-
 	const handleImagePicked = async pickerResult => {
 		try {
 			if (pickerResult.cancelled) {
-				return;
+				return false;
 			} else {
 				// setPercentage(0);
 				const imageUri = pickerResult.uri;
@@ -95,6 +80,7 @@ const MyProfileScreen = ({navigation}) => {
 				// 	textStyle: {fontSize: 20},
 				// 	placement: "top", // default to bottom
 				// });
+				return true;
 			}
 		} catch (e) {
 			console.log(e);
@@ -148,7 +134,7 @@ const MyProfileScreen = ({navigation}) => {
 			activeUserProfile={true}
 			activeUser={activeUser}
 			viewedUserId={GLOBAL.activeUserId}
-			pickImage={pickImage}
+			handleImagePicked={handleImagePicked}
 			userDayCount={userDayCount}
 			pageLoading={pageLoading}
 			userCheckIns={userCheckIns}

@@ -79,17 +79,24 @@ const SettingsScreen = ({navigation, route}) => {
 	};
 
 	const pickImage = async () => {
-		const {granted} = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
-		if (granted) {
-			let result = await ImagePicker.launchImageLibraryAsync({
-				mediaTypes: "Images",
-				allowsEditing: true,
-				maxWidth: 500,
-				maxHeight: 500,
-				quality: 0.1,
-			});
-			handleImagePicked(result);
+		// const {granted} = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+		// if (granted) {
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: "Images",
+			allowsEditing: true,
+			maxWidth: 500,
+			maxHeight: 500,
+			quality: 0.1,
+		});
+		if (result.cancelled) {
+			return;
+		} else {
+			if (userProfileImage) await removeUserProfilePicture();
+			setProfileModalVisible(false);
+			setUserProfileImage(result.uri);
+			return await handleImagePicked(result);
 		}
+		// }
 	};
 
 	const handleImagePicked = async pickerResult => {
@@ -99,6 +106,12 @@ const SettingsScreen = ({navigation, route}) => {
 			} else {
 				const imageUri = pickerResult.uri;
 				setUserProfileImage(imageUri);
+				toast.show("Profile image updated!", {
+					duration: 2000,
+					style: {marginTop: 50, backgroundColor: "green"},
+					textStyle: {fontSize: 20},
+					placement: "top", // default to bottom
+				});
 				GLOBAL.allUsers[GLOBAL.activeUserId].image = imageUri;
 				const img = await fetchImageFromUri(imageUri);
 				const fileName = uuid.v4() + "_" + activeUser.username + "_profilePic.jpg";
@@ -107,13 +120,6 @@ const SettingsScreen = ({navigation, route}) => {
 				await updateUsersProfilePicture(updatedUser);
 				setActiveUser({...activeUser, image: uploadUrl});
 				GLOBAL.activeUser.image = uploadUrl;
-
-				toast.show("Profile image updated!", {
-					duration: 2000,
-					style: {marginTop: 50, backgroundColor: "green"},
-					textStyle: {fontSize: 20},
-					placement: "top", // default to bottom
-				});
 			}
 		} catch (e) {
 			console.log(e);
@@ -168,41 +174,39 @@ const SettingsScreen = ({navigation, route}) => {
 								<TouchableOpacity onPress={() => setProfileModalVisible(true)}>
 									{/* <ProfileIcon size={150} image={GLOBAL.allUsers[GLOBAL.activeUserId].image} isSettingScreen={true} /> */}
 									<View>
-										<View>
-											{userProfileImage ? (
-												<Image
-													style={{
-														width: 150,
-														height: 150,
-														borderRadius: 150 / 2,
-														opacity: 0.4,
-													}}
-													source={{uri: userProfileImage}}
-												/>
-											) : (
-												<View
-													style={{
-														width: 150,
-														height: 150,
-														borderRadius: 150 / 2,
-														borderWidth: 1.5,
-														borderColor: colors.secondary,
-														backgroundColor: colors.navigation,
-													}}
-												/>
-											)}
-											<FontAwesome5
-												name="user-edit"
-												size={45}
-												color="white"
+										{userProfileImage ? (
+											<Image
 												style={{
-													position: "absolute",
-													marginLeft: "36%",
-													marginTop: "35%",
-													zIndex: 999,
+													width: 150,
+													height: 150,
+													borderRadius: 150 / 2,
+													opacity: 0.4,
+												}}
+												source={{uri: userProfileImage}}
+											/>
+										) : (
+											<View
+												style={{
+													width: 150,
+													height: 150,
+													borderRadius: 150 / 2,
+													borderWidth: 1.5,
+													borderColor: colors.secondary,
+													backgroundColor: colors.navigation,
 												}}
 											/>
-										</View>
+										)}
+										<FontAwesome5
+											name="user-edit"
+											size={45}
+											color="white"
+											style={{
+												position: "absolute",
+												marginLeft: "36%",
+												marginTop: "35%",
+												zIndex: 999,
+											}}
+										/>
 									</View>
 								</TouchableOpacity>
 							</View>
@@ -276,10 +280,7 @@ const SettingsScreen = ({navigation, route}) => {
 				setProfileModalVisible={setProfileModalVisible}
 				hasProfilePicture={userProfileImage}
 				viewAction={() => displayFullImage(userProfileImage)}
-				changeAction={async () => {
-					await pickImage();
-					setProfileModalVisible(false);
-				}}
+				changeAction={async () => await pickImage()}
 				removeAction={() => removeUserProfilePicture()}
 			/>
 		</SafeScreen>
@@ -312,6 +313,10 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		marginVertical: 20,
 		marginBottom: 15,
+		shadowColor: colors.navigation,
+		shadowOffset: {width: -3, height: 3},
+		shadowOpacity: 0.9,
+		shadowRadius: 2,
 	},
 	titleText: {
 		color: "grey",

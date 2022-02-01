@@ -20,6 +20,7 @@ import DatePicker from "../components/DatePicker";
 import Moment from "moment";
 import Header from "../components/Header";
 import {LinearGradient} from "expo-linear-gradient";
+import ProfilePictureModal from "../components/ProfilePictureModal";
 
 const CheckInScreen = ({route, navigation}) => {
 	const {viewedLocation} = route.params;
@@ -27,6 +28,9 @@ const CheckInScreen = ({route, navigation}) => {
 	const [checkInSubmitted, setCheckInSubmitted] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [showAddPhotoButton, setShowAddPhotoButton] = useState(true);
+	const [profileModalVisible, setProfileModalVisible] = useState(false);
+	const [fullScreenPhoto, setFullScreenPhoto] = useState(false);
+
 	const [checkIn, setCheckIn] = useState({
 		title: null,
 		sport: null,
@@ -260,10 +264,10 @@ const CheckInScreen = ({route, navigation}) => {
 								</View>
 							) : (
 								<View style={styles.photoContainer}>
-									<TouchableOpacity style={styles.removePhotoContainer} onPress={() => removePhoto()}>
+									{/* <TouchableOpacity style={styles.removePhotoContainer} onPress={() => removePhoto()}>
 										<Text style={styles.removePhotoText}>Remove photo</Text>
-									</TouchableOpacity>
-									<TouchableOpacity onPress={() => pickImage()}>
+									</TouchableOpacity> */}
+									<TouchableOpacity onPress={() => setProfileModalVisible(true)}>
 										<Image style={styles.image} source={{uri: checkIn.image}} />
 									</TouchableOpacity>
 								</View>
@@ -288,6 +292,27 @@ const CheckInScreen = ({route, navigation}) => {
 					></RoundedButton>
 				</View>
 			) : null}
+			{fullScreenPhoto && (
+				<View style={styles.imageViewerContainer}>
+					<TouchableOpacity style={styles.closeImageViewer} onPress={() => setFullScreenPhoto(false)}>
+						<Text style={styles.closeButtonText}>Close</Text>
+					</TouchableOpacity>
+					<View style={styles.imageDisplay}>
+						<Image style={styles.imageView} resizeMode={"contain"} source={{uri: checkIn.image}} />
+					</View>
+				</View>
+			)}
+			<ProfilePictureModal
+				profileModalVisible={profileModalVisible}
+				setProfileModalVisible={setProfileModalVisible}
+				hasProfilePicture={checkIn.image}
+				viewAction={() => setFullScreenPhoto(true)}
+				changeAction={async () => {
+					await pickImage();
+					setProfileModalVisible(false);
+				}}
+				removeAction={() => removePhoto()}
+			/>
 		</SafeScreen>
 	);
 };
@@ -365,6 +390,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		alignSelf: "center",
 		width: "100%",
+		paddingVertical: 15,
 	},
 	addPhoto: {
 		flexDirection: "row",
@@ -379,7 +405,7 @@ const styles = StyleSheet.create({
 		marginVertical: 15,
 		borderRadius: 15,
 		borderWidth: 1,
-		borderColor: "red",
+		borderColor: colors.red,
 		padding: 10,
 		backgroundColor: "rgba(224, 224, 224, 0.15)",
 	},
@@ -429,6 +455,41 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.8,
 		shadowRadius: 1,
 		elevation: 5,
+	},
+	imageViewerContainer: {
+		position: "absolute",
+		backgroundColor: colors.navigation,
+		width: "100%",
+		height: "110%",
+		justifyContent: "center",
+		alignItems: "center",
+		zIndex: 999,
+	},
+	imageDisplay: {
+		position: "absolute",
+		bottom: "10%",
+		width: "100%",
+		height: "100%",
+	},
+	imageView: {
+		alignSelf: "center",
+		height: "100%",
+		width: "100%",
+	},
+	closeImageViewer: {
+		marginTop: "90%",
+		borderRadius: 25,
+		borderWidth: 1,
+		borderColor: "white",
+		padding: 5,
+		backgroundColor: "rgba(224, 224, 224, 0.15)",
+		zIndex: 999,
+	},
+	closeButtonText: {
+		color: "white",
+		fontSize: 25,
+		paddingLeft: 5,
+		marginRight: 5,
 	},
 });
 

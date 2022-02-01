@@ -1,7 +1,6 @@
 import React from "react";
-import {Alert, Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import colors from "../constants/colors";
-import {FontAwesome} from "@expo/vector-icons";
 
 function ProfilePictureModal({profileModalVisible, setProfileModalVisible, hasProfilePicture, viewAction, changeAction, removeAction}) {
 	return (
@@ -10,64 +9,57 @@ function ProfilePictureModal({profileModalVisible, setProfileModalVisible, hasPr
 			transparent={true}
 			visible={profileModalVisible}
 			onRequestClose={() => {
-				Alert.alert("Modal has been closed.");
 				setProfileModalVisible(false);
 			}}
 		>
-			<View style={styles.centeredView}>
-				<View style={styles.modalView}>
-					<Text style={styles.modalText}>Picture Settings</Text>
-
-					<TouchableOpacity
-						style={styles.closeModalContainer}
-						onPress={() => {
-							setProfileModalVisible(false);
-						}}
-					>
-						<FontAwesome name="remove" size={30} color="white" />
-					</TouchableOpacity>
-
-					<View style={styles.buttonsContainer}>
-						{hasProfilePicture && (
+			<TouchableOpacity
+				onPress={() => {
+					setProfileModalVisible(false);
+				}}
+			>
+				<View style={styles.centeredView}>
+					<View style={styles.modalView}>
+						<View style={styles.buttonsContainer}>
+							{hasProfilePicture && (
+								<TouchableOpacity
+									style={[styles.button, styles.buttonView]}
+									onPress={() => {
+										viewAction();
+										setProfileModalVisible(false);
+									}}
+								>
+									<Text style={styles.textStyle}>View</Text>
+								</TouchableOpacity>
+							)}
 							<TouchableOpacity
-								style={[styles.button, styles.buttonView]}
+								style={[styles.button, styles.buttonChange]}
 								onPress={() => {
-									viewAction();
-									setProfileModalVisible(false);
+									changeAction();
 								}}
 							>
-								<Text style={styles.textStyle}>View</Text>
+								<Text style={styles.textStyle}>Update</Text>
 							</TouchableOpacity>
-						)}
-						<TouchableOpacity
-							style={[styles.button, styles.buttonChange]}
-							onPress={() => {
-								changeAction();
-							}}
-						>
-							<Text style={styles.textStyle}>Update</Text>
-						</TouchableOpacity>
-						{hasProfilePicture && (
-							<TouchableOpacity
-								style={[styles.button, styles.buttonRemove]}
-								onPress={() => {
-									removeAction();
-									setProfileModalVisible(false);
-								}}
-							>
-								<Text style={styles.textStyle}>Remove</Text>
-							</TouchableOpacity>
-						)}
+							{hasProfilePicture && (
+								<TouchableOpacity
+									style={[styles.button, styles.buttonRemove]}
+									onPress={() => {
+										removeAction();
+										setProfileModalVisible(false);
+									}}
+								>
+									<Text style={styles.textStyle}>Remove</Text>
+								</TouchableOpacity>
+							)}
+						</View>
 					</View>
 				</View>
-			</View>
+			</TouchableOpacity>
 		</Modal>
 	);
 }
 
 const styles = StyleSheet.create({
 	centeredView: {
-		top: -25,
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "#000000cc",
@@ -113,10 +105,10 @@ const styles = StyleSheet.create({
 		elevation: 2,
 	},
 	buttonView: {
-		backgroundColor: colors.grey,
+		backgroundColor: "#808080",
 	},
 	buttonRemove: {
-		backgroundColor: "red",
+		backgroundColor: "#cc0000",
 	},
 	buttonChange: {
 		backgroundColor: colors.primaryBlue,
