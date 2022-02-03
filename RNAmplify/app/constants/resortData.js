@@ -6315,6 +6315,8 @@ export default [
 		lifts: 17,
 		runs: 100,
 		acres: 8171,
+		lat: 50.11,
+		lon: -122.95,
 		trail_map: "https://www.whistlerblackcomb.com/the-mountain/about-the-mountain/trail-maps.aspx",
 	},
 	{

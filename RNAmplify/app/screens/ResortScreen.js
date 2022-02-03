@@ -75,12 +75,13 @@ const ResortScreen = ({route, navigation}) => {
 								</View>
 							</View>
 							{resortData.trail_map && (
-								<View style={styles.mapContainer}>
+								<View style={styles.trailMapContainer}>
 									<Text style={styles.trailText} onPress={() => Linking.openURL(resortData.trail_map)}>
 										{resortName} Trail Map
 									</Text>
 								</View>
 							)}
+
 							<View style={styles.icon}>
 								<FontAwesome5 name="mountain" size={250} color={colors.lightGrey} />
 							</View>
@@ -179,11 +180,8 @@ const styles = StyleSheet.create({
 		color: "white",
 		fontSize: 15,
 	},
-	mapContainer: {
-		bottom: "50%",
-		position: "absolute",
-		justifyContent: "center",
-		alignItems: "center",
+	trailMapContainer: {
+		marginTop: 100,
 		alignSelf: "center",
 		padding: 10,
 		width: "auto",
@@ -198,14 +196,13 @@ const styles = StyleSheet.create({
 	},
 	trailText: {
 		color: "white",
-		fontSize: 15,
+		fontSize: 16,
+		fontWeight: "500",
 	},
 	icon: {
 		position: "absolute",
-		top: 5,
 		left: 0,
 		right: 0,
-		bottom: 600,
 		zIndex: -999,
 		opacity: 0.1,
 		justifyContent: "center",

@@ -110,12 +110,12 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-end",
 	},
 	modalView: {
-		backgroundColor: colors.primary,
+		backgroundColor: colors.navigation,
 		height: "70%",
 		paddingBottom: 20,
 	},
 	searchStyles: {
-		backgroundColor: colors.primary,
+		backgroundColor: colors.navigation,
 		borderBottomColor: "transparent",
 		borderTopColor: "transparent",
 	},

@@ -264,9 +264,6 @@ const CheckInScreen = ({route, navigation}) => {
 								</View>
 							) : (
 								<View style={styles.photoContainer}>
-									{/* <TouchableOpacity style={styles.removePhotoContainer} onPress={() => removePhoto()}>
-										<Text style={styles.removePhotoText}>Remove photo</Text>
-									</TouchableOpacity> */}
 									<TouchableOpacity onPress={() => setProfileModalVisible(true)}>
 										<Image style={styles.image} source={{uri: checkIn.image}} />
 									</TouchableOpacity>

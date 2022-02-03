@@ -1,11 +1,14 @@
 import React from "react";
-import {View, Text, TouchableOpacity, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, TouchableWithoutFeedback} from "react-native";
+import colors from "../constants/colors";
 
 function PickerItem({label, onPress}) {
 	return (
-		<TouchableOpacity style={styles.container} onPress={onPress}>
-			<Text style={styles.label}>{label}</Text>
-		</TouchableOpacity>
+		<TouchableWithoutFeedback onPress={onPress}>
+			<View style={styles.container}>
+				<Text style={styles.label}>{label}</Text>
+			</View>
+		</TouchableWithoutFeedback>
 	);
 }
 
@@ -13,6 +16,8 @@ const styles = StyleSheet.create({
 	container: {
 		padding: "5%",
 		alignItems: "center",
+		// borderColor: colors.primary,
+		// borderBottomWidth: 0.5,
 	},
 	label: {
 		color: "white",
