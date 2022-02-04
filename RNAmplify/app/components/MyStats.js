@@ -82,14 +82,12 @@ const styles = StyleSheet.create({
 	},
 	lowerStats: {
 		justifyContent: "space-evenly",
-		width: "95%",
 		alignSelf: "center",
 		flexDirection: "row",
-		marginTop: 15,
+		marginTop: 10,
 	},
 	extraStats: {
 		justifyContent: "space-evenly",
-		width: "95%",
 		alignSelf: "center",
 		flexDirection: "row",
 		marginTop: 15,

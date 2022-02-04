@@ -6,6 +6,7 @@ export default {
 	secondary: "#ff6524",
 	primaryText: "white",
 	loginButton: "#00755e",
+	darkGrey: "#737373",
 	grey: "#8c8c8c",
 	lightGrey: "#cccccc",
 	blue: "#1489b3",

@@ -28,9 +28,9 @@ function DatePicker({iconName, placeholder, textStyle, selectedItem, onSelectedI
 			</TouchableOpacity>
 			<Modal visible={modalVisible} transparent={true} animationType="slide">
 				<TouchableOpacity style={styles.modalScreen} onPress={() => setModalVisible(false)}>
-					<View style={[styles.modalView, {backgroundColor: colorScheme === "dark" ? colors.navigation : colors.grey}]}>
+					<View style={styles.modalView}>
 						<View style={{marginTop: 10}}>
-							<DateTimePicker testID="dateTimePicker" value={date} mode={"date"} is24Hour={true} maximumDate={new Date()} display="inline" onChange={onChange} />
+							<DateTimePicker themeVariant="dark" testID="dateTimePicker" value={date} mode={"date"} is24Hour={true} maximumDate={new Date()} display="inline" onChange={onChange} />
 						</View>
 						<TouchableOpacity
 							style={[styles.closeModalButton, styles.cancelBtn]}

@@ -37,10 +37,10 @@ function ProfileCheckIns({checkIns, updateDayCount, viewCheckIn}) {
 	return (
 		<View style={styles.checkInsContainer}>
 			<View style={styles.filter}>
-				<TouchableOpacity style={styles.filterButton} onPress={() => setShowPhotos(false)}>
+				<TouchableOpacity style={[styles.filterButton, {backgroundColor: !showPhotos ? colors.secondary : colors.darkGrey}]} onPress={() => setShowPhotos(false)}>
 					<Text style={styles.filterText}>All</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.filterButton} onPress={() => setShowPhotos(true)}>
+				<TouchableOpacity style={[styles.filterButton, {backgroundColor: showPhotos ? colors.secondary : colors.darkGrey}]} onPress={() => setShowPhotos(true)}>
 					<Text style={styles.filterText}>Photos</Text>
 				</TouchableOpacity>
 			</View>
@@ -102,11 +102,11 @@ const styles = StyleSheet.create({
 	},
 	filter: {
 		flexDirection: "row",
-		justifyContent: "space-evenly",
-		marginBottom: 8,
+		justifyContent: "space-between",
+		marginBottom: 2,
+		marginHorizontal: 5,
 	},
 	filterButton: {
-		backgroundColor: colors.secondary,
 		flex: 1,
 		alignItems: "center",
 		color: "white",

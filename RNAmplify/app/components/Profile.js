@@ -22,6 +22,7 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 	const [profileModalVisible, setProfileModalVisible] = useState(false);
 	const [userProfileImage, setUserProfileImage] = useState(GLOBAL.allUsers[viewedUserId]?.image);
 	const [following, setFollowing] = useState(viewedUserId && GLOBAL.following.includes(viewedUserId));
+
 	const ref = React.useRef(null);
 	useScrollToTop(ref);
 	const isFocused = useIsFocused();
