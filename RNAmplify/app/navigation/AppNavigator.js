@@ -1,7 +1,4 @@
 import React from "react";
-import {StyleSheet, View, Text, Image, TouchableOpacity} from "react-native";
-import {MaterialIcons, MaterialCommunityIcons, Entypo} from "@expo/vector-icons";
-import Amplify, {Auth, API, graphqlOperation, Storage} from "aws-amplify";
 import SettingsScreen from "../screens/SettingsScreen";
 import AddFriendScreen from "../screens/AddFriendScreen";
 import ViewCheckInScreen from "../screens/ViewCheckInScreen";
@@ -10,7 +7,6 @@ import NotificationScreen from "../screens/NotificationScreen";
 import MountainSearchScreen from "../screens/MountainSearchScreen";
 import UserProfileScreen from "../screens/UserProfileScreen";
 import CheckInScreen from "../screens/CheckInScreen";
-import colors from "../constants/colors";
 import Tabs from "./Tabs";
 import {createStackNavigator} from "@react-navigation/stack";
 

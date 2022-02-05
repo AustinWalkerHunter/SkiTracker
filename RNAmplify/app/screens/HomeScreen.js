@@ -2,10 +2,8 @@ import React, {useState, useEffect} from "react";
 import {API, graphqlOperation} from "aws-amplify";
 import {useIsFocused, useScrollToTop} from "@react-navigation/native";
 import {MaterialCommunityIcons, Foundation, FontAwesome5, Ionicons} from "@expo/vector-icons";
-import {RefreshControl, View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image, SafeAreaView} from "react-native";
+import {RefreshControl, View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image} from "react-native";
 import PostCard from "../components/PostCard";
-import SafeScreen from "../components/SafeScreen";
-import Constants from "react-native";
 import colors from "../constants/colors";
 import {checkInsByDate} from "../../src/graphql/queries";
 import GLOBAL from "../global";
@@ -13,7 +11,7 @@ import {deleteSelectedCheckIn} from "../actions";
 import resorts from "../constants/resortData";
 import {useToast} from "react-native-fast-toast";
 import {StatusBar} from "expo-status-bar";
-import {LinearGradient} from "expo-linear-gradient";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const HomeScreen = ({navigation}) => {
 	const isFocused = useIsFocused();
@@ -109,10 +107,10 @@ const HomeScreen = ({navigation}) => {
 	};
 
 	return (
-		<View style={styles.screen}>
+		<SafeAreaView style={styles.screen}>
 			<View style={styles.backgroundContainer}></View>
 			{!fullScreenCheckInPhoto && (
-				<SafeAreaView style={styles.stickyHeader}>
+				<View style={styles.stickyHeader}>
 					<TouchableOpacity style={styles.headerButton}>
 						<Ionicons name="person-add-outline" size={30} color={colors.secondary} onPress={() => navigation.navigate("AddFriendScreen")} />
 					</TouchableOpacity>
@@ -120,7 +118,7 @@ const HomeScreen = ({navigation}) => {
 					<TouchableOpacity style={styles.headerButton}>
 						<Foundation name="mountains" size={32} color={colors.secondary} onPress={() => navigation.navigate("MountainSearchScreen")} />
 					</TouchableOpacity>
-				</SafeAreaView>
+				</View>
 			)}
 			{!loading ? (
 				<View style={styles.container}>
@@ -187,7 +185,7 @@ const HomeScreen = ({navigation}) => {
 				</View>
 			)}
 			<StatusBar style="light" />
-		</View>
+		</SafeAreaView>
 	);
 };
 

@@ -1,23 +1,18 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import colors from "./app/constants/colors";
 
+Amplify.configure(awsconfig);
 import Amplify, {Auth} from "aws-amplify";
 import awsconfig from "./src/aws-exports";
-Amplify.configure(awsconfig);
-
-// import AppLoading from 'expo-app-loading';
-import * as SplashScreen from "expo-splash-screen";
 import {ToastProvider} from "react-native-fast-toast";
 import AppNavigator from "./app/navigation/AppNavigator";
 import AuthenticationNavigator from "./app/navigation/AuthenticationNavigator";
 import {fetchAppData} from "./app/setUp";
-import {Foundation, Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
-import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, SafeAreaView} from "react-native";
-import SafeScreen from "./app/components/SafeScreen";
-import {LinearGradient} from "expo-linear-gradient";
-
+import {Foundation, Ionicons} from "@expo/vector-icons";
+import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from "react-native";
 import {StatusBar} from "expo-status-bar";
+import {SafeAreaProvider, SafeAreaView} from "react-native-safe-area-context";
 
 export default function App() {
 	const [preparingApp, setPreparingApp] = useState(true);
@@ -44,60 +39,40 @@ export default function App() {
 
 	async function prepare() {
 		try {
-			// Keep the splash screen visible while we fetch resources
-			// await SplashScreen.preventAutoHideAsync()
-			// .catch (() => { /* reloading the app might trigger some race conditions, ignore them */ });
-			await fetchAppData(setPreparingApp); // the white screen still shows while this is fetching, spash screen prevent hide is not working
-			// await new Promise(resolve => setTimeout(resolve, 2000));
+			await fetchAppData(setPreparingApp);
 			setPreparingApp(false);
 		} catch (e) {
 			console.warn(e);
-		} finally {
-			// setPreparingApp(false)
-			//await SplashScreen.hideAsync(); // maybe put this on the first screen
 		}
 	}
 
-	const onLayoutRootView = useCallback(async () => {
-		if (preparingApp) {
-			// This tells the splash screen to hide immediately! If we call this after
-			// `setAppIsReady`, then we may see a blank screen while the app is
-			// loading its initial state and rendering its first pixels. So instead,
-			// we hide the splash screen once we know the root view has already
-			// performed layout.
-			await SplashScreen.hideAsync();
-		}
-	}, [preparingApp]);
-
-	if (preparingApp) {
-		return (
-			<View style={styles.screen}>
-				{/* <SafeAreaView style={styles.container}> */}
-				{/* I want to use safeareaview here but when I do it glitches for a second and looks weird */}
-				{/* it looks good without safeareaview, but looks bad on smaller devices, trade offs... */}
-				<SafeAreaView style={styles.stickyHeader}>
-					<TouchableOpacity style={styles.headerButton}>
-						<Ionicons name="person-add-outline" size={30} color={colors.secondary} />
-					</TouchableOpacity>
-					<Text style={styles.pageTitle}>SkiTracker</Text>
-					<TouchableOpacity style={styles.headerButton}>
-						<Foundation name="mountains" size={32} color={colors.secondary} />
-					</TouchableOpacity>
-				</SafeAreaView>
-				<View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-					<ActivityIndicator size="large" color="white" />
-				</View>
-				{/* </SafeAreaView> */}
-				<StatusBar style="light" />
-			</View>
-		);
-	}
-	console.disableYellowBox = true;
 	return (
 		<ToastProvider>
-			<NavigationContainer>
-				{isUserLoggedIn ? <AppNavigator updateAuthState={updateAuthState} /> : <AuthenticationNavigator updateAuthState={updateAuthState} fetchAppData={fetchAppData} />}
-			</NavigationContainer>
+			<SafeAreaProvider>
+				<NavigationContainer>
+					{preparingApp ? (
+						<SafeAreaView style={styles.screen}>
+							<View style={styles.stickyHeader}>
+								<TouchableOpacity style={styles.headerButton}>
+									<Ionicons name="person-add-outline" size={30} color={colors.secondary} />
+								</TouchableOpacity>
+								<Text style={styles.pageTitle}>SkiTracker</Text>
+								<TouchableOpacity style={styles.headerButton}>
+									<Foundation name="mountains" size={32} color={colors.secondary} />
+								</TouchableOpacity>
+							</View>
+							<View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+								<ActivityIndicator size="large" color="white" />
+							</View>
+							<StatusBar style="light" />
+						</SafeAreaView>
+					) : isUserLoggedIn ? (
+						<AppNavigator updateAuthState={updateAuthState} />
+					) : (
+						<AuthenticationNavigator updateAuthState={updateAuthState} fetchAppData={fetchAppData} />
+					)}
+				</NavigationContainer>
+			</SafeAreaProvider>
 		</ToastProvider>
 	);
 }
