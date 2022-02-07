@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
 	filter: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		marginBottom: 2,
+		marginBottom: 5,
 		marginHorizontal: 5,
 	},
 	filterButton: {

@@ -203,7 +203,7 @@ const CheckInScreen = ({route, navigation}) => {
 			<View style={styles.titleLine} />
 			{!loading ? (
 				<View style={styles.inputContainer}>
-					<ScrollView contentContainerStyle={{paddingBottom: 160}}>
+					<ScrollView contentContainerStyle={{paddingBottom: 50}}>
 						<View style={styles.activityContainer}>
 							<Text style={styles.activityTitle}>Select your sport</Text>
 							<View style={styles.activityRow}>
@@ -270,25 +270,26 @@ const CheckInScreen = ({route, navigation}) => {
 								</View>
 							)}
 						</View>
+						{!loading ? (
+							<View style={styles.postContainer}>
+								<RoundedButton
+									title="CHECK-IN"
+									color={colors.secondary}
+									onPress={() => {
+										setLoading(true);
+										setCheckInSubmitted(true);
+										submit();
+									}}
+									disabled={!(checkIn.sport && checkIn.location) && !checkInSubmitted}
+								></RoundedButton>
+							</View>
+						) : null}
 					</ScrollView>
 				</View>
 			) : (
 				<ActivityIndicator style={styles.loadingSpinner} size="large" color="white" />
 			)}
-			{!loading ? (
-				<View style={styles.postContainer}>
-					<RoundedButton
-						title="CHECK-IN"
-						color={colors.secondary}
-						onPress={() => {
-							setLoading(true);
-							setCheckInSubmitted(true);
-							submit();
-						}}
-						disabled={!(checkIn.sport && checkIn.location) && !checkInSubmitted}
-					></RoundedButton>
-				</View>
-			) : null}
+
 			{fullScreenPhoto && (
 				<View style={styles.imageViewerContainer}>
 					<TouchableOpacity style={styles.closeImageViewer} onPress={() => setFullScreenPhoto(false)}>
@@ -318,7 +319,7 @@ const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
 		backgroundColor: colors.navigation,
-		padding: 5,
+		// padding: 5,
 	},
 	backgroundContainer: {
 		width: "100%",
@@ -332,19 +333,13 @@ const styles = StyleSheet.create({
 	loadingSpinner: {
 		top: "50%",
 	},
-	headerRow: {
-		width: "100%",
-		justifyContent: "space-evenly",
-		flexDirection: "row",
-		marginTop: 10,
-	},
 	inputContainer: {
 		height: "100%",
 	},
 	pageTitle: {
 		color: "white",
 		fontSize: 35,
-		top: -10,
+		// top: -10,
 		fontWeight: "500",
 	},
 	titleLine: {
@@ -413,17 +408,17 @@ const styles = StyleSheet.create({
 	image: {
 		width: 300,
 		height: 300,
-		marginBottom: 100,
+		// marginBottom: 100,
 	},
 	activityContainer: {
-		marginTop: 15,
+		marginTop: 10,
 		alignItems: "center",
-		marginBottom: 25,
+		marginBottom: 10,
 	},
 	activityTitle: {
 		color: "white",
 		fontSize: 28,
-		marginBottom: 25,
+		marginBottom: 15,
 	},
 	activityRow: {
 		alignItems: "center",
@@ -443,10 +438,11 @@ const styles = StyleSheet.create({
 		marginVertical: 10,
 	},
 	postContainer: {
-		position: "absolute",
+		marginVertical: 15,
+		// position: "absolute",
 		alignSelf: "center",
-		width: "75%",
-		bottom: 50,
+		width: "60%",
+		// bottom: 50,
 		shadowColor: colors.navigation,
 		shadowOffset: {width: -2, height: 3},
 		shadowOpacity: 0.8,

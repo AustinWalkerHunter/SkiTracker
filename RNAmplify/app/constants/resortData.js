@@ -1066,7 +1066,7 @@ export default [
 		lon: -110.89,
 	},
 	{
-		resort_name: "Brighton,  UT",
+		resort_name: "Brighton, UT",
 		state: "Utah",
 		summit: 10500,
 		base: 8755,

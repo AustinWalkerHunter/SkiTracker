@@ -22,7 +22,7 @@ const Tabs = () => (
 		screenOptions={{swipeEnabled: false}}
 		tabBarOptions={{
 			tabStyle: {
-				marginBottom: 5,
+				marginBottom: 10,
 			},
 			iconStyle: {
 				width: "auto",

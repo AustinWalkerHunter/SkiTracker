@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import {API, graphqlOperation} from "aws-amplify";
 import {useIsFocused, useScrollToTop} from "@react-navigation/native";
 import {MaterialCommunityIcons, Foundation, FontAwesome5, Ionicons} from "@expo/vector-icons";
-import {RefreshControl, View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image} from "react-native";
+import {RefreshControl, View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image, Dimensions} from "react-native";
 import PostCard from "../components/PostCard";
 import colors from "../constants/colors";
 import {checkInsByDate} from "../../src/graphql/queries";
@@ -263,7 +263,8 @@ const styles = StyleSheet.create({
 	},
 	checkInButtonContainer: {
 		position: "absolute",
-		bottom: 85,
+		bottom: 0,
+		marginBottom: Dimensions.get("window").height > 800 ? 60 : 90,
 		right: "3%",
 	},
 	checkInButton: {

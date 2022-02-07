@@ -84,14 +84,13 @@ const styles = StyleSheet.create({
 		backgroundColor: "#26262633",
 		paddingHorizontal: 10,
 		paddingVertical: 10,
-		marginBottom: 7,
-		width: "98%",
+		marginBottom: 3,
+		width: "100%",
 	},
 	activityIcon: {
 		alignSelf: "center",
 		paddingRight: 5,
 		marginRight: 5,
-		// width: "25%"
 	},
 	imageLoading: {
 		position: "absolute",
