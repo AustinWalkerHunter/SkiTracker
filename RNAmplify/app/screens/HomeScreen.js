@@ -128,7 +128,7 @@ const HomeScreen = ({navigation}) => {
 								data={GLOBAL.followingCheckIns}
 								ref={ref}
 								inverted={false}
-								contentContainerStyle={{paddingBottom: "50%"}}
+								contentContainerStyle={{paddingBottom: 175}}
 								keyExtractor={items => items.id.toString()}
 								refreshControl={
 									<RefreshControl

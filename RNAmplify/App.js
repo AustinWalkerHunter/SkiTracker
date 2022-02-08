@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {NavigationContainer} from "@react-navigation/native";
+import {NavigationContainer, DefaultTheme} from "@react-navigation/native";
 import colors from "./app/constants/colors";
 
 Amplify.configure(awsconfig);
@@ -46,10 +46,18 @@ export default function App() {
 		}
 	}
 
+	const backgroundTheme = {
+		...DefaultTheme,
+		colors: {
+			...DefaultTheme.colors,
+			background: colors.navigation,
+		},
+	};
+
 	return (
 		<ToastProvider>
 			<SafeAreaProvider>
-				<NavigationContainer>
+				<NavigationContainer theme={backgroundTheme}>
 					{preparingApp ? (
 						<SafeAreaView style={styles.screen}>
 							<View style={styles.stickyHeader}>

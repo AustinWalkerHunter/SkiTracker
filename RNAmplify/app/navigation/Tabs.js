@@ -19,10 +19,10 @@ const Tab = createMaterialTopTabNavigator();
 const Tabs = () => (
 	<Tab.Navigator
 		tabBarPosition="bottom"
-		screenOptions={{swipeEnabled: false}}
+		screenOptions={{swipeEnabled: true}}
 		tabBarOptions={{
 			tabStyle: {
-				marginBottom: 10,
+				marginBottom: 8,
 			},
 			iconStyle: {
 				width: "auto",
@@ -34,7 +34,7 @@ const Tabs = () => (
 			showIcon: true,
 			showLabel: false,
 			style: {
-				backgroundColor: "#0d0d0df9",
+				backgroundColor: colors.navigation,
 				position: "absolute",
 				left: 0,
 				right: 0,
