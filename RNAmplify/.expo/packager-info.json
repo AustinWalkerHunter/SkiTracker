@@ -1,10 +1,5 @@
 {
-  "devToolsPort": 19002,
-  "expoServerPort": 19000,
-  "packagerPort": 19000,
-  "packagerPid": null,
   "expoServerNgrokUrl": "https://bk-4i4.atowndoggie.rnamplify.exp.direct",
-  "packagerNgrokUrl": "https://packager.bk-4i4.atowndoggie.rnamplify.exp.direct",
-  "ngrokPid": 23976,
-  "webpackServerPort": null
+  "packagerNgrokUrl": "https://bk-4i4.atowndoggie.rnamplify.exp.direct",
+  "ngrokPid": 17260
 }

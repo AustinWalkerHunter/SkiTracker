@@ -9,46 +9,43 @@ import {ToastProvider} from "react-native-fast-toast";
 import AppNavigator from "./app/navigation/AppNavigator";
 import AuthenticationNavigator from "./app/navigation/AuthenticationNavigator";
 import {fetchAppData} from "./app/setUp";
-import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from "react-native";
-import {StatusBar} from "expo-status-bar";
-import {SafeAreaProvider, SafeAreaView} from "react-native-safe-area-context";
+import {SafeAreaProvider} from "react-native-safe-area-context";
 
 import AppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
+import * as Font from "expo-font";
+SplashScreen.preventAutoHideAsync();
 
 import {MaterialCommunityIcons, Foundation, FontAwesome5, Ionicons, MaterialIcons, Entypo, AntDesign} from "@expo/vector-icons";
 
 export default function App() {
-	const [preparingApp, setPreparingApp] = useState(true);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
-	const [isReady, setIsReady] = useState(false);
+	const [appLoading, setAppLoading] = useState(true);
 
 	useEffect(() => {
+		loadAssetsAsync();
 		checkAuthState();
 	}, []);
 
 	async function checkAuthState() {
 		try {
 			await Auth.currentAuthenticatedUser();
-			await prepare();
+			await fetchAppData();
 			setIsUserLoggedIn(true);
+			setAppLoading(false);
+
+			await SplashScreen.hideAsync();
 		} catch (err) {
 			setIsUserLoggedIn(false);
-			setPreparingApp(false);
+			setAppLoading(false);
+
+			await SplashScreen.hideAsync();
 		}
 	}
 
 	function updateAuthState(isUserLoggedIn) {
 		setIsUserLoggedIn(isUserLoggedIn);
-	}
-
-	async function prepare() {
-		try {
-			await fetchAppData(setPreparingApp);
-			setPreparingApp(false);
-		} catch (e) {
-			console.warn(e);
-		}
 	}
 
 	const backgroundTheme = {
@@ -72,24 +69,8 @@ export default function App() {
 		<ToastProvider>
 			<SafeAreaProvider>
 				<NavigationContainer theme={backgroundTheme}>
-					{!isReady ? (
-						<AppLoading startAsync={loadAssetsAsync} onFinish={() => setIsReady(true)} onError={console.warn} />
-					) : preparingApp ? (
-						<SafeAreaView style={styles.screen}>
-							<View style={styles.stickyHeader}>
-								<TouchableOpacity style={styles.headerButton}>
-									<Ionicons name="person-add-outline" size={30} color={colors.secondary} />
-								</TouchableOpacity>
-								<Text style={styles.pageTitle}>SkiTracker</Text>
-								<TouchableOpacity style={styles.headerButton}>
-									<Foundation name="mountains" size={32} color={colors.secondary} />
-								</TouchableOpacity>
-							</View>
-							<View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-								<ActivityIndicator size="large" color="white" />
-							</View>
-							<StatusBar style="light" />
-						</SafeAreaView>
+					{appLoading ? (
+						<AppLoading />
 					) : isUserLoggedIn ? (
 						<AppNavigator updateAuthState={updateAuthState} />
 					) : (
@@ -100,48 +81,3 @@ export default function App() {
 		</ToastProvider>
 	);
 }
-
-const styles = StyleSheet.create({
-	screen: {
-		flex: 1,
-		backgroundColor: colors.navigation,
-	},
-	backgroundContainer: {
-		width: "100%",
-		position: "absolute",
-		marginTop: -50,
-	},
-	defaultBackgroundImage: {
-		width: "100%",
-		height: 800,
-	},
-	container: {
-		flex: 1,
-	},
-	stickyHeader: {
-		marginBottom: 5,
-		width: "92%",
-		flexDirection: "row",
-		alignSelf: "center",
-		justifyContent: "space-between",
-	},
-	pageTitle: {
-		position: "relative",
-		top: 5,
-		color: "white",
-		fontSize: 17,
-		fontWeight: "500",
-	},
-	headerButton: {
-		flexDirection: "row",
-		alignItems: "center",
-	},
-	stickyFooter: {
-		width: "100%",
-		position: "absolute",
-		backgroundColor: colors.navigation,
-		flexDirection: "row",
-		justifyContent: "space-evenly",
-		bottom: -7,
-	},
-});
