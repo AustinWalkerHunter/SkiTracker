@@ -9,14 +9,20 @@ import {ToastProvider} from "react-native-fast-toast";
 import AppNavigator from "./app/navigation/AppNavigator";
 import AuthenticationNavigator from "./app/navigation/AuthenticationNavigator";
 import {fetchAppData} from "./app/setUp";
-import {Foundation, Ionicons} from "@expo/vector-icons";
+// import {Foundation, Ionicons} from "@expo/vector-icons";
 import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from "react-native";
 import {StatusBar} from "expo-status-bar";
 import {SafeAreaProvider, SafeAreaView} from "react-native-safe-area-context";
 
+import AppLoading from "expo-app-loading";
+
+import {MaterialCommunityIcons, Foundation, FontAwesome5, Ionicons} from "@expo/vector-icons";
+
 export default function App() {
 	const [preparingApp, setPreparingApp] = useState(true);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+	const [isReady, setIsReady] = useState(false);
 
 	useEffect(() => {
 		checkAuthState();
@@ -54,11 +60,22 @@ export default function App() {
 		},
 	};
 
+	function cacheFonts(fonts) {
+		return fonts.map(font => Font.loadAsync(font));
+	}
+
+	async function loadAssetsAsync() {
+		const fontAssets = cacheFonts([FontAwesome5.font, MaterialCommunityIcons.font, Foundation.font, Ionicons.font]);
+		await Promise.all([...fontAssets]);
+	}
+
 	return (
 		<ToastProvider>
 			<SafeAreaProvider>
 				<NavigationContainer theme={backgroundTheme}>
-					{preparingApp ? (
+					{!isReady ? (
+						<AppLoading startAsync={loadAssetsAsync} onFinish={() => setIsReady(true)} onError={console.warn} />
+					) : preparingApp ? (
 						<SafeAreaView style={styles.screen}>
 							<View style={styles.stickyHeader}>
 								<TouchableOpacity style={styles.headerButton}>
