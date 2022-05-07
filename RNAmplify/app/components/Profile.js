@@ -5,7 +5,7 @@ import MyStats from "../components/MyStats";
 import ProfileCheckIns from "../components/ProfileCheckIns";
 import ProfileIcon from "../components/ProfileIcon";
 import {useScrollToTop} from "@react-navigation/native";
-import {MaterialCommunityIcons, Ionicons, Entypo, Feather} from "@expo/vector-icons";
+import {MaterialCommunityIcons} from "@expo/vector-icons";
 import colors from "../constants/colors";
 import GLOBAL from "../global";
 import {getAllCheckInData, unfollowUser, removeProfilePicture} from "../actions";

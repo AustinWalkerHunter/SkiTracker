@@ -5,9 +5,7 @@ import {TouchableOpacity, StyleSheet, Text, Image, View, TextInput, ActivityIndi
 import colors from "../constants/colors";
 import SafeScreen from "../components/SafeScreen";
 import {updateUser} from "../../src/graphql/mutations";
-import ProfileIcon from "../components/ProfileIcon";
 import * as ImagePicker from "expo-image-picker";
-import * as Permissions from "expo-permissions";
 import {Buffer} from "buffer"; // get this via: npm install buffer
 import uuid from "react-native-uuid";
 import * as FileSystem from "expo-file-system";

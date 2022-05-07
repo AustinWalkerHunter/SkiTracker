@@ -9,14 +9,13 @@ import {ToastProvider} from "react-native-fast-toast";
 import AppNavigator from "./app/navigation/AppNavigator";
 import AuthenticationNavigator from "./app/navigation/AuthenticationNavigator";
 import {fetchAppData} from "./app/setUp";
-// import {Foundation, Ionicons} from "@expo/vector-icons";
 import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from "react-native";
 import {StatusBar} from "expo-status-bar";
 import {SafeAreaProvider, SafeAreaView} from "react-native-safe-area-context";
 
 import AppLoading from "expo-app-loading";
 
-import {MaterialCommunityIcons, Foundation, FontAwesome5, Ionicons} from "@expo/vector-icons";
+import {MaterialCommunityIcons, Foundation, FontAwesome5, Ionicons, MaterialIcons, Entypo, AntDesign} from "@expo/vector-icons";
 
 export default function App() {
 	const [preparingApp, setPreparingApp] = useState(true);
@@ -65,7 +64,7 @@ export default function App() {
 	}
 
 	async function loadAssetsAsync() {
-		const fontAssets = cacheFonts([FontAwesome5.font, MaterialCommunityIcons.font, Foundation.font, Ionicons.font]);
+		const fontAssets = cacheFonts([FontAwesome5.font, MaterialCommunityIcons.font, Foundation.font, Ionicons.font, MaterialIcons.font, Entypo.font, AntDesign.font]);
 		await Promise.all([...fontAssets]);
 	}
 

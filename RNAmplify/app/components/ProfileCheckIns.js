@@ -1,15 +1,13 @@
 import React, {useState, useEffect} from "react";
 import {useIsFocused} from "@react-navigation/native";
-import {View, ScrollView, TouchableOpacity, RefreshControl, FlatList, Text, StyleSheet} from "react-native";
+import {View, TouchableOpacity, FlatList, Text, StyleSheet} from "react-native";
 import MyPostItem from "./MyPostItem";
-import {Entypo} from "@expo/vector-icons";
 import StatsImage from "./StatsImage";
 import Moment from "moment";
 import colors from "../constants/colors";
 
 function ProfileCheckIns({checkIns, updateDayCount, viewCheckIn}) {
 	const isFocused = useIsFocused();
-	const [refreshing, setRefreshing] = useState(false);
 	const [showPhotos, setShowPhotos] = useState(false);
 	const [hasPhotos, setHasPhotos] = useState(false);
 

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {useIsFocused} from "@react-navigation/native";
-import {StyleSheet, Text, View, ActivityIndicator, TouchableOpacity} from "react-native";
-import {FontAwesome5, MaterialCommunityIcons, Ionicons} from "@expo/vector-icons";
+import {StyleSheet, Text, View, ActivityIndicator} from "react-native";
+import {FontAwesome5} from "@expo/vector-icons";
 import colors from "../constants/colors";
 import SafeScreen from "../components/SafeScreen";
 import {Linking} from "react-native";

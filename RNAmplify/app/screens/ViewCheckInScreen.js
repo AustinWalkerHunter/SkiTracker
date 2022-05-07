@@ -3,7 +3,7 @@ import {API, graphqlOperation, Storage} from "aws-amplify";
 import {useIsFocused} from "@react-navigation/native";
 import {Keyboard, TouchableOpacity, StyleSheet, Text, Image, View, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback} from "react-native";
 import {LinearGradient} from "expo-linear-gradient";
-import {MaterialCommunityIcons, FontAwesome5, AntDesign, Entypo, Ionicons} from "@expo/vector-icons";
+import {MaterialCommunityIcons, FontAwesome5, AntDesign, Ionicons} from "@expo/vector-icons";
 import colors from "../constants/colors";
 import ProfileIcon from "../components/ProfileIcon";
 import GLOBAL from "../global";

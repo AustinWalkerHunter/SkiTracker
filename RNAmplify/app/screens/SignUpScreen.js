@@ -72,7 +72,6 @@ export default function SignUpScreen({navigation}) {
 						placeholder="Enter Email"
 						autoCapitalize="none"
 						autoCorrect={false}
-						autoCapitalize="none"
 						keyboardType="email-address"
 						textContentType="emailAddress"
 					/>

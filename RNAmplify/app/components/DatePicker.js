@@ -8,7 +8,6 @@ function DatePicker({iconName, placeholder, textStyle, selectedItem, onSelectedI
 	const [modalVisible, setModalVisible] = useState(false);
 	const [date, setDate] = useState(new Date());
 	const [previousDate, setPreviousDate] = useState(new Date());
-	const colorScheme = useColorScheme();
 	const onChange = (event, selectedDate) => {
 		const currentDate = selectedDate || date;
 		setDate(currentDate);

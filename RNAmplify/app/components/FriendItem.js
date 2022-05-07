@@ -2,7 +2,6 @@ import React, {useState, useEffect} from "react";
 import {View, Text, TouchableOpacity, StyleSheet} from "react-native";
 import colors from "../constants/colors";
 import ProfileIcon from "../components/ProfileIcon";
-import {MaterialCommunityIcons} from "@expo/vector-icons";
 import GLOBAL from "../global";
 import {followUser, unfollowUser} from "../actions";
 import ConfirmationModal from "../components/ConfirmationModal";

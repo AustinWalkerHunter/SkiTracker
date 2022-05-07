@@ -7,7 +7,6 @@ import RoundedButton from "../components/RoundedButton";
 import {FontAwesome5, MaterialIcons} from "@expo/vector-icons";
 import colors from "../constants/colors";
 import {createCheckIn} from "../../src/graphql/mutations";
-// import * as Permissions from 'expo-permissions';
 import * as ImagePicker from "expo-image-picker";
 import {Buffer} from "buffer"; // get this via: npm install buffer
 import uuid from "react-native-uuid";
