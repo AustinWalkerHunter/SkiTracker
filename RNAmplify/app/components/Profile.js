@@ -5,23 +5,27 @@ import MyStats from "../components/MyStats";
 import ProfileCheckIns from "../components/ProfileCheckIns";
 import ProfileIcon from "../components/ProfileIcon";
 import {useScrollToTop} from "@react-navigation/native";
-import {MaterialCommunityIcons} from "@expo/vector-icons";
 import colors from "../constants/colors";
 import GLOBAL from "../global";
-import {getAllCheckInData, unfollowUser, removeProfilePicture} from "../actions";
+import {unfollowUser, removeProfilePicture} from "../actions";
 import ProfileHeader from "../components/ProfileHeader";
 import ConfirmationModal from "../components/ConfirmationModal";
 import {SafeAreaView} from "react-native-safe-area-context";
 import ProfilePictureModal from "./ProfilePictureModal";
 import {useIsFocused} from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
+import {API, graphqlOperation} from "aws-amplify";
+import {getUser} from "../../src/graphql/queries";
+import Moment from "moment";
 
-function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedUserId, handleImagePicked, userDayCount, pageLoading, userCheckIns, updateDayCount, viewCheckIn, viewResort}) {
+function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedUserId, handleImagePicked, checkInStats, pageLoading, userCheckIns, viewCheckIn, viewResort}) {
 	const [fullScreenPhoto, setFullScreenPhoto] = useState();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [profileModalVisible, setProfileModalVisible] = useState(false);
 	const [userProfileImage, setUserProfileImage] = useState(GLOBAL.allUsers[viewedUserId]?.image);
 	const [following, setFollowing] = useState(viewedUserId && GLOBAL.following.includes(viewedUserId));
+	const username = activeUserProfile ? GLOBAL.allUsers[GLOBAL.activeUserId].username : viewedUser.username;
+	const [dateJoined, setDateJoined] = useState("");
 
 	const ref = React.useRef(null);
 	useScrollToTop(ref);
@@ -29,6 +33,7 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 
 	useEffect(() => {
 		if (isFocused) {
+			getUserJoinedDate();
 			setUserProfileImage(GLOBAL.allUsers[viewedUserId]?.image);
 		} else {
 			if (fullScreenPhoto) {
@@ -46,6 +51,12 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 		GLOBAL.activeUser.image = null;
 		GLOBAL.allUsers[GLOBAL.activeUserId].image = null;
 		setUserProfileImage(null);
+	}
+
+	async function getUserJoinedDate() {
+		const userData = (await API.graphql(graphqlOperation(getUser, {id: viewedUserId}))).data.getUser;
+		const date = Moment(userData.createdAt).format("MMM 'YY");
+		setDateJoined(date);
 	}
 
 	const pickImage = async () => {
@@ -94,44 +105,58 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 				/>
 				<ScrollView ref={ref}>
 					<View style={styles.profileContainer}>
-						<View style={styles.profilePictureContainer}>
-							{activeUserProfile ? (
-								<TouchableWithoutFeedback onPress={() => setProfileModalVisible(true)}>
-									<View>
-										{userProfileImage ? (
-											<ProfileIcon size={200} image={userProfileImage} isSettingScreen={false} />
-										) : (
-											<MaterialCommunityIcons style={{marginTop: -15, marginBottom: -15}} name="account-outline" size={175} color="grey" />
-										)}
-									</View>
-								</TouchableWithoutFeedback>
-							) : (
-								<TouchableWithoutFeedback onPress={() => displayFullImage(userProfileImage)}>
-									<View>{userProfileImage ? <ProfileIcon size={200} image={userProfileImage} /> : <MaterialCommunityIcons name="account-outline" size={180} color="grey" />}</View>
-								</TouchableWithoutFeedback>
-							)}
-						</View>
-						<View style={styles.nameContainer}>
-							<Text style={styles.userName}>{activeUserProfile ? GLOBAL.allUsers[GLOBAL.activeUserId].username : viewedUser.username}</Text>
-							<View style={styles.descriptionContainer}>
-								<Text style={styles.userDescription}>{activeUserProfile ? GLOBAL.allUsers[GLOBAL.activeUserId].description : viewedUser.description}</Text>
+						<View style={styles.userContainer}>
+							<View style={styles.profilePictureContainer}>
+								{activeUserProfile ? (
+									<TouchableWithoutFeedback onPress={() => setProfileModalVisible(true)}>
+										<View>
+											<ProfileIcon size={120} image={userProfileImage} isSettingScreen={false} />
+										</View>
+									</TouchableWithoutFeedback>
+								) : (
+									<TouchableWithoutFeedback onPress={() => displayFullImage(userProfileImage)}>
+										<View>
+											<ProfileIcon size={120} image={userProfileImage} />
+										</View>
+									</TouchableWithoutFeedback>
+								)}
 							</View>
+							<View style={styles.nameContainer}>
+								<Text style={styles.nameFont}>{username}</Text>
+								<Text style={styles.joinedDate}>Joined {dateJoined}</Text>
+							</View>
+						</View>
+						<View style={styles.currentSeasonStats}>
+							<TouchableOpacity>
+								{/* onPress={() => setShowExtraStats(!showExtraStats)}> */}
+								<View style={styles.mainStatData}>
+									<View style={styles.titleContainer}>
+										<Text style={styles.dataTitle}>Season Days</Text>
+									</View>
+									<View style={styles.userData}>
+										<Text style={styles.daysInfo}>{checkInStats?.currentSeason || 0}</Text>
+									</View>
+								</View>
+							</TouchableOpacity>
 						</View>
 					</View>
 
 					<View style={styles.userStatsContainer}>
-						<MyStats dayCount={userDayCount} viewResort={viewResort} checkInData={userCheckIns && userCheckIns.length > 0 ? getAllCheckInData(userCheckIns) : null} />
-						{!pageLoading ? <ProfileCheckIns checkIns={userCheckIns} updateDayCount={updateDayCount} viewCheckIn={viewCheckIn} /> : <ActivityIndicator size="large" color="white" />}
+						<MyStats viewResort={viewResort} checkInStats={checkInStats} />
+						{!pageLoading ? <ProfileCheckIns checkIns={userCheckIns} viewCheckIn={viewCheckIn} /> : <ActivityIndicator size="large" color="white" />}
 					</View>
 				</ScrollView>
 			</View>
 			{fullScreenPhoto ? (
 				<View style={styles.imageViewerContainer}>
-					<TouchableOpacity style={styles.closeImageViewer} onPress={() => setFullScreenPhoto("")}>
-						<Text style={styles.closeButtonText}>Close</Text>
-					</TouchableOpacity>
 					<View style={styles.imageDisplay}>
 						<Image style={styles.image} resizeMode={"contain"} source={{uri: fullScreenPhoto}} />
+						<View style={styles.descriptionContainer}>
+							<Text style={styles.userDescription}>"{activeUserProfile ? GLOBAL.allUsers[GLOBAL.activeUserId].description : viewedUser.description}"</Text>
+						</View>
+						<TouchableOpacity style={styles.closeImageViewer} onPress={() => setFullScreenPhoto("")}>
+							<Text style={styles.closeButtonText}>Close</Text>
+						</TouchableOpacity>
 					</View>
 				</View>
 			) : null}
@@ -176,16 +201,22 @@ const styles = StyleSheet.create({
 		height: 600,
 	},
 	profileContainer: {
-		bottom: 10,
+		marginTop: 15,
+		flexDirection: "row",
+		justifyContent: "space-evenly",
 	},
+
 	profilePictureContainer: {
-		justifyContent: "center",
-		alignItems: "center",
-		marginTop: 10,
 		shadowColor: colors.navigation,
 		shadowOffset: {width: -3, height: 3},
 		shadowOpacity: 0.9,
 		shadowRadius: 2,
+		marginBottom: 3,
+	},
+	userContainer: {
+		flexDirection: "col",
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	nameContainer: {
 		justifyContent: "center",
@@ -193,23 +224,83 @@ const styles = StyleSheet.create({
 	},
 	userName: {
 		color: "white",
-		fontSize: 30,
+		fontSize: 20,
 		textShadowColor: "black",
 		textShadowOffset: {width: -1, height: 1},
 		textShadowRadius: 2,
 	},
-	descriptionContainer: {
-		width: "85%",
+	nameFont: {
+		color: "white",
+		fontSize: 22,
+		textShadowColor: "black",
+		textShadowOffset: {width: -1, height: 1},
+		textShadowRadius: 2,
 	},
-	userDescription: {
+	joinedDate: {
 		color: "#a1a1a1",
-		fontSize: 18,
+		fontSize: 15,
 		textAlign: "center",
 		textShadowColor: "black",
 		textShadowOffset: {width: -1, height: 1},
 		textShadowRadius: 5,
 	},
+	longNameFont: {
+		color: "white",
+		fontSize: 15,
+		textShadowColor: "black",
+		textShadowOffset: {width: -1, height: 1},
+		textShadowRadius: 2,
+	},
+	descriptionContainer: {
+		alignSelf: "center",
+		marginBottom: 50,
+		marginTop: -20,
+		width: "85%",
+	},
+	userDescription: {
+		color: "#a1a1a1",
+		fontSize: 20,
+		textAlign: "center",
+		textShadowColor: "black",
+		textShadowOffset: {width: -1, height: 1},
+		textShadowRadius: 5,
+	},
+	currentSeasonStats: {
+		justifyContent: "center",
+	},
+	mainStatData: {
+		padding: 15,
+		backgroundColor: colors.primary,
+		borderRadius: 15,
+		borderWidth: 0.5,
+		borderColor: colors.secondary,
+		alignItems: "center",
+	},
+	titleContainer: {
+		overflow: "visible",
+		alignItems: "center",
+	},
+	dataTitle: {
+		color: "white",
+		fontSize: 20,
+		fontWeight: "400",
+	},
+	userData: {
+		flex: 1,
+		width: "auto",
+		height: "auto",
+		alignItems: "center",
+		flexDirection: "row",
+		justifyContent: "center",
+		overflow: "visible",
+	},
+	daysInfo: {
+		color: "white",
+		fontSize: 38,
+		fontWeight: "100",
+	},
 	userStatsContainer: {
+		marginTop: 10,
 		alignItems: "center",
 	},
 	showCheckInButton: {
@@ -231,16 +322,14 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		backgroundColor: colors.navigation,
 		width: "100%",
-		height: "110%",
+		height: "100%",
 		justifyContent: "center",
 		alignItems: "center",
 		zIndex: 999,
 	},
 	imageDisplay: {
-		position: "absolute",
 		bottom: "10%",
 		width: "100%",
-		height: "100%",
 	},
 	image: {
 		alignSelf: "center",
@@ -248,15 +337,18 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	closeImageViewer: {
-		marginTop: "90%",
+		alignSelf: "center",
+		marginBottom: "-100%",
 		borderRadius: 25,
 		borderWidth: 1,
 		borderColor: "white",
 		padding: 5,
 		backgroundColor: "rgba(224, 224, 224, 0.15)",
 		zIndex: 999,
+		width: "30%",
 	},
 	closeButtonText: {
+		textAlign: "center",
 		color: "white",
 		fontSize: 25,
 		paddingLeft: 5,

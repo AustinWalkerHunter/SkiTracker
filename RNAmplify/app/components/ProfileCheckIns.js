@@ -6,7 +6,7 @@ import StatsImage from "./StatsImage";
 import Moment from "moment";
 import colors from "../constants/colors";
 
-function ProfileCheckIns({checkIns, updateDayCount, viewCheckIn}) {
+function ProfileCheckIns({checkIns, viewCheckIn}) {
 	const isFocused = useIsFocused();
 	const [showPhotos, setShowPhotos] = useState(false);
 	const [hasPhotos, setHasPhotos] = useState(false);
@@ -51,17 +51,7 @@ function ProfileCheckIns({checkIns, updateDayCount, viewCheckIn}) {
 						keyExtractor={checkIns => checkIns.id.toString()}
 						contentContainerStyle={{paddingBottom: 30}}
 						// refreshControl={<RefreshControl tintColor={"white"} refreshing={refreshing} onRefresh={() => console.log("refreshing")} />}
-						renderItem={({item}) => (
-							<MyPostItem
-								item={item}
-								title={item.title}
-								location={item.location}
-								date={getDate(item.date)}
-								sport={item.sport}
-								updateDayCount={updateDayCount}
-								viewCheckIn={viewCheckIn}
-							/>
-						)}
+						renderItem={({item}) => <MyPostItem item={item} title={item.title} location={item.location} date={getDate(item.date)} sport={item.sport} viewCheckIn={viewCheckIn} />}
 					></FlatList>
 				) : (
 					<View style={styles.zeroStateContainer}>

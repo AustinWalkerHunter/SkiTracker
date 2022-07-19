@@ -5,15 +5,16 @@ import Profile from "../components/Profile";
 import {getUser, checkInsByDate} from "../../src/graphql/queries";
 import GLOBAL from "../global";
 import resorts from "../constants/resortData";
+import {getCheckInStats} from "../actions";
 
 const UserProfileScreen = ({route, navigation}) => {
 	const {viewedUserId} = route.params;
 	const isFocused = useIsFocused();
 	const [viewedUser, setViewedUser] = useState({username: "", description: "", image: null});
-	const [userDayCount, setUserDayCount] = useState(0);
 	const [userCheckIns, setUserCheckIns] = useState();
 	const [pageLoading, setPageLoading] = useState(true);
 	const [userProfileImage, setUserProfileImage] = useState();
+	const [checkInStats, setCheckInStats] = useState({currentDayCount: 0, pastSeason: 0, topLocation: "N/A", skiing: 0, snowboarding: 0});
 
 	useEffect(() => {
 		if (isFocused) {
@@ -21,12 +22,6 @@ const UserProfileScreen = ({route, navigation}) => {
 			setUserProfileImage(GLOBAL.allUsers[viewedUserId].image);
 		}
 	}, [isFocused]);
-
-	const updateDayCount = () => {
-		if (userDayCount > 0) {
-			setUserDayCount(userDayCount - 1);
-		}
-	};
 
 	async function fetchCurrentUserDataAndGetCheckIns() {
 		try {
@@ -40,8 +35,11 @@ const UserProfileScreen = ({route, navigation}) => {
 				filter: {userID: {eq: viewedUser.id}},
 			};
 			const userCheckIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items;
+			if (userCheckIns) {
+				const stats = getCheckInStats(userCheckIns);
+				setCheckInStats(stats);
+			}
 			setUserCheckIns(userCheckIns);
-			setUserDayCount(userCheckIns.length);
 		} catch (error) {
 			console.log("Error getting user from db");
 		}
@@ -67,10 +65,9 @@ const UserProfileScreen = ({route, navigation}) => {
 			activeUserProfile={false}
 			viewedUser={viewedUser}
 			viewedUserId={viewedUserId}
-			userDayCount={userDayCount}
+			checkInStats={checkInStats}
 			pageLoading={pageLoading}
 			userCheckIns={userCheckIns}
-			updateDayCount={updateDayCount}
 			viewCheckIn={viewCheckIn}
 			viewResort={viewResort}
 		/>

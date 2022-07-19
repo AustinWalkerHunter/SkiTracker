@@ -11,16 +11,17 @@ import GLOBAL from "../global";
 import {updateUsersProfilePicture} from "../actions";
 import {useToast} from "react-native-fast-toast";
 import resorts from "../constants/resortData";
+import {getCheckInStats} from "../actions";
 
 const MyProfileScreen = ({navigation}) => {
 	const isFocused = useIsFocused();
 	const [activeUser, setActiveUser] = useState({username: "", description: "", image: null});
-	const [userDayCount, setUserDayCount] = useState(0);
 	const [userCheckIns, setUserCheckIns] = useState();
 	const [pageLoading, setPageLoading] = useState(true);
 	const [percentage, setPercentage] = useState(0);
 	const [userProfileImage, setUserProfileImage] = useState();
 	const toast = useToast();
+	const [checkInStats, setCheckInStats] = useState({currentDayCount: 0, pastSeason: 0, topLocation: "N/A", skiing: 0, snowboarding: 0});
 
 	useEffect(() => {
 		if (isFocused) {
@@ -29,12 +30,6 @@ const MyProfileScreen = ({navigation}) => {
 			fetchActiveUserCheckIns();
 		}
 	}, [isFocused]);
-
-	const updateDayCount = () => {
-		if (userDayCount > 0) {
-			setUserDayCount(userDayCount - 1);
-		}
-	};
 
 	async function fetchActiveUserCheckIns() {
 		// without fetching, the order is messed up when a new check in is added
@@ -46,15 +41,17 @@ const MyProfileScreen = ({navigation}) => {
 				filter: {userID: {eq: GLOBAL.activeUser.id}},
 			};
 			const userCheckIns = (await API.graphql(graphqlOperation(checkInsByDate, queryParams))).data.checkInsByDate.items;
+			if (userCheckIns) {
+				const stats = getCheckInStats(userCheckIns);
+				setCheckInStats(stats);
+			}
 			setUserCheckIns(userCheckIns);
-			setUserDayCount(userCheckIns.length);
 		} catch (error) {
 			console.log("Error getting user from db");
 		}
 		// This would stop the page from refreshing
 		// Adding a check to see if we need to refresh might help
 		// setUserCheckIns(GLOBAL.activeUserCheckIns)
-		setUserDayCount(GLOBAL.activeUserCheckIns.length);
 		setPageLoading(false);
 	}
 
@@ -135,10 +132,9 @@ const MyProfileScreen = ({navigation}) => {
 			activeUser={activeUser}
 			viewedUserId={GLOBAL.activeUserId}
 			handleImagePicked={handleImagePicked}
-			userDayCount={userDayCount}
+			checkInStats={checkInStats}
 			pageLoading={pageLoading}
 			userCheckIns={userCheckIns}
-			updateDayCount={updateDayCount}
 			viewCheckIn={viewCheckIn}
 			viewResort={viewResort}
 		/>

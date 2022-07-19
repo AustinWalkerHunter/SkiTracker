@@ -2,19 +2,22 @@ import React, {useState} from "react";
 import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import colors from "../constants/colors";
 
-function MyStats({dayCount, viewResort, checkInData}) {
+function MyStats({viewResort, checkInStats}) {
 	const [showExtraStats, setShowExtraStats] = useState(false);
+
+	console.log("Why is this getting called so much??");
+	console.log(checkInStats);
 	return (
 		<View style={[styles.statsContainer]}>
 			<TouchableOpacity style={styles.stats} onPress={() => setShowExtraStats(!showExtraStats)}>
-				<View style={styles.mainStatData}>
+				{/* <View style={styles.mainStatData}>
 					<View style={styles.titleContainer}>
 						<Text style={styles.dataTitle}>Season Days</Text>
 					</View>
 					<View style={styles.userData}>
 						<Text style={styles.daysInfo}>{dayCount}</Text>
 					</View>
-				</View>
+				</View> */}
 			</TouchableOpacity>
 			{showExtraStats && (
 				<View style={styles.extraStats}>
@@ -23,7 +26,7 @@ function MyStats({dayCount, viewResort, checkInData}) {
 							<Text style={styles.dataTitle}>Skiing</Text>
 						</View>
 						<View style={styles.userData}>
-							<Text style={styles.sportInfo}>{checkInData ? checkInData.skiing : "0"}</Text>
+							<Text style={styles.sportInfo}>{checkInStats ? checkInStats.skiing : "0"}</Text>
 						</View>
 					</View>
 					<View style={styles.statsData}>
@@ -31,7 +34,7 @@ function MyStats({dayCount, viewResort, checkInData}) {
 							<Text style={styles.dataTitle}>Snowboarding</Text>
 						</View>
 						<View style={styles.userData}>
-							<Text style={styles.sportInfo}>{checkInData ? checkInData.snowboarding : "0"}</Text>
+							<Text style={styles.sportInfo}>{checkInStats ? checkInStats.snowboarding : "0"}</Text>
 						</View>
 					</View>
 				</View>
@@ -40,7 +43,7 @@ function MyStats({dayCount, viewResort, checkInData}) {
 				<TouchableOpacity
 					style={styles.statsData}
 					onPress={() => {
-						checkInData ? viewResort(checkInData.topLocation) : null;
+						checkInStats ? viewResort(checkInStats.topLocation) : null;
 					}}
 				>
 					{/* <View style={styles.statsData}> */}
@@ -48,20 +51,20 @@ function MyStats({dayCount, viewResort, checkInData}) {
 						<Text style={styles.dataTitle}>Top Resort</Text>
 					</View>
 					<View style={styles.userData}>
-						<Text style={styles.mountainInfo}>{checkInData ? checkInData.topLocation : "N/A"}</Text>
+						<Text style={styles.mountainInfo}>{checkInStats ? checkInStats.topLocation : "N/A"}</Text>
 					</View>
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={styles.statsData}
 					onPress={() => {
-						checkInData ? viewResort(checkInData.recentLocation) : null;
+						console.log("past season");
 					}}
 				>
 					<View style={styles.titleContainer}>
-						<Text style={styles.dataTitle}>Most Recent</Text>
+						<Text style={styles.dataTitle}>Past Season</Text>
 					</View>
 					<View style={styles.userData}>
-						<Text style={styles.mountainInfo}>{checkInData ? checkInData.recentLocation : "N/A"}</Text>
+						<Text style={styles.pastSeasonData}>{checkInStats ? checkInStats.pastSeason : "0"}</Text>
 					</View>
 				</TouchableOpacity>
 			</View>
@@ -92,16 +95,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		marginTop: 15,
 	},
-	mainStatData: {
-		padding: 5,
-		backgroundColor: colors.primary,
-		borderRadius: 15,
-		borderWidth: 0.5,
-		borderColor: colors.secondary,
-		width: "50%",
-		height: 80,
-		alignItems: "center",
-	},
 	statsData: {
 		padding: 10,
 		backgroundColor: colors.primary,
@@ -110,6 +103,9 @@ const styles = StyleSheet.create({
 		height: 90,
 		alignItems: "center",
 		marginHorizontal: 15,
+		borderRadius: 15,
+		borderWidth: 0.2,
+		borderColor: colors.grey,
 	},
 	titleContainer: {
 		width: "100%",
@@ -146,6 +142,12 @@ const styles = StyleSheet.create({
 		color: "white",
 		fontSize: 15,
 		fontWeight: "200",
+		textAlign: "center",
+	},
+	pastSeasonData: {
+		color: "white",
+		fontSize: 35,
+		fontWeight: "100",
 		textAlign: "center",
 	},
 });

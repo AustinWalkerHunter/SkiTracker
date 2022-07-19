@@ -2,6 +2,7 @@ import {API, graphqlOperation, Storage} from "aws-amplify";
 import {deleteFollowing, deleteCheckIn, updateUser, updateCheckIn, createLike, deleteLike, deleteComment, createFollowing} from "../src/graphql/mutations";
 import {listCheckIns, getCheckIn, listFollowings} from "../src/graphql/queries";
 import GLOBAL from "./global";
+import Moment from "moment";
 
 export async function followUser(userId) {
 	if (userId && !GLOBAL.following.includes(userId)) {
@@ -211,22 +212,42 @@ export async function decreaseCheckInComments(checkInId) {
 	}
 }
 
-export const getAllCheckInData = checkIns => {
+export const getCheckInStats = checkIns => {
+	const currentMonth = Moment().month() + 1;
+	var currentYear = new Date().getFullYear();
+	var pastStartDate;
+	var pastEndDate;
+	var currentStartDate;
+	var currentEndDate;
+	if (currentMonth < 8) {
+		var pastStartDate = currentYear - 2 + "-11-01";
+		var pastEndDate = currentYear - 1 + "-08-01";
+		var currentStartDate = currentYear - 1 + "-11-01";
+		var currentEndDate = currentYear + "-08-01";
+	} else {
+		var pastStartDate = currentYear - 1 + "-11-01";
+		var pastEndDate = currentYear + "-08-01";
+		var currentStartDate = currentYear + "-11-01";
+		var currentEndDate = currentYear + 1 + "-08-01";
+	}
+
 	if (checkIns) {
-		var data = {topLocation: "N/A", recentLocation: "N/A", skiing: 0, snowboarding: 0};
+		var data = {currentSeason: 0, pastSeason: 0, topLocation: "N/A", skiing: 0, snowboarding: 0};
 		var locations = {};
-		var foundRecentLocation = false;
 		checkIns.forEach(checkIn => {
-			if (checkIn.location != "Unknown location" && checkIn.location != "Uknown location") {
-				if (!foundRecentLocation) {
-					data.recentLocation = checkIn.location;
-					foundRecentLocation = true;
-				}
+			var date = Moment(checkIn.createdAt).format("YYYY-MM-DD");
+			if (checkIn.location != "Unknown location") {
 				if (locations[checkIn.location]) {
 					locations[checkIn.location]++;
 				} else {
 					locations[checkIn.location] = 1;
 				}
+			}
+			if (Moment(date).isBetween(pastStartDate, pastEndDate)) {
+				data.pastSeason++;
+			}
+			if (Moment(date).isBetween(currentStartDate, currentEndDate)) {
+				data.currentSeason++;
 			}
 			data[checkIn.sport]++;
 		});
@@ -234,6 +255,7 @@ export const getAllCheckInData = checkIns => {
 			var topLocation = Object.keys(locations).reduce((a, b) => (locations[a] > locations[b] ? a : b));
 			if (topLocation != "Unknown location") data.topLocation = topLocation;
 		}
+
 		return data;
 	}
 };

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import {API, graphqlOperation} from "aws-amplify";
 import {useIsFocused, useScrollToTop} from "@react-navigation/native";
 import {MaterialCommunityIcons, Foundation, FontAwesome5, Ionicons} from "@expo/vector-icons";
-import {RefreshControl, View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image, Dimensions} from "react-native";
+import {RefreshControl, View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Dimensions} from "react-native";
 import PostCard from "../components/PostCard";
 import colors from "../constants/colors";
 import {checkInsByDate} from "../../src/graphql/queries";
@@ -180,9 +180,7 @@ const HomeScreen = ({navigation}) => {
 					</View>
 				</View>
 			) : (
-				<View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-					<ActivityIndicator size="large" color="white" />
-				</View>
+				<View style={{flex: 1, alignItems: "center", justifyContent: "center"}} />
 			)}
 			<StatusBar style="light" />
 		</SafeAreaView>
