@@ -21,7 +21,7 @@ const MyProfileScreen = ({navigation}) => {
 	const [percentage, setPercentage] = useState(0);
 	const [userProfileImage, setUserProfileImage] = useState();
 	const toast = useToast();
-	const [checkInStats, setCheckInStats] = useState({currentDayCount: 0, pastSeason: 0, topLocation: "N/A", skiing: 0, snowboarding: 0});
+	const [checkInStats, setCheckInStats] = useState({currentDayCount: 0, pastSeason: 0, topLocation: null, skiing: 0, snowboarding: 0});
 
 	useEffect(() => {
 		if (isFocused) {

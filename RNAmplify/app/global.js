@@ -13,4 +13,5 @@ module.exports = {
 	followingStateUpdated: false,
 	followingCheckIns: null,
 	checkInsUpdated: false,
+	seasonData: null,
 };

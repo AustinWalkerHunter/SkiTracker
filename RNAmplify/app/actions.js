@@ -1,6 +1,6 @@
 import {API, graphqlOperation, Storage} from "aws-amplify";
 import {deleteFollowing, deleteCheckIn, updateUser, updateCheckIn, createLike, deleteLike, deleteComment, createFollowing} from "../src/graphql/mutations";
-import {listCheckIns, getCheckIn, listFollowings} from "../src/graphql/queries";
+import {getCheckIn, listFollowings} from "../src/graphql/queries";
 import GLOBAL from "./global";
 import Moment from "moment";
 
@@ -213,26 +213,9 @@ export async function decreaseCheckInComments(checkInId) {
 }
 
 export const getCheckInStats = checkIns => {
-	const currentMonth = Moment().month() + 1;
-	var currentYear = new Date().getFullYear();
-	var pastStartDate;
-	var pastEndDate;
-	var currentStartDate;
-	var currentEndDate;
-	if (currentMonth < 8) {
-		var pastStartDate = currentYear - 2 + "-11-01";
-		var pastEndDate = currentYear - 1 + "-08-01";
-		var currentStartDate = currentYear - 1 + "-11-01";
-		var currentEndDate = currentYear + "-08-01";
-	} else {
-		var pastStartDate = currentYear - 1 + "-11-01";
-		var pastEndDate = currentYear + "-08-01";
-		var currentStartDate = currentYear + "-11-01";
-		var currentEndDate = currentYear + 1 + "-08-01";
-	}
-
+	const seasonData = GLOBAL.seasonData;
 	if (checkIns) {
-		var data = {currentSeason: 0, pastSeason: 0, topLocation: "N/A", skiing: 0, snowboarding: 0};
+		var data = {currentSeason: 0, pastSeason: 0, topLocation: null, skiing: 0, snowboarding: 0, topSport: null};
 		var locations = {};
 		checkIns.forEach(checkIn => {
 			var date = Moment(checkIn.createdAt).format("YYYY-MM-DD");
@@ -243,10 +226,10 @@ export const getCheckInStats = checkIns => {
 					locations[checkIn.location] = 1;
 				}
 			}
-			if (Moment(date).isBetween(pastStartDate, pastEndDate)) {
+			if (Moment(date).isBetween(seasonData.pastStartDate, seasonData.pastEndDate)) {
 				data.pastSeason++;
 			}
-			if (Moment(date).isBetween(currentStartDate, currentEndDate)) {
+			if (Moment(date).isBetween(seasonData.currentStartDate, seasonData.currentEndDate)) {
 				data.currentSeason++;
 			}
 			data[checkIn.sport]++;
@@ -255,6 +238,8 @@ export const getCheckInStats = checkIns => {
 			var topLocation = Object.keys(locations).reduce((a, b) => (locations[a] > locations[b] ? a : b));
 			if (topLocation != "Unknown location") data.topLocation = topLocation;
 		}
+
+		if (data.skiing > 0 || data.snowboarding > 0) data.topSport = data.skiing > data.snowboarding ? "skiing" : "snowboarding";
 
 		return data;
 	}

@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import colors from "../constants/colors";
+import {FontAwesome5} from "@expo/vector-icons";
 
 function MyStats({viewResort, checkInStats}) {
 	const [showExtraStats, setShowExtraStats] = useState(false);
@@ -9,64 +10,58 @@ function MyStats({viewResort, checkInStats}) {
 	console.log(checkInStats);
 	return (
 		<View style={[styles.statsContainer]}>
-			<TouchableOpacity style={styles.stats} onPress={() => setShowExtraStats(!showExtraStats)}>
-				{/* <View style={styles.mainStatData}>
-					<View style={styles.titleContainer}>
-						<Text style={styles.dataTitle}>Season Days</Text>
-					</View>
-					<View style={styles.userData}>
-						<Text style={styles.daysInfo}>{dayCount}</Text>
-					</View>
-				</View> */}
-			</TouchableOpacity>
-			{showExtraStats && (
-				<View style={styles.extraStats}>
-					<View style={styles.statsData}>
-						<View style={styles.titleContainer}>
-							<Text style={styles.dataTitle}>Skiing</Text>
-						</View>
-						<View style={styles.userData}>
-							<Text style={styles.sportInfo}>{checkInStats ? checkInStats.skiing : "0"}</Text>
-						</View>
-					</View>
-					<View style={styles.statsData}>
-						<View style={styles.titleContainer}>
-							<Text style={styles.dataTitle}>Snowboarding</Text>
-						</View>
-						<View style={styles.userData}>
-							<Text style={styles.sportInfo}>{checkInStats ? checkInStats.snowboarding : "0"}</Text>
-						</View>
-					</View>
-				</View>
-			)}
-			<View style={styles.lowerStats}>
+			<View style={styles.upperStats}>
 				<TouchableOpacity
 					style={styles.statsData}
 					onPress={() => {
-						checkInStats ? viewResort(checkInStats.topLocation) : null;
+						checkInStats?.topLocation ? viewResort(checkInStats.topLocation) : null;
 					}}
 				>
-					{/* <View style={styles.statsData}> */}
 					<View style={styles.titleContainer}>
 						<Text style={styles.dataTitle}>Top Resort</Text>
 					</View>
 					<View style={styles.userData}>
-						<Text style={styles.mountainInfo}>{checkInStats ? checkInStats.topLocation : "N/A"}</Text>
+						<Text style={styles.mountainInfo}>{checkInStats?.topLocation ? checkInStats.topLocation : "N/A"}</Text>
 					</View>
 				</TouchableOpacity>
-				<TouchableOpacity
-					style={styles.statsData}
-					onPress={() => {
-						console.log("past season");
-					}}
-				>
+				<TouchableOpacity style={styles.statsData} onPress={() => setShowExtraStats(!showExtraStats)}>
 					<View style={styles.titleContainer}>
-						<Text style={styles.dataTitle}>Past Season</Text>
+						<Text style={styles.dataTitle}>Top Sport</Text>
 					</View>
 					<View style={styles.userData}>
-						<Text style={styles.pastSeasonData}>{checkInStats ? checkInStats.pastSeason : "0"}</Text>
+						{checkInStats && checkInStats.topSport ? (
+							<View style={styles.sportContainer}>
+								<View style={styles.sportIcon}>
+									<FontAwesome5 name={checkInStats.topSport} size={40} color="#ff4d00" />
+								</View>
+							</View>
+						) : (
+							<Text style={styles.topSport}>{checkInStats ? checkInStats.topSport : "N/A"}</Text>
+						)}
 					</View>
 				</TouchableOpacity>
+			</View>
+			<View>
+				{showExtraStats && (
+					<View style={styles.extraStats}>
+						<View style={styles.statsData}>
+							<View style={styles.titleContainer}>
+								<Text style={styles.dataTitle}>Skiing</Text>
+							</View>
+							<View style={styles.userData}>
+								<Text style={styles.sportInfo}>{checkInStats ? checkInStats.skiing : "0"}</Text>
+							</View>
+						</View>
+						<View style={styles.statsData}>
+							<View style={styles.titleContainer}>
+								<Text style={styles.dataTitle}>Snowboarding</Text>
+							</View>
+							<View style={styles.userData}>
+								<Text style={styles.sportInfo}>{checkInStats ? checkInStats.snowboarding : "0"}</Text>
+							</View>
+						</View>
+					</View>
+				)}
 			</View>
 		</View>
 	);
@@ -83,7 +78,7 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		flexDirection: "row",
 	},
-	lowerStats: {
+	upperStats: {
 		justifyContent: "space-evenly",
 		alignSelf: "center",
 		flexDirection: "row",
@@ -127,6 +122,16 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		overflow: "visible",
 	},
+	sportContainer: {
+		flex: 1,
+		// alignItems: "flex-end",
+		alignContent: "center",
+		alignSelf: "center",
+		paddingTop: 5,
+	},
+	sportIcon: {
+		alignSelf: "center",
+	},
 	daysInfo: {
 		color: "white",
 		fontSize: 38,
@@ -144,9 +149,9 @@ const styles = StyleSheet.create({
 		fontWeight: "200",
 		textAlign: "center",
 	},
-	pastSeasonData: {
+	topSport: {
 		color: "white",
-		fontSize: 35,
+		fontSize: 15,
 		fontWeight: "100",
 		textAlign: "center",
 	},

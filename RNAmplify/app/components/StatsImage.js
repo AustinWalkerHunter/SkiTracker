@@ -1,17 +1,22 @@
 import React from "react";
-import {TouchableOpacity, Image, Text, StyleSheet} from "react-native";
+import {TouchableWithoutFeedback, View, Image, Text, StyleSheet} from "react-native";
 import GLOBAL from "../global";
 
 function StatsImage({checkIn, viewCheckIn}) {
 	if (checkIn.image) {
 		var checkInPhoto = GLOBAL.checkInPhotos[checkIn.id];
 		return (
-			<TouchableOpacity style={styles.imageContainer} onPress={() => viewCheckIn(checkIn)}>
-				<Image style={styles.image} source={{uri: checkInPhoto}} />
-				<Text style={styles.title} ellipsizeMode="tail" numberOfLines={2}>
-					{checkIn.title}
-				</Text>
-			</TouchableOpacity>
+			<TouchableWithoutFeedback onPress={() => viewCheckIn(checkIn)}>
+				<View style={styles.imageContainer}>
+					<Image style={styles.image} source={{uri: checkInPhoto}} />
+					<Text style={styles.title} ellipsizeMode="tail" numberOfLines={2}>
+						{checkIn.title}
+					</Text>
+					<Text style={styles.subTitle} ellipsizeMode="tail" numberOfLines={2}>
+						{checkIn.location}
+					</Text>
+				</View>
+			</TouchableWithoutFeedback>
 		);
 	}
 	return null;
@@ -19,22 +24,33 @@ function StatsImage({checkIn, viewCheckIn}) {
 
 const styles = StyleSheet.create({
 	imageContainer: {
-		paddingVertical: 10,
-		paddingHorizontal: 10,
-		marginBottom: 25,
+		paddingVertical: 7,
+		// paddingHorizontal: 10,
+		marginBottom: 10,
+		justifyContent: "center",
+		alignContent: "center",
+		alignItems: "center",
 	},
 	title: {
 		color: "white",
-		fontWeight: "bold",
-		fontSize: 15,
-		marginVertical: 5,
-		width: 340,
+		fontWeight: "500",
+		fontSize: 17,
+		paddingTop: 5,
+		// marginVertical: 5,
+		width: "95%",
+		textAlign: "center",
+	},
+	subTitle: {
+		fontSize: 20,
+		color: "grey",
+		fontWeight: "300",
 		textAlign: "center",
 	},
 	image: {
-		width: 340,
+		width: "95%",
 		height: 300,
-		marginHorizontal: 5,
+		borderRadius: 5,
+		// marginHorizontal: 5,
 	},
 });
 

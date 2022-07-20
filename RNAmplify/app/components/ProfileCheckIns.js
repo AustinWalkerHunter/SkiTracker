@@ -5,11 +5,12 @@ import MyPostItem from "./MyPostItem";
 import StatsImage from "./StatsImage";
 import Moment from "moment";
 import colors from "../constants/colors";
+import GLOBAL from "../global";
 
-function ProfileCheckIns({checkIns, viewCheckIn}) {
+function ProfileCheckIns({checkIns, viewCheckIn, checkInStats}) {
 	const isFocused = useIsFocused();
-	const [showPhotos, setShowPhotos] = useState(false);
 	const [hasPhotos, setHasPhotos] = useState(false);
+	const [tab, setTab] = useState("ALL");
 
 	useEffect(() => {
 		if (isFocused) {
@@ -32,18 +33,27 @@ function ProfileCheckIns({checkIns, viewCheckIn}) {
 		});
 	};
 
+	const renderPastSeasonItem = item => {
+		var date = Moment(item.createdAt).format("YYYY-MM-DD");
+		if (Moment(date).isBetween(GLOBAL.seasonData.pastStartDate, GLOBAL.seasonData.pastEndDate))
+			return <MyPostItem item={item} title={item.title} location={item.location} date={getDate(item.date)} sport={item.sport} viewCheckIn={viewCheckIn} />;
+	};
+
 	return (
 		<View style={styles.checkInsContainer}>
 			<View style={styles.filter}>
-				<TouchableOpacity style={[styles.filterButton, {backgroundColor: !showPhotos ? colors.secondary : colors.darkGrey}]} onPress={() => setShowPhotos(false)}>
+				<TouchableOpacity style={[styles.filterButton, {backgroundColor: tab == "ALL" ? colors.secondary : colors.darkGrey}]} onPress={() => setTab("ALL")}>
 					<Text style={styles.filterText}>All</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={[styles.filterButton, {backgroundColor: showPhotos ? colors.secondary : colors.darkGrey}]} onPress={() => setShowPhotos(true)}>
+				<TouchableOpacity style={[styles.filterButton, {backgroundColor: tab == "PAST" ? colors.secondary : colors.darkGrey}]} onPress={() => setTab("PAST")}>
+					<Text style={styles.filterText}>Past Season</Text>
+				</TouchableOpacity>
+				<TouchableOpacity style={[styles.filterButton, {backgroundColor: tab == "PHOTO" ? colors.secondary : colors.darkGrey}]} onPress={() => setTab("PHOTO")}>
 					<Text style={styles.filterText}>Photos</Text>
 				</TouchableOpacity>
 			</View>
-			{!showPhotos ? (
-				checkIns && checkIns.length > 0 ? (
+			{tab === "ALL" &&
+				(checkIns && checkIns.length > 0 ? (
 					<FlatList
 						scrollEnabled={false}
 						data={checkIns}
@@ -59,14 +69,32 @@ function ProfileCheckIns({checkIns, viewCheckIn}) {
 							<Text style={styles.zeroStateText}>No check-ins</Text>
 						</View>
 					</View>
-				)
-			) : (
+				))}
+			{tab === "PAST" &&
+				(checkInStats.pastSeason > 0 ? (
+					<FlatList
+						scrollEnabled={false}
+						data={checkIns}
+						inverted={false}
+						keyExtractor={checkIns => checkIns.id.toString()}
+						contentContainerStyle={{paddingBottom: 30}}
+						renderItem={({item}) => renderPastSeasonItem(item)}
+					></FlatList>
+				) : (
+					<View style={styles.zeroStateContainer}>
+						<View style={styles.zeroStateRow}>
+							<Text style={styles.zeroStateText}>No past season check-ins</Text>
+						</View>
+					</View>
+				))}
+
+			{tab === "PHOTO" && (
 				<View>
 					{hasPhotos ? (
 						<FlatList
 							scrollEnabled={true}
 							data={checkIns}
-							horizontal={true}
+							// horizontal={true}
 							inverted={false}
 							keyExtractor={checkIns => checkIns.id.toString()}
 							renderItem={({item}) => <StatsImage checkIn={item} viewCheckIn={viewCheckIn} />}
@@ -100,11 +128,12 @@ const styles = StyleSheet.create({
 		color: "white",
 		borderRadius: 10,
 		marginHorizontal: 3,
-		padding: 5,
+		paddingHorizontal: 5,
+		paddingVertical: 8,
 	},
 	filterText: {
 		color: "white",
-		fontSize: 20,
+		fontSize: 16,
 	},
 	postsTitle: {
 		fontSize: 30,
@@ -116,9 +145,10 @@ const styles = StyleSheet.create({
 		marginTop: 25,
 	},
 	zeroStateText: {
+		textAlign: "center",
 		color: "white",
 		alignSelf: "center",
-		fontSize: 35,
+		fontSize: 25,
 		marginBottom: 10,
 	},
 	zeroStateRow: {

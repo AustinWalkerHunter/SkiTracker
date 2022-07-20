@@ -2,6 +2,7 @@ import {Auth, API, graphqlOperation, Storage} from "aws-amplify";
 import {getUser, listUsers, checkInsByDate, listLikes, listFollowings} from "../src/graphql/queries";
 import {createUser} from "../src/graphql/mutations";
 import GLOBAL from "./global";
+import Moment from "moment";
 
 export async function fetchAppData() {
 	await fetchActiveUser();
@@ -11,6 +12,7 @@ export async function fetchAppData() {
 		await fetchAllUsers();
 		await fetchCheckIns();
 		await fetchUserLikes();
+		await getSeasonData();
 		GLOBAL.followingStateUpdated = true;
 	}
 }
@@ -165,4 +167,25 @@ const fetchCheckIns = async () => {
 	} catch (error) {
 		console.log("Error getting checkin data");
 	}
+};
+
+const getSeasonData = async () => {
+	console.log("getting season data");
+	var data = {pastStartDate: null, pastEndDate: null, currentStartDate: null, currentEndDate: null};
+	const currentMonth = Moment().month() + 1;
+	var currentYear = new Date().getFullYear();
+
+	if (currentMonth < 8) {
+		data.pastStartDate = currentYear - 2 + "-11-01";
+		data.pastEndDate = currentYear - 1 + "-08-01";
+		data.currentStartDate = currentYear - 1 + "-11-01";
+		data.currentEndDate = currentYear + "-08-01";
+	} else {
+		data.pastStartDate = currentYear - 1 + "-11-01";
+		data.pastEndDate = currentYear + "-08-01";
+		data.currentStartDate = currentYear + "-11-01";
+		data.currentEndDate = currentYear + 1 + "-08-01";
+	}
+
+	GLOBAL.seasonData = data;
 };

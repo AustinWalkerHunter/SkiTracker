@@ -143,7 +143,7 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 
 					<View style={styles.userStatsContainer}>
 						<MyStats viewResort={viewResort} checkInStats={checkInStats} />
-						{!pageLoading ? <ProfileCheckIns checkIns={userCheckIns} viewCheckIn={viewCheckIn} /> : <ActivityIndicator size="large" color="white" />}
+						{!pageLoading ? <ProfileCheckIns checkIns={userCheckIns} viewCheckIn={viewCheckIn} checkInStats={checkInStats} /> : <ActivityIndicator size="large" color="white" />}
 					</View>
 				</ScrollView>
 			</View>
