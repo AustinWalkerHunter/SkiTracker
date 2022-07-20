@@ -24,7 +24,6 @@ function StatsImage({checkIn, viewCheckIn}) {
 
 const styles = StyleSheet.create({
 	imageContainer: {
-		paddingVertical: 7,
 		// paddingHorizontal: 10,
 		marginBottom: 10,
 		justifyContent: "center",

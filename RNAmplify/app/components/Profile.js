@@ -17,6 +17,7 @@ import * as ImagePicker from "expo-image-picker";
 import {API, graphqlOperation} from "aws-amplify";
 import {getUser} from "../../src/graphql/queries";
 import Moment from "moment";
+import {AntDesign} from "@expo/vector-icons";
 
 function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedUserId, handleImagePicked, checkInStats, pageLoading, userCheckIns, viewCheckIn, viewResort}) {
 	const [fullScreenPhoto, setFullScreenPhoto] = useState();
@@ -24,13 +25,12 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 	const [profileModalVisible, setProfileModalVisible] = useState(false);
 	const [userProfileImage, setUserProfileImage] = useState(GLOBAL.allUsers[viewedUserId]?.image);
 	const [following, setFollowing] = useState(viewedUserId && GLOBAL.following.includes(viewedUserId));
-	const username = activeUserProfile ? GLOBAL.allUsers[GLOBAL.activeUserId].username : viewedUser.username;
+	const username = activeUserProfile ? activeUser.username : viewedUser.username;
 	const [dateJoined, setDateJoined] = useState("");
 
 	const ref = React.useRef(null);
 	useScrollToTop(ref);
 	const isFocused = useIsFocused();
-
 	useEffect(() => {
 		if (isFocused) {
 			getUserJoinedDate();
@@ -127,7 +127,7 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 							</View>
 						</View>
 						<View style={styles.currentSeasonStats}>
-							<TouchableOpacity>
+							<TouchableWithoutFeedback>
 								{/* onPress={() => setShowExtraStats(!showExtraStats)}> */}
 								<View style={styles.mainStatData}>
 									<View style={styles.titleContainer}>
@@ -137,6 +137,12 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 										<Text style={styles.daysInfo}>{checkInStats?.currentSeason || 0}</Text>
 									</View>
 								</View>
+							</TouchableWithoutFeedback>
+							<TouchableOpacity style={styles.seasonsButton} onPress={() => console.log("HERE")}>
+								<Text style={styles.seasonsText}>
+									Past Seasons
+									<AntDesign name="right" size={15} color="white" />
+								</Text>
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -201,9 +207,9 @@ const styles = StyleSheet.create({
 		height: 600,
 	},
 	profileContainer: {
-		marginTop: 15,
+		marginTop: "8%",
 		flexDirection: "row",
-		justifyContent: "space-evenly",
+		justifyContent: "space-around",
 	},
 
 	profilePictureContainer: {
@@ -266,7 +272,7 @@ const styles = StyleSheet.create({
 		textShadowRadius: 5,
 	},
 	currentSeasonStats: {
-		justifyContent: "center",
+		justifyContent: "space-evenly",
 	},
 	mainStatData: {
 		padding: 15,
@@ -276,6 +282,14 @@ const styles = StyleSheet.create({
 		borderColor: colors.secondary,
 		alignItems: "center",
 	},
+	seasonsButton: {
+		alignItems: "center",
+	},
+	seasonsText: {
+		color: "white",
+		fontSize: 18,
+		textAlignVertical: "center",
+	},
 	titleContainer: {
 		overflow: "visible",
 		alignItems: "center",
@@ -283,7 +297,7 @@ const styles = StyleSheet.create({
 	dataTitle: {
 		color: "white",
 		fontSize: 20,
-		fontWeight: "400",
+		fontWeight: "300",
 	},
 	userData: {
 		flex: 1,
@@ -296,8 +310,8 @@ const styles = StyleSheet.create({
 	},
 	daysInfo: {
 		color: "white",
-		fontSize: 38,
-		fontWeight: "100",
+		fontSize: 40,
+		fontWeight: "200",
 	},
 	userStatsContainer: {
 		marginTop: 10,

@@ -36,7 +36,7 @@ function MyStats({viewResort, checkInStats}) {
 								</View>
 							</View>
 						) : (
-							<Text style={styles.topSport}>{checkInStats ? checkInStats.topSport : "N/A"}</Text>
+							<Text style={styles.topSport}>{checkInStats.topSport ? checkInStats.topSport : "N/A"}</Text>
 						)}
 					</View>
 				</TouchableOpacity>
@@ -91,11 +91,10 @@ const styles = StyleSheet.create({
 		marginTop: 15,
 	},
 	statsData: {
-		padding: 10,
+		padding: 5,
 		backgroundColor: colors.primary,
-		borderRadius: 15,
 		width: "50%",
-		height: 90,
+		height: 95,
 		alignItems: "center",
 		marginHorizontal: 15,
 		borderRadius: 15,
@@ -110,7 +109,7 @@ const styles = StyleSheet.create({
 	},
 	dataTitle: {
 		color: "white",
-		fontSize: 17,
+		fontSize: 20,
 		fontWeight: "400",
 	},
 	userData: {
@@ -124,7 +123,6 @@ const styles = StyleSheet.create({
 	},
 	sportContainer: {
 		flex: 1,
-		// alignItems: "flex-end",
 		alignContent: "center",
 		alignSelf: "center",
 		paddingTop: 5,
@@ -146,13 +144,13 @@ const styles = StyleSheet.create({
 	mountainInfo: {
 		color: "white",
 		fontSize: 15,
-		fontWeight: "200",
+		fontWeight: "300",
 		textAlign: "center",
 	},
 	topSport: {
 		color: "white",
 		fontSize: 15,
-		fontWeight: "100",
+		fontWeight: "300",
 		textAlign: "center",
 	},
 });

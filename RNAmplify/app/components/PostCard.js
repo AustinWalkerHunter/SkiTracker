@@ -251,7 +251,7 @@ function PostCard({item, getUserProfile, displayFullImage, deleteCheckIn, viewCh
 
 const styles = StyleSheet.create({
 	postBox: {
-		backgroundColor: "#1a1a1a",
+		backgroundColor: "#222222",
 		alignSelf: "center",
 		width: "100%",
 		marginBottom: 15,
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
 	},
 	headerLocationContainer: {
 		alignSelf: "center",
-		marginBottom: 2,
+		marginBottom: 5,
 	},
 	profilePictureContainer: {
 		paddingHorizontal: 10,
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
 		textShadowRadius: 2,
 	},
 	location: {
-		color: "#e6f5ff",
+		color: "#d9d9d9",
 		fontSize: 21,
 		fontWeight: "600",
 		paddingTop: 5,
@@ -351,12 +351,12 @@ const styles = StyleSheet.create({
 		color: colors.primaryText,
 		fontSize: 15,
 		width: "100%",
-		marginBottom: 5,
+		marginBottom: 7,
 	},
 	footer: {
 		flexDirection: "row",
 		borderBottomEndRadius: 10,
-		paddingBottom: 8,
+		paddingBottom: 10,
 		justifyContent: "space-evenly",
 	},
 	reactionContainer: {
