@@ -1,13 +1,12 @@
 import React, {useState, useEffect} from "react";
 import {useIsFocused} from "@react-navigation/native";
-import {View, TouchableOpacity, FlatList, Text, StyleSheet, TouchableWithoutFeedback} from "react-native";
+import {View, FlatList, Text, StyleSheet, TouchableWithoutFeedback} from "react-native";
 import MyPostItem from "./MyPostItem";
 import StatsImage from "./StatsImage";
 import Moment from "moment";
 import colors from "../constants/colors";
-import GLOBAL from "../global";
 
-function ProfileCheckIns({checkIns, viewCheckIn, checkInStats}) {
+function ProfileCheckIns({checkIns, viewCheckIn}) {
 	const isFocused = useIsFocused();
 	const [hasPhotos, setHasPhotos] = useState(false);
 	const [tab, setTab] = useState("ALL");
@@ -31,12 +30,6 @@ function ProfileCheckIns({checkIns, viewCheckIn, checkInStats}) {
 				return true;
 			}
 		});
-	};
-
-	const renderPastSeasonItem = item => {
-		var date = Moment(item.createdAt).format("YYYY-MM-DD");
-		if (Moment(date).isBetween(GLOBAL.seasonData.pastStartDate, GLOBAL.seasonData.pastEndDate))
-			return <MyPostItem item={item} title={item.title} location={item.location} date={getDate(item.date)} sport={item.sport} viewCheckIn={viewCheckIn} />;
 	};
 
 	return (

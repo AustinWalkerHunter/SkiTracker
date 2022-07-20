@@ -1,6 +1,7 @@
 import React from "react";
 import SettingsScreen from "../screens/SettingsScreen";
 import AddFriendScreen from "../screens/AddFriendScreen";
+import PastSeasonScreen from "../screens/PastSeasonScreen";
 import ViewCheckInScreen from "../screens/ViewCheckInScreen";
 import ResortScreen from "../screens/ResortScreen";
 import NotificationScreen from "../screens/NotificationScreen";
@@ -26,6 +27,13 @@ function AppNavigator({updateAuthState}) {
 			<Main.Screen
 				name="AddFriendScreen"
 				component={AddFriendScreen}
+				options={{
+					headerShown: false,
+				}}
+			/>
+			<Main.Screen
+				name="PastSeasonScreen"
+				component={PastSeasonScreen}
 				options={{
 					headerShown: false,
 				}}

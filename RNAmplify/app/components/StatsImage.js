@@ -24,7 +24,7 @@ function StatsImage({checkIn, viewCheckIn}) {
 
 const styles = StyleSheet.create({
 	imageContainer: {
-		// paddingHorizontal: 10,
+		paddingBottom: 15,
 		marginBottom: 10,
 		justifyContent: "center",
 		alignContent: "center",
@@ -33,23 +33,21 @@ const styles = StyleSheet.create({
 	title: {
 		color: "white",
 		fontWeight: "500",
-		fontSize: 17,
+		fontSize: 15,
 		paddingTop: 5,
-		// marginVertical: 5,
 		width: "95%",
 		textAlign: "center",
 	},
 	subTitle: {
 		fontSize: 20,
 		color: "grey",
-		fontWeight: "300",
+		fontWeight: "400",
 		textAlign: "center",
 	},
 	image: {
 		width: "95%",
 		height: 300,
 		borderRadius: 5,
-		// marginHorizontal: 5,
 	},
 });
 

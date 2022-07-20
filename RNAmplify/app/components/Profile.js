@@ -18,11 +18,13 @@ import {API, graphqlOperation} from "aws-amplify";
 import {getUser} from "../../src/graphql/queries";
 import Moment from "moment";
 import {AntDesign} from "@expo/vector-icons";
+import PastSeasonsModal from "./PastSeasonsModal";
 
 function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedUserId, handleImagePicked, checkInStats, pageLoading, userCheckIns, viewCheckIn, viewResort}) {
 	const [fullScreenPhoto, setFullScreenPhoto] = useState();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [profileModalVisible, setProfileModalVisible] = useState(false);
+	const [pastSeasonsModalVisible, setPastSeasonsModalVisible] = useState(false);
 	const [userProfileImage, setUserProfileImage] = useState(GLOBAL.allUsers[viewedUserId]?.image);
 	const [following, setFollowing] = useState(viewedUserId && GLOBAL.following.includes(viewedUserId));
 	const username = activeUserProfile ? activeUser.username : viewedUser.username;
@@ -128,7 +130,6 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 						</View>
 						<View style={styles.currentSeasonStats}>
 							<TouchableWithoutFeedback>
-								{/* onPress={() => setShowExtraStats(!showExtraStats)}> */}
 								<View style={styles.mainStatData}>
 									<View style={styles.titleContainer}>
 										<Text style={styles.dataTitle}>Season Days</Text>
@@ -138,7 +139,7 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 									</View>
 								</View>
 							</TouchableWithoutFeedback>
-							<TouchableOpacity style={styles.seasonsButton} onPress={() => console.log("HERE")}>
+							<TouchableOpacity style={styles.seasonsButton} onPress={() => setPastSeasonsModalVisible(true)}>
 								<Text style={styles.seasonsText}>
 									Past Seasons
 									<AntDesign name="right" size={15} color="white" />
@@ -183,6 +184,15 @@ function Profile({navigation, activeUserProfile, activeUser, viewedUser, viewedU
 				viewAction={() => displayFullImage(userProfileImage)}
 				changeAction={async () => await pickImage()}
 				removeAction={() => removeUserProfilePicture()}
+			/>
+			{/* dont pass all these to the modal, just make the modal call a function out here to change screen */}
+			<PastSeasonsModal
+				navigation={navigation}
+				pastSeasonsModalVisible={pastSeasonsModalVisible}
+				setPastSeasonsModalVisible={setPastSeasonsModalVisible}
+				checkInStats={checkInStats}
+				checkIns={userCheckIns}
+				viewCheckIn={viewCheckIn}
 			/>
 		</SafeAreaView>
 	);
