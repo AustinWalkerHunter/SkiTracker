@@ -14,8 +14,8 @@ amplifyconfiguration.json
 amplify-build-config.json
 amplify-gradle-config.json
 amplifytools.xcconfig
-RNAmplify/amplify/backend/awscloudformation/
+amplify/backend/awscloudformation/
 
-RNAmplify/amplify/backend/amplify-meta.json
+amplify/backend/amplify-meta.json
 
-RNAmplify/amplify/.config/local-env-info.json
+amplify/.config/local-env-info.json

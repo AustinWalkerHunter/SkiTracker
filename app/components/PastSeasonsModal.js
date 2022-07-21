@@ -36,12 +36,12 @@ function PastSeasonsModal({navigation, pastSeasonsModalVisible, setPastSeasonsMo
 										<Text style={styles.seasonDayText}>{checkInStats.pastSeason} Days</Text>
 									</View>
 								</TouchableWithoutFeedback>
-								<TouchableWithoutFeedback>
+								{/* <TouchableWithoutFeedback>
 									<View style={styles.seasonContainer}>
 										<Text style={styles.seasonTitleText}>'20 - '21 Season</Text>
 										<Text style={styles.seasonDayText}>N/A</Text>
 									</View>
-								</TouchableWithoutFeedback>
+								</TouchableWithoutFeedback> */}
 							</View>
 						</View>
 					</TouchableWithoutFeedback>
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 4,
 		elevation: 5,
 		width: "90%",
-		height: "30%",
+		height: 175,
 	},
 	header: {
 		paddingTop: 20,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		paddingVertical: 15,
-		backgroundColor: colors.primary,
+		backgroundColor: "#ff6524",
 		borderRadius: 15,
 		marginVertical: 5,
 		alignSelf: "center",
