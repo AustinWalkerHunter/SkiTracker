@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
 		right: 10,
 	},
 	deleteIcon: {
-		top: 15,
+		top: "50%",
 		padding: 10,
 	},
 	contentContainer: {

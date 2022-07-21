@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		backgroundColor: colors.navigation,
 		width: "100%",
-		height: "100%",
+		height: "110%",
 		justifyContent: "center",
 		alignItems: "center",
 		zIndex: 999,

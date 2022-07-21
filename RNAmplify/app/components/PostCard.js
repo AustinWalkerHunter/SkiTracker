@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
 		textShadowRadius: 2,
 	},
 	location: {
-		color: "#d9d9d9",
+		color: "white",
 		fontSize: 21,
 		fontWeight: "600",
 		paddingTop: 5,

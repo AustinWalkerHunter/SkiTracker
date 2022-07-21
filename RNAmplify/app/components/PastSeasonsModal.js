@@ -1,5 +1,6 @@
 import React from "react";
 import {Modal, StyleSheet, Text, TouchableOpacity, View, TouchableWithoutFeedback} from "react-native";
+import colors from "../constants/colors";
 
 function PastSeasonsModal({navigation, pastSeasonsModalVisible, setPastSeasonsModalVisible, checkInStats, checkIns, viewCheckIn}) {
 	console.log(checkInStats);
@@ -23,23 +24,25 @@ function PastSeasonsModal({navigation, pastSeasonsModalVisible, setPastSeasonsMo
 							<View style={styles.header}>
 								<Text style={styles.headerText}>Past Seasons</Text>
 							</View>
-							<TouchableWithoutFeedback
-								onPress={() => {
-									setPastSeasonsModalVisible(false);
-									navigation.navigate("PastSeasonScreen", {checkInStats: checkInStats, checkIns: checkIns, viewCheckIn, seasonTitle: "'21 - '22 Season"});
-								}}
-							>
-								<View style={styles.seasonContainer}>
-									<Text style={styles.seasonTitleText}>'21 - '22 Season</Text>
-									<Text style={styles.seasonDayText}>{checkInStats.pastSeason} Days</Text>
-								</View>
-							</TouchableWithoutFeedback>
-							<TouchableWithoutFeedback>
-								<View style={styles.seasonContainer}>
-									<Text style={styles.seasonTitleText}>'20 - '21 Season</Text>
-									<Text style={styles.seasonDayText}>N/A</Text>
-								</View>
-							</TouchableWithoutFeedback>
+							<View style={styles.seasons}>
+								<TouchableWithoutFeedback
+									onPress={() => {
+										setPastSeasonsModalVisible(false);
+										navigation.navigate("PastSeasonScreen", {checkInStats: checkInStats, checkIns: checkIns, viewCheckIn, seasonTitle: "'21 - '22 Season"});
+									}}
+								>
+									<View style={styles.seasonContainer}>
+										<Text style={styles.seasonTitleText}>'21 - '22 Season</Text>
+										<Text style={styles.seasonDayText}>{checkInStats.pastSeason} Days</Text>
+									</View>
+								</TouchableWithoutFeedback>
+								<TouchableWithoutFeedback>
+									<View style={styles.seasonContainer}>
+										<Text style={styles.seasonTitleText}>'20 - '21 Season</Text>
+										<Text style={styles.seasonDayText}>N/A</Text>
+									</View>
+								</TouchableWithoutFeedback>
+							</View>
 						</View>
 					</TouchableWithoutFeedback>
 				</View>
@@ -56,7 +59,7 @@ const styles = StyleSheet.create({
 		height: "100%",
 	},
 	modalView: {
-		backgroundColor: "#22272b",
+		backgroundColor: "#444444",
 		borderRadius: 20,
 		alignItems: "center",
 		shadowColor: "#000",
@@ -71,36 +74,42 @@ const styles = StyleSheet.create({
 		height: "30%",
 	},
 	header: {
-		paddingVertical: 20,
-		width: "100%",
+		paddingTop: 20,
+		width: "75%",
 		justifyContent: "center",
+		borderBottomWidth: 3,
+		borderBottomColor: "white",
 	},
 	headerText: {
 		textAlign: "center",
 		color: "white",
-		fontSize: 25,
+		fontSize: 27,
 		fontWeight: "600",
+	},
+	seasons: {
+		paddingTop: 20,
 	},
 	seasonContainer: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 		paddingVertical: 15,
-		width: "100%",
-		borderTopWidth: 0.5,
-		borderBottomWidth: 0.5,
-		borderColor: "grey",
+		backgroundColor: colors.primary,
+		borderRadius: 15,
+		marginVertical: 5,
+		alignSelf: "center",
+		width: "95%",
 	},
 	seasonTitleText: {
 		color: "white",
 		fontSize: 18,
 		fontWeight: "600",
-		width: "60%",
+		width: "65%",
 		paddingHorizontal: 15,
 	},
 	seasonDayText: {
 		color: "white",
-		fontSize: 18,
-		width: "40%",
+		fontSize: 19,
+		width: "35%",
 		textAlign: "center",
 	},
 });
