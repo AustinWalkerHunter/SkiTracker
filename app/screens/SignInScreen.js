@@ -11,14 +11,14 @@ import {useToast} from "react-native-fast-toast";
 
 export default function SignInScreen({route, navigation, updateAuthState, fetchAppData}) {
 	const isFocused = useIsFocused();
-	const [username, setUsername] = useState("");
+	const [username, setUsername] = useState(route.params?.username || "");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [skiing, setSkiing] = useState(true);
-	const [confirmed, setConfirmed] = useState(false);
 	const [error, setError] = useState(false);
 	const [tapCounter, setTapCounter] = useState(0);
 	const toast = useToast();
+	const [confirmation, setConfirmation] = useState(route.params?.confirmation || false);
 
 	useEffect(() => {
 		if (!isFocused) {
@@ -26,7 +26,7 @@ export default function SignInScreen({route, navigation, updateAuthState, fetchA
 				setError(false);
 			}, 500);
 		} else {
-			if (route.params?.comfirmation) {
+			if (confirmation) {
 				setError(false);
 				toast.show("Sign up confirmed!", {
 					duration: 2000,
@@ -35,6 +35,7 @@ export default function SignInScreen({route, navigation, updateAuthState, fetchA
 					placement: "top", // default to bottom
 				});
 			}
+			setConfirmation(false);
 		}
 	}, [isFocused]);
 
@@ -119,11 +120,6 @@ export default function SignInScreen({route, navigation, updateAuthState, fetchA
 					{error && (
 						<View style={styles.errorContainer}>
 							<Text style={styles.errorText}>Username or password incorrect</Text>
-						</View>
-					)}
-					{confirmed && (
-						<View style={styles.errorContainer}>
-							<Text style={styles.confirmText}>Sign up Confirmed!</Text>
 						</View>
 					)}
 				</View>

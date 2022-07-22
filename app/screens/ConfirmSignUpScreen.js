@@ -1,17 +1,19 @@
 import React, {useState} from "react";
-import {View, Text, StyleSheet, ActivityIndicator, Keyboard} from "react-native";
+import {View, Text, StyleSheet, ActivityIndicator, Keyboard, TouchableOpacity} from "react-native";
 import {Auth} from "aws-amplify";
 import {SafeAreaView} from "react-native-safe-area-context";
 import LogInInput from "../components/LogInInput";
 import RoundedButton from "../components/RoundedButton";
 import colors from "../constants/colors";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
+import {useToast} from "react-native-fast-toast";
 
-export default function ConfirmSignUpScreen({navigation}) {
-	const [username, setUsername] = useState("");
+export default function ConfirmSignUpScreen({route, navigation}) {
+	const [username, setUsername] = useState(route.params?.name || "");
 	const [authCode, setAuthCode] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState();
+	const toast = useToast();
 
 	async function signUp() {
 		Keyboard.dismiss();
@@ -21,7 +23,8 @@ export default function ConfirmSignUpScreen({navigation}) {
 				await Auth.confirmSignUp(username, authCode);
 				console.log("Account Verified");
 				navigation.navigate("SignInScreen", {
-					comfirmation: true,
+					confirmation: true,
+					username: username,
 				});
 			} catch (error) {
 				setLoading(false);
@@ -29,6 +32,25 @@ export default function ConfirmSignUpScreen({navigation}) {
 			}
 		} else {
 			setErrorMessage("Username or verification code missing...");
+		}
+	}
+
+	async function resendConfirmationCode() {
+		if (username.length > 0) {
+			try {
+				await Auth.resendSignUp(username);
+				console.log("code resent successfully");
+				toast.show("Code resent to your email.", {
+					duration: 2000,
+					style: {marginTop: 35, backgroundColor: "green"},
+					textStyle: {fontSize: 20},
+					placement: "top", // default to bottom
+				});
+			} catch (err) {
+				setErrorMessage("Username not found, enter correct username to resend verification code");
+			}
+		} else {
+			setErrorMessage("Enter username to get a new verification code");
 		}
 	}
 
@@ -55,18 +77,16 @@ export default function ConfirmSignUpScreen({navigation}) {
 					) : (
 						<ActivityIndicator style={styles.loadingSpinner} size="large" color={colors.secondary} />
 					)}
-					{/* <View style={styles.footerButtonContainer}>
-                        <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
-                            <Text style={styles.forgotPasswordButtonText}>
-                                Already have an account? Sign In
-                            </Text>
-                        </TouchableOpacity>
-                    </View> */}
 					{errorMessage && (
 						<View style={styles.errorContainer}>
 							<Text style={styles.errorText}>{errorMessage}</Text>
 						</View>
 					)}
+				</View>
+				<View style={styles.footerButtonContainer}>
+					<TouchableOpacity onPress={resendConfirmationCode}>
+						<Text style={styles.forgotPasswordButtonText}>Resend verification code</Text>
+					</TouchableOpacity>
 				</View>
 			</View>
 		</SafeAreaView>
@@ -132,6 +152,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.9,
 		shadowRadius: 2,
 		elevation: 5,
+		marginBottom: 20,
 	},
 	footerButtonContainer: {
 		paddingVertical: 15,

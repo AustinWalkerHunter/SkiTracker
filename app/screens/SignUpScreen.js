@@ -21,7 +21,9 @@ export default function SignUpScreen({navigation}) {
 				setLoading(true);
 				await Auth.signUp({username, password, attributes: {email}});
 				console.log("Sign-up Confirmed");
-				navigation.navigate("ConfirmSignUpScreen");
+				navigation.navigate("ConfirmSignUpScreen", {
+					name: username,
+				});
 			} catch (error) {
 				setLoading(false);
 				console.log(" Error signing up...", error);
@@ -82,21 +84,27 @@ export default function SignUpScreen({navigation}) {
 					) : (
 						<ActivityIndicator style={styles.loadingSpinner} size="large" color={colors.secondary} />
 					)}
+					{errorMessage && (
+						<View style={styles.errorContainer}>
+							<Text style={styles.errorText}>{errorMessage}</Text>
+						</View>
+					)}
 					<View style={styles.footerButtonContainer}>
 						<TouchableOpacity onPress={() => navigation.navigate("SignInScreen")}>
 							<Text style={styles.forgotPasswordButtonText}>Already have an account? Sign In</Text>
 						</TouchableOpacity>
 					</View>
 					<View style={styles.footerButtonContainer}>
-						<TouchableOpacity onPress={() => navigation.navigate("ConfirmSignUpScreen")}>
+						<TouchableOpacity
+							onPress={() =>
+								navigation.navigate("ConfirmSignUpScreen", {
+									userName: "",
+								})
+							}
+						>
 							<Text style={styles.forgotPasswordButtonText}>Have a verification code?</Text>
 						</TouchableOpacity>
 					</View>
-					{errorMessage && (
-						<View style={styles.errorContainer}>
-							<Text style={styles.errorText}>{errorMessage}</Text>
-						</View>
-					)}
 				</View>
 			</View>
 		</SafeAreaView>
@@ -154,6 +162,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.9,
 		shadowRadius: 2,
 		elevation: 5,
+		marginBottom: 20,
 	},
 	footerButtonContainer: {
 		paddingVertical: 20,
