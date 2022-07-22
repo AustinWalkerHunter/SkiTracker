@@ -19,6 +19,7 @@ export default function SignInScreen({route, navigation, updateAuthState, fetchA
 	const [tapCounter, setTapCounter] = useState(0);
 	const toast = useToast();
 	const [confirmation, setConfirmation] = useState(route.params?.confirmation || false);
+	const [passwordReset, setPasswordReset] = useState(route.params?.passwordReset || false);
 
 	useEffect(() => {
 		if (!isFocused) {
@@ -26,16 +27,29 @@ export default function SignInScreen({route, navigation, updateAuthState, fetchA
 				setError(false);
 			}, 500);
 		} else {
+			setPasswordReset(route.params?.passwordReset || false);
+			setUsername(route.params?.username || "");
+			setConfirmation(route.params?.confirmation || false);
 			if (confirmation) {
 				setError(false);
 				toast.show("Sign up confirmed!", {
-					duration: 2000,
+					duration: 4000,
 					style: {marginTop: 35, backgroundColor: "green"},
 					textStyle: {fontSize: 20},
 					placement: "top", // default to bottom
 				});
+				setConfirmation(false);
 			}
-			setConfirmation(false);
+			if (passwordReset) {
+				setError(false);
+				toast.show("Password reset successfully!", {
+					duration: 4000,
+					style: {marginTop: 35, backgroundColor: "green"},
+					textStyle: {fontSize: 20},
+					placement: "top", // default to bottom
+				});
+				setPasswordReset(false);
+			}
 		}
 	}, [isFocused]);
 
@@ -55,6 +69,9 @@ export default function SignInScreen({route, navigation, updateAuthState, fetchA
 			}
 		}
 		setError(true);
+		setTimeout(() => {
+			setError(false);
+		}, 5000);
 	}
 
 	function switchSport() {
@@ -111,11 +128,9 @@ export default function SignInScreen({route, navigation, updateAuthState, fetchA
 						<TouchableOpacity onPress={() => navigation.navigate("SignUpScreen")}>
 							<Text style={styles.forgotPasswordButtonText}>Don't have an account? Sign Up</Text>
 						</TouchableOpacity>
-						{/* <TouchableOpacity onPress={() => navigation.navigate('ConfirmSignUpScreen')}>
-                            <Text style={styles.forgotPasswordButtonText}>
-                                Verify account
-                            </Text>
-                        </TouchableOpacity> */}
+						<TouchableOpacity onPress={() => navigation.navigate("ForgotPasswordScreen")}>
+							<Text style={styles.forgotPasswordButtonText}>Forgot password?</Text>
+						</TouchableOpacity>
 					</View>
 					{error && (
 						<View style={styles.errorContainer}>
@@ -136,7 +151,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
-		marginVertical: "20%",
+		marginVertical: "15%",
 	},
 	headerContainer: {
 		alignItems: "center",
@@ -190,6 +205,7 @@ const styles = StyleSheet.create({
 		color: "white",
 		fontSize: 18,
 		fontWeight: "600",
+		paddingVertical: 15,
 	},
 	errorContainer: {
 		alignItems: "center",

@@ -1,35 +1,35 @@
 import React, {useState} from "react";
-import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Keyboard} from "react-native";
+import {View, Text, StyleSheet, ActivityIndicator, Keyboard, TouchableOpacity} from "react-native";
 import {Auth} from "aws-amplify";
 import {SafeAreaView} from "react-native-safe-area-context";
-import {AntDesign, Ionicons} from "@expo/vector-icons";
 import LogInInput from "../components/LogInInput";
 import RoundedButton from "../components/RoundedButton";
 import colors from "../constants/colors";
+import {MaterialCommunityIcons, Ionicons} from "@expo/vector-icons";
 
-export default function SignUpScreen({navigation}) {
-	const [username, setUsername] = useState("");
+export default function ResetPasswordScreen({route, navigation}) {
+	const [username, setUsername] = useState(route.params?.name || "");
+	const [authCode, setAuthCode] = useState("");
 	const [password, setPassword] = useState("");
-	const [email, setEmail] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState();
 	const [error, setError] = useState(false);
 
-	async function signUp() {
+	async function resetPassword() {
 		Keyboard.dismiss();
-		if (username.length > 0 && password.length > 0 && email.length > 0) {
+		if (password.length > 0 && authCode.length > 0) {
 			try {
 				setLoading(true);
-				await Auth.signUp({username, password, attributes: {email}});
-				console.log("Sign-up Confirmed");
-				navigation.navigate("ConfirmSignUpScreen", {
-					name: username,
+				await Auth.forgotPasswordSubmit(username, authCode, password);
+				navigation.navigate("SignInScreen", {
+					username: username,
+					passwordReset: true,
 				});
 			} catch (error) {
 				setLoading(false);
 				console.log(" Error signing up...", error);
 				if (error.code == "InvalidParameterException") {
-					setErrorMessage("Username invalid. No spaces allowed.");
+					setErrorMessage("Password invalid. Make sure your password has no spaces and includes a number and special character.");
 					setError(true);
 				} else {
 					setErrorMessage(error.message);
@@ -37,12 +37,9 @@ export default function SignUpScreen({navigation}) {
 				}
 			}
 		} else {
-			setErrorMessage("Sign up info missing");
+			setErrorMessage("A required field is missing");
 			setError(true);
 		}
-		setTimeout(() => {
-			setError(false);
-		}, 5000);
 	}
 
 	return (
@@ -53,59 +50,34 @@ export default function SignUpScreen({navigation}) {
 			<View style={styles.container}>
 				<View style={styles.headerContainer}>
 					<View style={styles.icon}>
-						<AntDesign name="adduser" size={75} color={colors.secondary} />
+						<MaterialCommunityIcons name="lock-reset" size={75} color={colors.secondary} />
 					</View>
-					<Text style={styles.header}>Create a new account</Text>
+					<Text style={styles.header}>Reset Password</Text>
+					<View style={styles.subHeaderContainer}>
+						<Text style={styles.subHeader}>Check your email for the verification code!</Text>
+					</View>
 				</View>
+
 				<View style={styles.inputContainer}>
-					<LogInInput
-						value={username}
-						onChangeText={text => setUsername(text)}
-						leftIcon="account"
-						placeholder="Create Username"
-						autoCapitalize="none"
-						textContentType="username"
-						maxLength={15}
-					/>
+					<LogInInput value={authCode} onChangeText={text => setAuthCode(text)} leftIcon="numeric" placeholder="Enter verification code" keyboardType="numeric" />
+					<LogInInput value={username} onChangeText={text => setUsername(text)} leftIcon="account" placeholder="Enter Username" autoCapitalize="none" textContentType="username" />
 					<LogInInput
 						value={password}
 						onChangeText={text => setPassword(text)}
 						leftIcon="lock"
-						placeholder="Add Password"
+						placeholder="New Password"
 						autoCapitalize="none"
 						autoCorrect={false}
 						secureTextEntry
 						textContentType="password"
 					/>
-					<LogInInput
-						value={email}
-						onChangeText={text => setEmail(text)}
-						leftIcon="email"
-						placeholder="Enter Email"
-						autoCapitalize="none"
-						autoCorrect={false}
-						keyboardType="email-address"
-						textContentType="emailAddress"
-					/>
 					{!loading ? (
 						<View style={styles.logInButton}>
-							<RoundedButton title="Sign Up" onPress={signUp} color={colors.secondary} />
+							<RoundedButton title="Reset password" onPress={resetPassword} color={colors.secondary} />
 						</View>
 					) : (
 						<ActivityIndicator style={styles.loadingSpinner} size="large" color={colors.secondary} />
 					)}
-
-					<View style={styles.footerButtonContainer}>
-						<TouchableOpacity
-							onPress={() =>
-								navigation.navigate("ConfirmSignUpScreen", {
-									userName: "",
-								})
-							}
-						>
-							<Text style={styles.forgotPasswordButtonText}>Already have a verification code?</Text>
-						</TouchableOpacity>
-					</View>
 					{error && (
 						<View style={styles.errorContainer}>
 							<Text style={styles.errorText}>{errorMessage}</Text>
@@ -122,19 +94,18 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: colors.primary,
 	},
-	container: {
-		flex: 1,
-		alignItems: "center",
-		marginVertical: "10%",
-	},
 	backButton: {
 		position: "absolute",
 		top: "7%",
 		left: "5%",
 	},
+	container: {
+		flex: 1,
+		alignItems: "center",
+		marginVertical: "10%",
+	},
 	headerContainer: {
 		alignItems: "center",
-		marginBottom: 25,
 	},
 	icon: {
 		shadowColor: colors.navigation,
@@ -144,17 +115,25 @@ const styles = StyleSheet.create({
 		elevation: 5,
 	},
 	header: {
-		fontSize: 25,
+		fontSize: 26,
 		color: "white",
 		fontWeight: "700",
 		textShadowColor: "black",
 		textShadowOffset: {width: -2, height: 2},
 		textShadowRadius: 2,
 	},
+	subHeaderContainer: {
+		width: "90%",
+		paddingVertical: 10,
+	},
 	subHeader: {
 		fontSize: 18,
-		color: "white",
-		fontWeight: "400",
+		textAlign: "center",
+		color: colors.secondary,
+		fontWeight: "700",
+		textShadowColor: "black",
+		textShadowOffset: {width: -1, height: 1},
+		textShadowRadius: 1,
 	},
 	title: {
 		fontSize: 20,
@@ -166,7 +145,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	logInButton: {
-		paddingVertical: 5,
+		paddingVertical: 15,
 		width: "75%",
 		shadowColor: colors.navigation,
 		shadowOffset: {width: -1, height: 3},
@@ -179,7 +158,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 15,
 		justifyContent: "center",
 		alignItems: "center",
-		// marginBottom: 20,
+		marginBottom: 20,
 	},
 	forgotPasswordButtonText: {
 		color: "white",
@@ -188,7 +167,8 @@ const styles = StyleSheet.create({
 	},
 	errorContainer: {
 		alignItems: "center",
-		marginTop: 20,
+		paddingVertical: 10,
+		width: "90%",
 	},
 	errorText: {
 		textAlign: "center",

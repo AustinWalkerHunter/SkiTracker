@@ -5,7 +5,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import LogInInput from "../components/LogInInput";
 import RoundedButton from "../components/RoundedButton";
 import colors from "../constants/colors";
-import {MaterialCommunityIcons} from "@expo/vector-icons";
+import {MaterialCommunityIcons, Ionicons} from "@expo/vector-icons";
 import {useToast} from "react-native-fast-toast";
 
 export default function ConfirmSignUpScreen({route, navigation}) {
@@ -31,7 +31,7 @@ export default function ConfirmSignUpScreen({route, navigation}) {
 				setErrorMessage("Verification code does not match. Please enter a valid verification code.");
 			}
 		} else {
-			setErrorMessage("Username or verification code missing...");
+			setErrorMessage("A required field is missing");
 		}
 	}
 
@@ -41,7 +41,7 @@ export default function ConfirmSignUpScreen({route, navigation}) {
 				await Auth.resendSignUp(username);
 				console.log("code resent successfully");
 				toast.show("Code resent to your email.", {
-					duration: 2000,
+					duration: 4000,
 					style: {marginTop: 35, backgroundColor: "green"},
 					textStyle: {fontSize: 20},
 					placement: "top", // default to bottom
@@ -56,6 +56,9 @@ export default function ConfirmSignUpScreen({route, navigation}) {
 
 	return (
 		<SafeAreaView style={styles.safeAreaContainer}>
+			<TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack(null)}>
+				<Ionicons name="arrow-back" size={40} color="white" />
+			</TouchableOpacity>
 			<View style={styles.container}>
 				<View style={styles.headerContainer}>
 					<View style={styles.icon}>
@@ -63,7 +66,7 @@ export default function ConfirmSignUpScreen({route, navigation}) {
 					</View>
 					<Text style={styles.header}>Confirm verification code</Text>
 					<View style={styles.subHeaderContainer}>
-						<Text style={styles.subHeader}>Check your email for the code!</Text>
+						<Text style={styles.subHeader}>Check your email for the verification code!</Text>
 					</View>
 				</View>
 
@@ -77,17 +80,17 @@ export default function ConfirmSignUpScreen({route, navigation}) {
 					) : (
 						<ActivityIndicator style={styles.loadingSpinner} size="large" color={colors.secondary} />
 					)}
-					{errorMessage && (
-						<View style={styles.errorContainer}>
-							<Text style={styles.errorText}>{errorMessage}</Text>
-						</View>
-					)}
 				</View>
 				<View style={styles.footerButtonContainer}>
 					<TouchableOpacity onPress={resendConfirmationCode}>
 						<Text style={styles.forgotPasswordButtonText}>Resend verification code</Text>
 					</TouchableOpacity>
 				</View>
+				{errorMessage && (
+					<View style={styles.errorContainer}>
+						<Text style={styles.errorText}>{errorMessage}</Text>
+					</View>
+				)}
 			</View>
 		</SafeAreaView>
 	);
@@ -98,10 +101,15 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: colors.primary,
 	},
+	backButton: {
+		position: "absolute",
+		top: "7%",
+		left: "5%",
+	},
 	container: {
 		flex: 1,
 		alignItems: "center",
-		marginVertical: "15%",
+		marginVertical: "10%",
 	},
 	headerContainer: {
 		alignItems: "center",
@@ -122,7 +130,7 @@ const styles = StyleSheet.create({
 		textShadowRadius: 2,
 	},
 	subHeaderContainer: {
-		width: "80%",
+		width: "90%",
 		paddingVertical: 10,
 	},
 	subHeader: {
